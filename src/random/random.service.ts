@@ -5,23 +5,37 @@ import { IBackendMedia } from 'src/IBackendMedia.schema';
 
 @Injectable()
 export class RandomService {
-    constructor(@InjectModel('Media') private mediaModel: Model<IBackendMedia>) {}
+  constructor(@InjectModel('Media') private mediaModel: Model<IBackendMedia>) {}
 
-    async getRandomAnimes(limit: number) {
-        const randomAnimes = await this.mediaModel.aggregate([ { $match: { type: 'anime' } }, { $sample: { size: Number(limit) } } ]);
+  async getRandomAnimes(limit: number): Promise<IBackendMedia[]> {
+    const randomAnimes: IBackendMedia[] = await this.mediaModel.aggregate([
+      { $match: { type: 'anime' } },
+      { $sample: { size: Number(limit) } },
+    ]);
 
-        return randomAnimes;
-    }
+    return randomAnimes;
+  }
 
-    async getRandomSeries(limit: number) {
-        const randomSeries = await this.mediaModel.aggregate([ { $match: { type: 'serie' } }, { $sample: { size: Number(limit) } } ]);
+  async getRandomSeries(limit: number): Promise<IBackendMedia[]> {
+    const randomSeries: IBackendMedia[] = await this.mediaModel.aggregate([
+      { $match: { type: 'serie' } },
+      { $sample: { size: Number(limit) } },
+    ]);
 
-        return randomSeries;
-    }
+    return randomSeries;
+  }
 
-    async getRandomLocalContent(type: string, limit: number) {
-        const randomLocalContent = await this.mediaModel.aggregate([ { $match: { type: type, localSeasons: { $ne: [] } } }, { $sample: { size: Number(limit) } } ]);
+  async getRandomLocalContent(
+    type: string,
+    limit: number,
+  ): Promise<IBackendMedia[]> {
+    const randomLocalContent: IBackendMedia[] = await this.mediaModel.aggregate(
+      [
+        { $match: { type: type, localSeasons: { $ne: [] } } },
+        { $sample: { size: Number(limit) } },
+      ],
+    );
 
-        return randomLocalContent;
-    }
+    return randomLocalContent;
+  }
 }

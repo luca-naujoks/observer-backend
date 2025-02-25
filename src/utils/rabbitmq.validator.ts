@@ -5,11 +5,14 @@ import * as amqplib from 'amqplib';
 export class RabbitMQValidator {
   static async isValidRabbitMQConnection(url: string): Promise<boolean> {
     try {
-      const connection = await amqplib.connect(url);
+      const connection: amqplib.Connection = await amqplib.connect(url);
       await connection.close();
       return true;
-    } catch (error) {
-      console.error('The RabbitMQ connection is invalid:', error.message);
+    } catch (error: any) {
+      console.error(
+        'The RabbitMQ connection is invalid:',
+        (error as Error).message,
+      );
       return false;
     }
   }

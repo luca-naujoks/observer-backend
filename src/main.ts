@@ -32,7 +32,6 @@ function createConfigFileSync() {
   }
 }
 
-
 async function bootstrap() {
   createConfigFileSync();
 
@@ -56,4 +55,6 @@ async function bootstrap() {
 
   await app.listen(process.env.PORT ?? 3001);
 }
-bootstrap();
+bootstrap().catch((error) => {
+  console.error('Error during bootstrap:', error);
+});

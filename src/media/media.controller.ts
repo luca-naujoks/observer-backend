@@ -1,5 +1,10 @@
-import { Body, Controller, Get, Put, Query } from '@nestjs/common';
-import { ApiOperation, ApiOkResponse, ApiTags, ApiQuery } from '@nestjs/swagger';
+import { Controller, Get, Put, Query } from '@nestjs/common';
+import {
+  ApiOperation,
+  ApiOkResponse,
+  ApiTags,
+  ApiQuery,
+} from '@nestjs/swagger';
 import { MediaService } from './media.service';
 
 ApiTags('Anisquid Observer');
@@ -14,8 +19,20 @@ export class MediaController {
   @ApiOkResponse({
     description: 'The page was successfully returned',
   })
-  @ApiQuery({ name: 'page', type: Number, example: 0, description: 'Page number', required: true })
-  @ApiQuery({ name: 'search', type: String, example: 'Naruto', description: 'Search query', required: false })
+  @ApiQuery({
+    name: 'page',
+    type: Number,
+    example: 0,
+    description: 'Page number',
+    required: true,
+  })
+  @ApiQuery({
+    name: 'search',
+    type: String,
+    example: 'Naruto',
+    description: 'Search query',
+    required: false,
+  })
   async getAnimes(
     @Query('page') page: number,
     @Query('search') search: string,
@@ -30,8 +47,20 @@ export class MediaController {
   @ApiOkResponse({
     description: 'The page was successfully returned',
   })
-  @ApiQuery({ name: 'page', type: Number, example: 0, description: 'Page number', required: true })
-  @ApiQuery({ name: 'search', type: String, example: 'Simsalagrimm', description: 'Search query', required: false })
+  @ApiQuery({
+    name: 'page',
+    type: Number,
+    example: 0,
+    description: 'Page number',
+    required: true,
+  })
+  @ApiQuery({
+    name: 'search',
+    type: String,
+    example: 'Simsalagrimm',
+    description: 'Search query',
+    required: false,
+  })
   async getSeries(
     @Query('page') page: number,
     @Query('search') search: string,
@@ -47,9 +76,27 @@ export class MediaController {
   @ApiOkResponse({
     description: 'The page was successfully returned',
   })
-  @ApiQuery({ name: 'type', type: String, example: 'anime', description: 'Type of media', required: true })
-  @ApiQuery({ name: 'page', type: Number, example: 0, description: 'Page number', required: true })
-  @ApiQuery({ name: 'search', type: String, example: 'Simsalagrimm', description: 'Search query', required: false })
+  @ApiQuery({
+    name: 'type',
+    type: String,
+    example: 'anime',
+    description: 'Type of media',
+    required: true,
+  })
+  @ApiQuery({
+    name: 'page',
+    type: Number,
+    example: 0,
+    description: 'Page number',
+    required: true,
+  })
+  @ApiQuery({
+    name: 'search',
+    type: String,
+    example: 'Simsalagrimm',
+    description: 'Search query',
+    required: false,
+  })
   async getLocal(
     @Query('type') type: string,
     @Query('page') page: number,
@@ -69,6 +116,6 @@ export class MediaController {
     @Query('streamName') streamName: string,
     @Query('tmdbID') tmdbID: number,
   ) {
-    return 'Updated';
+    return this.mediaService.updateMediaTMDB(streamName, tmdbID);
   }
 }

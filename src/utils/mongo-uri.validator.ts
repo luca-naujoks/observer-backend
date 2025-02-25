@@ -7,8 +7,8 @@ export class MongoURIValidator {
     try {
       await mongoose.connect(uri);
       return true;
-    } catch (error) {
-      console.error('The MongoDB URI is invalid:', error.message);
+    } catch (error: any) {
+      console.error('The MongoDB URI is invalid:', (error as Error).message);
       return false;
     }
   }

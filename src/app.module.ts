@@ -1,7 +1,6 @@
-import { Module, OnModuleInit, Logger } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-
 
 import * as fs from 'fs';
 import { Iconfig } from './interfaces';
@@ -26,8 +25,6 @@ import { ConfigModule } from '@nestjs/config';
 import { ScheduleModule } from '@nestjs/schedule';
 import { SchedulesController } from './schedules/schedules.controller';
 import { SchedulesModule } from './schedules/schedules.module';
-
-const logger = new Logger('AppModule');
 
 function checkConfig() {
   if (!fs.existsSync('configuration')) {
@@ -58,7 +55,7 @@ function getConfig(): Iconfig {
 
   const config: Iconfig = JSON.parse(
     fs.readFileSync('configuration/appConfig.json', 'utf-8'),
-  );
+  ) as Iconfig;
 
   return config;
 }

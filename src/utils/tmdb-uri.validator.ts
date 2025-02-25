@@ -12,7 +12,10 @@ export class TmdbApiValidator {
     };
 
     try {
-      const response = await fetch('https://api.themoviedb.org/3/authentication', options);
+      const response = await fetch(
+        'https://api.themoviedb.org/3/authentication',
+        options,
+      );
       if (response.status === 200) {
         return true;
       } else {

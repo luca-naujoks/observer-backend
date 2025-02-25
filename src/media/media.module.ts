@@ -13,6 +13,6 @@ import { MongooseModule } from '@nestjs/mongoose';
       },
     ]),
   ],
-  providers: [MediaService]
+  providers: [MediaService],
 })
 export class MediaModule {}

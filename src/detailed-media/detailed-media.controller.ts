@@ -1,4 +1,4 @@
-import { Controller, Get, Logger, Put, Query } from '@nestjs/common';
+import { Controller, Get, Put, Query } from '@nestjs/common';
 import {
   ApiAmbiguousResponse,
   ApiOkResponse,
@@ -33,12 +33,16 @@ export class DetailedMediaController {
 
   @Get('season')
   @ApiOperation({
-    summary: 'Request the Season Details of a specific Media by its TMDB ID and Season Number',
+    summary:
+      'Request the Season Details of a specific Media by its TMDB ID and Season Number',
   })
   @ApiOkResponse({
     description: 'The detailed media object was successfully returned',
   })
-  async getSeasonForMedia(@Query('tmdbID') tmdbID: number, @Query('seasonNumber') seasonNumber: number) {
+  async getSeasonForMedia(
+    @Query('tmdbID') tmdbID: number,
+    @Query('seasonNumber') seasonNumber: number,
+  ) {
     return this.detailedMediaService.getSeasonForMedia(tmdbID, seasonNumber);
   }
 
@@ -48,8 +52,16 @@ export class DetailedMediaController {
   }
 
   @Put('update-tmdb')
-  async updateTmdbData(@Query('streamName') streamName: string, @Query('tmdbID') tmdbID: number) {
-    console.log('Updating TMDB Data for Stream:', streamName, 'with TMDB ID:', tmdbID);
+  async updateTmdbData(
+    @Query('streamName') streamName: string,
+    @Query('tmdbID') tmdbID: number,
+  ) {
+    console.log(
+      'Updating TMDB Data for Stream:',
+      streamName,
+      'with TMDB ID:',
+      tmdbID,
+    );
     return this.detailedMediaService.updateTMDB(streamName, tmdbID);
   }
 }

@@ -1,13 +1,6 @@
-import {
-  Body,
-  Controller,
-  Get,
-  HttpCode,
-  HttpException,
-  Post,
-} from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, Post } from '@nestjs/common';
 import { HttpErrorByCode } from '@nestjs/common/utils/http-error-by-code.util';
-import { ApiBody, ApiOperation, ApiQuery } from '@nestjs/swagger';
+import { ApiBody, ApiOperation } from '@nestjs/swagger';
 import { AppService } from 'src/app.service';
 import { Iconfig } from 'src/interfaces';
 import { ConfigDto } from 'src/swagger.dto';
@@ -17,12 +10,12 @@ import { SetupService } from './setup.service';
 export class SetupController {
   constructor(private readonly setupService: SetupService) {}
 
-  @ApiOperation({summary: 'Returns the current configuration of the Backend'})
+  @ApiOperation({ summary: 'Returns the current configuration of the Backend' })
   @Get('config')
   async getConfig() {
-    const config : Iconfig = await AppService.getConfig();
+    const config: Iconfig = await AppService.getConfig();
 
-    if(!config.CONFIGURED){
+    if (!config.CONFIGURED) {
       throw new HttpErrorByCode[500]();
     }
 
@@ -31,8 +24,6 @@ export class SetupController {
     }
 
     return config;
-
-    
   }
 
   @ApiOperation({
@@ -59,7 +50,7 @@ export class SetupController {
   })
   @Post('check-backendUrl')
   @HttpCode(204)
-  async checkBackendURL() {
+  checkBackendURL() {
     return;
   }
 
@@ -109,7 +100,9 @@ export class SetupController {
   })
   @Post('check-rabbitmqQueue')
   @HttpCode(204)
-  async checkRedisPassword(@Body('payload') queue: string) {}
+  checkRedisPassword() {
+    return;
+  }
 
   @ApiOperation({
     summary:
@@ -139,7 +132,7 @@ export class SetupController {
   })
   @Post('check-localAnimeDir')
   @HttpCode(204)
-  async checkLocalAnimeDir(@Body('directory') dir: string) {
+  checkLocalAnimeDir() {
     return;
   }
 
@@ -151,7 +144,7 @@ export class SetupController {
   })
   @Post('check-localSeriesDir')
   @HttpCode(204)
-  async checkLocalSeriesDir(@Body('directory') dir: string) {
+  checkLocalSeriesDir() {
     return;
   }
 }

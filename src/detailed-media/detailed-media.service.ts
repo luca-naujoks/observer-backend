@@ -79,9 +79,13 @@ export class DetailedMediaService {
         original_language: data.original_language || 'N/A',
         first_air_date: data.first_air_date || 'N/A',
         status: data.status || 'N/A',
-        episode_run_time: data.episode_run_time.length > 0 ? data.episode_run_time[0] : 0,
+        episode_run_time:
+          data.episode_run_time.length > 0 ? data.episode_run_time[0] : 0,
         number_of_episodes: data.number_of_episodes || 0,
-        production_country: data.production_countries.length > 0 ? data.production_countries[0].name : 'N/A',
+        production_country:
+          data.production_countries.length > 0
+            ? data.production_countries[0].name
+            : 'N/A',
         seasons: data.seasons || [],
       };
     }
@@ -139,7 +143,8 @@ export class DetailedMediaService {
         {
           headers: {
             'Content-Type': 'application/json',
-            Authorization: 'Bearer ' + (await AppService.getConfig()).TMDB_API_KEY,
+            Authorization:
+              'Bearer ' + (await AppService.getConfig()).TMDB_API_KEY,
           },
         },
       );
@@ -149,7 +154,9 @@ export class DetailedMediaService {
     const newData = {
       tmdbID: tmdbID,
       name: tmdbData.name,
-      tags: tmdbData.genres ? tmdbData.genres.map((genre: { id: number }) => genre.id.toString()) : [],
+      tags: tmdbData.genres
+        ? tmdbData.genres.map((genre: { id: number }) => genre.id.toString())
+        : [],
       poster: 'https://image.tmdb.org/t/p/original' + tmdbData.poster_path,
       backdrop: 'https://image.tmdb.org/t/p/original/' + tmdbData.backdrop_path,
     };

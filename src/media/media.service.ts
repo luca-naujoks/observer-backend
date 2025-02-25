@@ -45,7 +45,11 @@ export class MediaService {
     return media;
   }
 
-  async getLocal(type: string, page: number, search: string): Promise<IBackendMedia[]> {
+  async getLocal(
+    type: string,
+    page: number,
+    search: string,
+  ): Promise<IBackendMedia[]> {
     const media: IBackendMedia[] = await this.mediaModel
       .find({ type: type, localSeasons: { $ne: [] } })
       .skip(page * 100)
@@ -62,5 +66,12 @@ export class MediaService {
       )
       .exec();
     return media;
+  }
+
+  async updateMediaTMDB(
+    streamName: IBackendMedia['streamName'],
+    tmdbID: IBackendMedia['tmdbID'],
+  ) {
+    await this.mediaModel.updateOne({ streamName }, { tmdbID });
   }
 }

@@ -1,5 +1,12 @@
-import { Controller, Delete, Get, Logger, Post, Put, Query } from '@nestjs/common';
-import { HttpErrorByCode } from '@nestjs/common/utils/http-error-by-code.util';
+import {
+  Controller,
+  Delete,
+  Get,
+  Logger,
+  Post,
+  Put,
+  Query,
+} from '@nestjs/common';
 import { SchedulerRegistry } from '@nestjs/schedule';
 import { ApiOperation, ApiQuery } from '@nestjs/swagger';
 import { CronTime } from 'cron';
@@ -14,7 +21,6 @@ export class SchedulesController {
     private readonly scheduleService: SchedulesService,
   ) {}
 
-
   @ApiOperation({
     summary: 'Get a scheduled task',
   })
@@ -23,17 +29,17 @@ export class SchedulesController {
     type: String,
     example: 'default-local-scanner',
     description: 'The name of the job to',
-    })
+  })
   @Get('task')
-    async getTask(@Query('jobName') jobName: string) {
-        return this.scheduleService.getTask(jobName);
-    }
+  getTask(@Query('jobName') jobName: string) {
+    return this.scheduleService.getTask(jobName);
+  }
 
   @ApiOperation({
     summary: 'List all scheduled tasks',
   })
   @Get()
-  async listScheduledTasks() {
+  listScheduledTasks() {
     return this.scheduleService.getAllTasks();
   }
 
@@ -53,13 +59,13 @@ export class SchedulesController {
     description: 'The name of the job to add',
   })
   @Post()
-  async addScheduledTask(
+  addScheduledTask(
     @Query('time') time: string,
     @Query('jobName') jobName: string,
   ) {
-    function task() {
+    const task = (jobName: string) => {
       this.logger.warn(`Cron job: ${jobName} running`);
-    }
+    };
 
     this.scheduleService.addTask({
       taskName: jobName,
@@ -67,7 +73,7 @@ export class SchedulesController {
       schedule: time,
     });
 
-    return HttpErrorByCode[201];
+    return { statusCode: 201, message: 'Task added successfully' };
   }
 
   @ApiOperation({
@@ -86,13 +92,13 @@ export class SchedulesController {
     description: 'The new cron schedule for the job',
   })
   @Put() // Edit the cron schedule
-  async editScheduledTask(
+  editScheduledTask(
     @Query('time') time: string,
     @Query('jobName') jobName: string,
   ) {
     const cronTime = new CronTime(time);
-    await this.scheduleService.updateTask(jobName, cronTime);
-    return HttpErrorByCode[200];
+    this.scheduleService.updateTask(jobName, cronTime);
+    return { statusCode: 200, message: 'Task updated successfully' };
   }
 
   @ApiOperation({
@@ -105,14 +111,14 @@ export class SchedulesController {
     description: 'The name of the job to remove',
   })
   @Delete()
-  async removeScheduledTask(@Query('jobName') jobName: string) {
+  removeScheduledTask(@Query('jobName') jobName: string) {
     this.scheduleService.removeTask(jobName);
-    return HttpErrorByCode[204];
+    return { statusCode: 204, message: 'Task removed successfully' };
   }
 
   @Post('run-task-now')
   async runTaskOnce(@Query('jobName') jobName: string) {
-    this.scheduleService.runTaskOnce(jobName);
-    return HttpErrorByCode[200];
+    await this.scheduleService.runTaskOnce(jobName);
+    return { statusCode: 200, message: 'Task executed successfully' };
   }
 }

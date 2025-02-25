@@ -41,13 +41,13 @@ export class SchedulesService implements OnModuleInit {
     return { jobName: taskName, schedule: job.cronTime.source.toString() };
   }
 
-  async addTask({
+  addTask({
     taskName,
     task,
     schedule,
   }: {
     taskName: string;
-    task: () => void;
+    task: (jobName: string) => void;
     schedule: string;
   }) {
     const job = new CronJob(schedule, task);
@@ -55,17 +55,17 @@ export class SchedulesService implements OnModuleInit {
     job.start();
   }
 
-  async removeTask(taskName: string) {
+  removeTask(taskName: string) {
     this.schedulerRegistry.deleteCronJob(taskName);
   }
 
-  async updateTask(taskName: string, schedule: CronTime) {
+  updateTask(taskName: string, schedule: CronTime) {
     const job = this.schedulerRegistry.getCronJob(taskName);
     job.setTime(schedule);
   }
 
   async runTaskOnce(taskName: string) {
     const job = this.schedulerRegistry.getCronJob(taskName);
-    job.fireOnTick();
+    await job.fireOnTick();
   }
 }

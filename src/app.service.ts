@@ -4,14 +4,14 @@ import * as fs from 'fs';
 
 @Injectable()
 export class AppService {
-  static async getConfig(): Promise<Iconfig> {
+  static getConfig(): Promise<Iconfig> {
     const config: Iconfig = JSON.parse(
       fs.readFileSync('configuration/appConfig.json', 'utf8'),
-    );
-    return config;
+    ) as Iconfig;
+    return Promise.resolve(config);
   }
 
-  static async configure(config: Iconfig): Promise<Iconfig | IerrorObject> {
+  static configure(config: Iconfig): Promise<Iconfig | IerrorObject> {
     // validate and check the configuration
 
     fs.writeFileSync(
@@ -28,6 +28,6 @@ export class AppService {
       process.exit(0);
     }, 1000);
 
-    return successResponse;
+    return Promise.resolve(successResponse);
   }
 }
