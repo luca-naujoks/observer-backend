@@ -25,14 +25,14 @@ export class SchedulesController {
     summary: 'Get a scheduled task',
   })
   @ApiQuery({
-    name: 'jobName',
+    name: 'taskName',
     type: String,
     example: 'default-local-scanner',
     description: 'The name of the job to',
   })
   @Get('task')
-  getTask(@Query('jobName') jobName: string) {
-    return this.scheduleService.getTask(jobName);
+  getTask(@Query('taskName') taskName: string) {
+    return this.scheduleService.getTask(taskName);
   }
 
   @ApiOperation({
@@ -53,7 +53,7 @@ export class SchedulesController {
     description: 'The cron schedule for the job',
   })
   @ApiQuery({
-    name: 'jobName',
+    name: 'taskName',
     type: String,
     example: 'default-local-scanner',
     description: 'The name of the job to add',
@@ -61,14 +61,14 @@ export class SchedulesController {
   @Post()
   addScheduledTask(
     @Query('time') time: string,
-    @Query('jobName') jobName: string,
+    @Query('taskName') taskName: string,
   ) {
-    const task = (jobName: string) => {
-      this.logger.warn(`Cron job: ${jobName} running`);
+    const task = (taskName: string) => {
+      this.logger.warn(`Cron job: ${taskName} running`);
     };
 
     this.scheduleService.addTask({
-      taskName: jobName,
+      taskName: taskName,
       task: task,
       schedule: time,
     });
@@ -80,7 +80,7 @@ export class SchedulesController {
     summary: 'Edit the schedule of a cron job',
   })
   @ApiQuery({
-    name: 'jobName',
+    name: 'taskName',
     type: String,
     example: 'default-local-scanner',
     description: 'The name of the job to modify',
@@ -94,10 +94,10 @@ export class SchedulesController {
   @Put() // Edit the cron schedule
   editScheduledTask(
     @Query('time') time: string,
-    @Query('jobName') jobName: string,
+    @Query('taskName') taskName: string,
   ) {
     const cronTime = new CronTime(time);
-    this.scheduleService.updateTask(jobName, cronTime);
+    this.scheduleService.updateTask(taskName, cronTime);
     return { statusCode: 200, message: 'Task updated successfully' };
   }
 
@@ -105,20 +105,20 @@ export class SchedulesController {
     summary: 'Remove a scheduled task',
   })
   @ApiQuery({
-    name: 'jobName',
+    name: 'taskName',
     type: String,
     example: 'default-local-scanner',
     description: 'The name of the job to remove',
   })
   @Delete()
-  removeScheduledTask(@Query('jobName') jobName: string) {
-    this.scheduleService.removeTask(jobName);
+  removeScheduledTask(@Query('taskName') taskName: string) {
+    this.scheduleService.removeTask(taskName);
     return { statusCode: 204, message: 'Task removed successfully' };
   }
 
   @Post('run-task-now')
-  async runTaskOnce(@Query('jobName') jobName: string) {
-    await this.scheduleService.runTaskOnce(jobName);
+  async runTaskOnce(@Query('taskName') taskName: string) {
+    await this.scheduleService.runTaskOnce(taskName);
     return { statusCode: 200, message: 'Task executed successfully' };
   }
 }

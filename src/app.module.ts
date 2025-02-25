@@ -26,6 +26,8 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { SchedulesController } from './schedules/schedules.controller';
 import { SchedulesModule } from './schedules/schedules.module';
 
+import { TypeOrmModule } from '@nestjs/typeorm';
+
 function checkConfig() {
   if (!fs.existsSync('configuration')) {
     fs.mkdirSync('configuration');
@@ -62,6 +64,12 @@ function getConfig(): Iconfig {
 
 @Module({
   imports: [
+    TypeOrmModule.forRoot({
+      type: 'sqlite',
+      database: 'configuration/db/database.sqlite3',
+      entities: [__dirname + '/**/*.entity{.ts,.js}'],
+      synchronize: true,
+    }),
     ConfigModule.forRoot({
       isGlobal: true,
       load: [getConfig],

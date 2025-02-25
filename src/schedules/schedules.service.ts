@@ -26,19 +26,19 @@ export class SchedulesService implements OnModuleInit {
 
   getAllTasks() {
     const jobs = this.schedulerRegistry.getCronJobs();
-    const jobNames: { jobName: string; schedule: string }[] = [];
+    const taskNames: { taskName: string; schedule: string }[] = [];
     jobs.forEach((value, key) => {
-      return jobNames.push({
-        jobName: key,
+      return taskNames.push({
+        taskName: key,
         schedule: value.cronTime.source.toString(),
       });
     });
-    return jobNames;
+    return taskNames;
   }
 
   getTask(taskName: string) {
     const job = this.schedulerRegistry.getCronJob(taskName);
-    return { jobName: taskName, schedule: job.cronTime.source.toString() };
+    return { taskName: taskName, schedule: job.cronTime.source.toString() };
   }
 
   addTask({
@@ -47,7 +47,7 @@ export class SchedulesService implements OnModuleInit {
     schedule,
   }: {
     taskName: string;
-    task: (jobName: string) => void;
+    task: (taskName: string) => void;
     schedule: string;
   }) {
     const job = new CronJob(schedule, task);
