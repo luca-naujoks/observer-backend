@@ -1,10 +1,16 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { HttpErrorByCode } from '@nestjs/common/utils/http-error-by-code.util';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { AppService } from 'src/app.service';
 import { IBackendMedia } from 'src/IBackendMedia.schema';
-import { ISeasonDetails, IShow, ItmdbData } from 'src/interfaces';
+import {
+  ISearchTvResponse,
+  ISeasonDetails,
+  IShow,
+  ItmdbData,
+  ITvSeriesDetails,
+} from 'src/interfaces';
 
 @Injectable()
 export class DetailedMediaService {
@@ -24,7 +30,7 @@ export class DetailedMediaService {
         },
       },
     );
-    return await response.json();
+    return (await response.json()) as ISeasonDetails;
   }
 
   async getDetailedMedia(streamName: string): Promise<IShow> {
@@ -54,7 +60,6 @@ export class DetailedMediaService {
       };
       tmdbData = localDataObject;
     } else {
-      console.log(`https://api.themoviedb.org/3/tv/${localData?.tmdbID}`);
       const response = await fetch(
         `https://api.themoviedb.org/3/tv/${localData.tmdbID}`,
         {
@@ -65,7 +70,7 @@ export class DetailedMediaService {
           },
         },
       );
-      const data = await response.json();
+      const data = (await response.json()) as ITvSeriesDetails;
 
       if (!data) {
         throw new HttpErrorByCode[404]('TMDB data not found');
@@ -116,7 +121,7 @@ export class DetailedMediaService {
     };
   }
 
-  async searchTMDB(query: string): Promise<IShow[]> {
+  async searchTMDB(query: string): Promise<ISearchTvResponse['results']> {
     const response = await fetch(
       `https://api.themoviedb.org/3/search/tv?query=${query}`,
       {
@@ -128,8 +133,7 @@ export class DetailedMediaService {
       },
     );
 
-    Logger.log(response);
-    const tmdbData = await response.json();
+    const tmdbData = (await response.json()) as ISearchTvResponse;
     return tmdbData.results;
   }
 
@@ -148,7 +152,7 @@ export class DetailedMediaService {
           },
         },
       );
-      return await response.json();
+      return (await response.json()) as ITvSeriesDetails;
     }
 
     const newData = {

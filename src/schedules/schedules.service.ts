@@ -10,17 +10,17 @@ export class SchedulesService implements OnModuleInit {
     this.addTask({
       taskName: 'default-local-scanner',
       task: () => console.log('test'),
-      schedule: '5 * * * * *',
+      schedule: '* * 5 * * *',
     });
     this.addTask({
       taskName: 'default-scan-for-new-media',
       task: () => console.log('test'),
-      schedule: '5 * * * * *',
+      schedule: '5 * 5 * * *',
     });
     this.addTask({
       taskName: 'default-scan-for-new-episodes',
       task: () => console.log('test'),
-      schedule: '5 * * * * *',
+      schedule: '5 * 5 * * *',
     });
   }
 
