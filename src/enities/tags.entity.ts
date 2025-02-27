@@ -1,13 +1,19 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  JoinColumn,
+  OneToOne,
+} from 'typeorm';
+import { Media } from './media.entity';
 
 @Entity('tags')
-export class Tags {
+export class Tag {
   @PrimaryGeneratedColumn()
+  @OneToOne(() => Media)
+  @JoinColumn({ name: 'id' })
   id: number;
 
-  @Column({ name: 'stream_name', type: 'varchar', length: 255 })
-  streamName: string;
-
-  @Column({ name: 'tag_id', type: 'int' })
-  tagID: number;
+  @Column({ name: 'tag_id', type: 'int', nullable: false })
+  tag_id: number;
 }

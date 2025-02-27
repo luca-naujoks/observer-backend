@@ -27,6 +27,13 @@ import { SchedulesController } from './schedules/schedules.controller';
 import { SchedulesModule } from './schedules/schedules.module';
 
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { SqliteModule } from './sqlite/sqlite.module';
+import { SqliteService } from './sqlite/sqlite.service';
+import { SqliteController } from './sqlite/sqlite.controller';
+import { Media } from './enities/media.entity';
+import { Tag } from './enities/tags.entity';
+import { Trending } from './enities/trending.entity';
+import { LocalSeason } from './enities/localSeasons.entity';
 
 function checkConfig() {
   if (!fs.existsSync('configuration')) {
@@ -70,6 +77,7 @@ function getConfig(): Iconfig {
       entities: [__dirname + '/**/*.entity{.ts,.js}'],
       synchronize: true,
     }),
+    TypeOrmModule.forFeature([Media, Tag, Trending, LocalSeason]),
     ConfigModule.forRoot({
       isGlobal: true,
       load: [getConfig],
@@ -97,6 +105,7 @@ function getConfig(): Iconfig {
     MongooseModule.forRoot(getConfig().MONGO_URI),
     ConfigModule,
     SchedulesModule,
+    SqliteModule,
   ],
   controllers: [
     AppController,
@@ -106,6 +115,7 @@ function getConfig(): Iconfig {
     DetailedMediaController,
     RandomController,
     SchedulesController,
+    SqliteController,
   ],
   providers: [
     AppService,
@@ -114,6 +124,7 @@ function getConfig(): Iconfig {
     TrendingService,
     DetailedMediaService,
     RandomService,
+    SqliteService,
   ],
 })
 export class AppModule {}

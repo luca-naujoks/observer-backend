@@ -1,10 +1,19 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  OneToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
+import { Media } from './media.entity';
 
 @Entity('trending')
 export class Trending {
   @PrimaryGeneratedColumn()
+  @OneToOne(() => Media)
+  @JoinColumn({ name: 'id' })
   id: number;
 
-  @Column({ name: 'stream_name', type: 'varchar', length: 255 })
-  streamName: string;
+  @Column()
+  type: string;
 }

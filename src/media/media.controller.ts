@@ -1,4 +1,4 @@
-import { Controller, Get, Put, Query } from '@nestjs/common';
+import { Controller, Get, Query } from '@nestjs/common';
 import {
   ApiOperation,
   ApiOkResponse,
@@ -103,19 +103,5 @@ export class MediaController {
     @Query('search') search: string,
   ) {
     return this.mediaService.getLocal(type, page, search);
-  }
-
-  @Put('update')
-  @ApiOperation({
-    summary: 'Update a Media Item by Stream Name and TMDB ID',
-  })
-  @ApiOkResponse({
-    description: 'The media item was successfully updated',
-  })
-  async updateMedia(
-    @Query('streamName') streamName: string,
-    @Query('tmdbID') tmdbID: number,
-  ) {
-    return this.mediaService.updateMediaTMDB(streamName, tmdbID);
   }
 }

@@ -255,3 +255,13 @@ export interface IerrorObject {
   error: string;
   message: string;
 }
+
+export interface IFullMediaObject {
+  type: string;
+  tmdbID: number;
+  streamName: string;
+  name: string;
+  tags: string[];
+  poster: string;
+  backdrop: string;
+}

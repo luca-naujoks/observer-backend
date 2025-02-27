@@ -67,11 +67,4 @@ export class MediaService {
       .exec();
     return media;
   }
-
-  async updateMediaTMDB(
-    streamName: IBackendMedia['streamName'],
-    tmdbID: IBackendMedia['tmdbID'],
-  ) {
-    await this.mediaModel.updateOne({ streamName }, { tmdbID });
-  }
 }

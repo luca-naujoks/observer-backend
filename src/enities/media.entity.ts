@@ -5,21 +5,26 @@ export class Media {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ name: 'type', type: 'varchar', length: 255 })
+  @Column({ name: 'type', type: 'varchar', length: 255, nullable: false })
   type: string;
 
   @Column({ name: 'tmdb_id', type: 'int' })
-  tmdbID: number;
+  tmdb_id: number;
 
-  @Column({ name: 'stream_name', type: 'varchar', length: 255 })
-  streamName: string;
+  @Column({
+    name: 'stream_name',
+    type: 'varchar',
+    length: 255,
+    nullable: false,
+  })
+  stream_name: string;
 
-  @Column({ name: 'name', type: 'varchar', length: 255 })
+  @Column({ name: 'name', type: 'varchar', length: 255, nullable: false })
   name: string;
 
-  @Column({ name: 'poster', type: 'varchar', length: 255 })
+  @Column({ name: 'poster', type: 'varchar', length: 255, nullable: false })
   poster: string;
 
-  @Column({ name: 'backdrop', type: 'varchar', length: 255 })
+  @Column({ name: 'backdrop', type: 'varchar', length: 255, nullable: false })
   backdrop: string;
 }
