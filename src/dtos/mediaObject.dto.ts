@@ -1,10 +1,7 @@
-import { IsNotEmpty, IsInt, IsString } from 'class-validator';
+import { Optional } from '@nestjs/common';
+import { IsNotEmpty, IsInt, IsString, IsBoolean } from 'class-validator';
 
 export class MediaObjectDTO {
-  @IsNotEmpty({ message: 'Field id must be added' })
-  @IsInt()
-  id: number;
-
   @IsNotEmpty({ message: 'Field type must be added' })
   @IsString()
   type: string;
@@ -28,10 +25,20 @@ export class MediaObjectDTO {
   @IsNotEmpty({ message: 'Field backdrop must be added' })
   @IsString()
   backdrop: string;
+
+  @IsNotEmpty({ message: 'Field online_aviable must be added' })
+  @IsBoolean()
+  online_aviable: boolean;
 }
 
 export class UpdateMediaObjectDTO {
   @IsNotEmpty({ message: 'Field tmdb_id must be added' })
+  @Optional()
   @IsInt()
-  tmdb_id: number;
+  tmdb_id?: number;
+
+  @IsNotEmpty({ message: 'Field online_aviable must be added' })
+  @Optional()
+  @IsBoolean()
+  online_aviable?: boolean;
 }

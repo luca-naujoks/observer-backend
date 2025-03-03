@@ -1,34 +1,115 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post, Query } from '@nestjs/common';
 import { SqliteService } from './sqlite.service';
 import { MediaObjectDTO } from 'src/dtos/mediaObject.dto';
-import { ApiBody } from '@nestjs/swagger';
+import { ApiBody, ApiQuery } from '@nestjs/swagger';
+import { Tag } from 'src/enities/tags.entity';
+import { Trending } from 'src/enities/trending.entity';
 
 @Controller('sqlite')
 export class SqliteController {
   constructor(private readonly sqliteService: SqliteService) {}
 
+  @Get('aggregated')
+  async getRandomMedia(
+    @Query('type') type: string,
+    @Query('count') count: number,
+  ) {
+    return await this.sqliteService.findRandomMedia(type, count);
+  }
+
   @Get()
-  async getRandomMedia() {
-    return await this.sqliteService.findRandomMedia('anime', 1);
+  async getMedia(@Query('id') id: number) {
+    return await this.sqliteService.findOneMedia(id);
+  }
+
+  @ApiQuery({
+    name: 'type',
+    type: String,
+    required: false,
+    description: 'The type of media to get',
+  })
+  @Get('all')
+  async getAllMedia(@Query('type') type?: string) {
+    return await this.sqliteService.findMedia(type);
   }
 
   @ApiBody({
     type: MediaObjectDTO,
+    examples: {
+      example1: {
+        value: {
+          type: 'anime',
+          tmdb_id: 76059,
+          stream_name: 'a-place-further-than-the-universe',
+          name: 'A Place Further Than the Universe',
+          poster:
+            'https://image.tmdb.org/t/p/original/iERXyBf0K6DfAQ8oKEYrdjf1vIs.jpg',
+          backdrop:
+            'https://image.tmdb.org/t/p/original/bTIbUZVoKnlMt2IrZQv2ODPVs0N.jpg',
+        },
+      },
+    },
   })
-  @Post()
+  @Post('media')
   async createMediaEntry(@Body() media: MediaObjectDTO) {
     return await this.sqliteService.createMedia(media);
+  }
+
+  @Get('tags')
+  async getTags(@Query('media_id') media_id: number) {
+    return await this.sqliteService.getTags(media_id);
+  }
+
+  @ApiBody({
+    type: Tag,
+    examples: {
+      example1: {
+        value: {
+          media_id: 1,
+          tag_id: 1,
+        },
+      },
+    },
+  })
+  @Post('tags')
+  async createTag(@Body() tag: Tag) {
+    return await this.sqliteService.createTag(tag);
+  }
+
+  @Get('trending')
+  async getTrending() {
+    return await this.sqliteService.findTrending();
+  }
+
+  @ApiBody({
+    type: Trending,
+    examples: {
+      example1: {
+        value: {
+          media_id: 1,
+          type: 'anime',
+        },
+      },
+    },
+  })
+  @Post('trending')
+  async createTrending(@Body() trending: Trending) {
+    return await this.sqliteService.createTrending(trending);
+  }
+
+  // Telemetrics an analytics
+
+  @Get('mediaCount')
+  async countMedia(@Query('type') type: string) {
+    return await this.sqliteService.countMedia(type);
   }
 }
 
 // {
-//     id: 1,
-//     type: 'anime',
-//     tmdb_id: 76059,
-//     stream_name: 'a-place-further-than-the-universe',
-//     name: 'A Place Further Than the Universe',
-//     poster:
-//       'https://image.tmdb.org/t/p/original/iERXyBf0K6DfAQ8oKEYrdjf1vIs.jpg',
-//     backdrop:
-//       'https://image.tmdb.org/t/p/original/bTIbUZVoKnlMt2IrZQv2ODPVs0N.jpg',
-//   }
+//   "type": "anime",
+//   "tmdb_id": 76059,
+//   "stream_name": "a-place-further-than-the-universe",
+//   "name": "A Place Further Than the Universe",
+//   "poster": "https: //image.tmdb.org/t/p/original/iERXyBf0K6DfAQ8oKEYrdjf1vIs.jpg",
+//   "backdrop": "https: //image.tmdb.org/t/p/original/bTIbUZVoKnlMt2IrZQv2ODPVs0N.jpg"
+// }

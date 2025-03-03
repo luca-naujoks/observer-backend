@@ -11,6 +11,7 @@ import { SchedulerRegistry } from '@nestjs/schedule';
 import { ApiOperation, ApiQuery } from '@nestjs/swagger';
 import { CronTime } from 'cron';
 import { SchedulesService } from './schedules.service';
+import { updateMedia } from './default-schedules/updateMedia';
 
 @Controller('schedules')
 export class SchedulesController {
@@ -120,5 +121,10 @@ export class SchedulesController {
   async runTaskOnce(@Query('taskName') taskName: string) {
     await this.scheduleService.runTaskOnce(taskName);
     return { statusCode: 200, message: 'Task executed successfully' };
+  }
+
+  @Get('test')
+  async test() {
+    return await updateMedia();
   }
 }
