@@ -1,70 +1,52 @@
-import { Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
-import { IBackendMedia } from 'src/IBackendMedia.schema';
+import { Injectable, Logger } from '@nestjs/common';
+import { Media } from 'src/enities/media.entity';
+import { SqliteService } from 'src/sqlite/sqlite.service';
 
 @Injectable()
 export class MediaService {
-  constructor(@InjectModel('Media') private mediaModel: Model<IBackendMedia>) {}
+  constructor(private readonly sqliteService: SqliteService) {}
 
-  async getAnimes(page: number, search: string): Promise<IBackendMedia[]> {
-    const media: IBackendMedia[] = await this.mediaModel
-      .find({ type: 'anime' })
-      .skip(page * 100)
-      .limit(100)
-      .find(
-        search
-          ? {
-              $or: [
-                { name: { $regex: search, $options: 'i' } },
-                { streamName: { $regex: search, $options: 'i' } },
-              ],
-            }
-          : {},
-      )
-      .exec();
+  logger = new Logger();
+
+  async getAnimes(page: number, search: string): Promise<Media[]> {
+    this.logger.warn(
+      search +
+        ' is not passed to as a where prop to the sqlite database. still needs implementation',
+    );
+    const media: Media[] = await this.sqliteService.findMedia(
+      'anime',
+      page,
+      false,
+    );
     return media;
   }
 
-  async getSeries(page: number, search: string): Promise<IBackendMedia[]> {
-    const media: IBackendMedia[] = await this.mediaModel
-      .find({ type: 'serie' })
-      .skip(page * 100)
-      .limit(100)
-      .find(
-        search
-          ? {
-              $or: [
-                { name: { $regex: search, $options: 'i' } },
-                { streamName: { $regex: search, $options: 'i' } },
-              ],
-            }
-          : {},
-      )
-      .exec();
+  async getSeries(page: number, search: string): Promise<Media[]> {
+    this.logger.warn(
+      search +
+        ' is not passed to as a where prop to the sqlite database. still needs implementation',
+    );
+    const media: Media[] = await this.sqliteService.findMedia(
+      'anime',
+      page,
+      false,
+    );
     return media;
   }
 
-  async getLocal(
-    type: string,
-    page: number,
-    search: string,
-  ): Promise<IBackendMedia[]> {
-    const media: IBackendMedia[] = await this.mediaModel
-      .find({ type: type, localSeasons: { $ne: [] } })
-      .skip(page * 100)
-      .limit(100)
-      .find(
-        search
-          ? {
-              $or: [
-                { name: { $regex: search, $options: 'i' } },
-                { streamName: { $regex: search, $options: 'i' } },
-              ],
-            }
-          : {},
-      )
-      .exec();
+  async getLocal(type: string, page: number, search: string): Promise<Media[]> {
+    this.logger.warn(
+      'There is a only local prop missing. aswell is the only local thing not implemented inside the sqliteService',
+    );
+    this.logger.warn(
+      search +
+        ' is not passed to as a where prop to the sqlite database. still needs implementation',
+    );
+    const media: Media[] = await this.sqliteService.findMedia(
+      'anime',
+      page,
+      true,
+    );
     return media;
   }
 }

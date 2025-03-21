@@ -52,7 +52,7 @@ export class DetailedMediaController {
   }
 
   @Put('update-tmdb')
-  async updateTmdbData(
+  updateTmdbData(
     @Query('streamName') streamName: string,
     @Query('tmdbID') tmdbID: number,
   ) {
@@ -62,6 +62,6 @@ export class DetailedMediaController {
       'with TMDB ID:',
       tmdbID,
     );
-    return this.detailedMediaService.updateTMDB(streamName, tmdbID);
+    return;
   }
 }

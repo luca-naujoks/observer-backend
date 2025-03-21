@@ -1,6 +1,6 @@
 {
 	"id": "SjOzOWdmOLWAhUp",
-	"json": "{\"id\":\"SjOzOWdmOLWAhUp\",\"url\":\"https://aniworld.to/animes\",\"loadedUrl\":\"https://aniworld.to/animes\",\"uniqueKey\":\"https://aniworld.to/animes\",\"method\":\"GET\",\"noRetry\":false,\"retryCount\":0,\"errorMessages\":[],\"headers\":{},\"userData\":{\"__crawlee\":{\"state\":4}},\"handledAt\":\"2025-03-02T20:32:47.063Z\"}",
+	"json": "{\"id\":\"SjOzOWdmOLWAhUp\",\"url\":\"https://aniworld.to/animes\",\"loadedUrl\":\"https://aniworld.to/animes\",\"uniqueKey\":\"https://aniworld.to/animes\",\"method\":\"GET\",\"noRetry\":false,\"retryCount\":0,\"errorMessages\":[],\"headers\":{},\"userData\":{\"__crawlee\":{\"state\":4}},\"handledAt\":\"2025-03-07T00:23:51.454Z\"}",
 	"method": "GET",
 	"orderNo": null,
 	"retryCount": 0,

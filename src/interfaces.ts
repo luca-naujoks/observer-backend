@@ -249,6 +249,7 @@ export interface Iconfig {
   TMDB_API_KEY: string;
   LOCAL_ANIME_PATH: string;
   LOCAL_SERIES_PATH: string;
+  PAGE_SIZE: number;
 }
 
 export interface IerrorObject {

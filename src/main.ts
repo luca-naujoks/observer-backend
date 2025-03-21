@@ -21,6 +21,7 @@ function createConfigFileSync() {
     TMDB_API_KEY: '',
     LOCAL_ANIME_PATH: '',
     LOCAL_SERIES_PATH: '',
+    PAGE_SIZE: 100,
   };
 
   if (!fs.existsSync(configDir)) {

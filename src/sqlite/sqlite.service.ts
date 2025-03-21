@@ -1,5 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { AppService } from 'src/app.service';
 import { LocalSeasonDTO } from 'src/dtos/localSeason.dto';
 import { MediaObjectDTO } from 'src/dtos/mediaObject.dto';
 import { TagDto } from 'src/dtos/tag.dto';
@@ -22,16 +23,47 @@ export class SqliteService {
   ) {}
 
   async findMedia(
-    type?: string,
+    type: string,
+    page: number,
+    local: boolean,
     selectedFields?: (keyof Media)[],
   ): Promise<Media[]> {
+    if (local) {
+      const mediaIds = this.localSeasonsRepository
+        .createQueryBuilder('ls')
+        .select('DISTINCT ls.media_id')
+        .execute();
+
+      return this.mediaRepository
+        .createQueryBuilder('media')
+        .where('media.type = :type', { type })
+        .where('m.id IN (:...mediaIds)')
+        .setParameters({ mediaIds })
+        .skip(page ? page * (await AppService.getConfig()).PAGE_SIZE : 0)
+        .take((await AppService.getConfig()).PAGE_SIZE)
+        .getMany();
+    }
     return this.mediaRepository.find({
       where: { type: type },
       select: selectedFields ? selectedFields : undefined,
+      skip: page ? page * (await AppService.getConfig()).PAGE_SIZE : 0,
+      take: (await AppService.getConfig()).PAGE_SIZE,
     });
   }
 
-  async findOneMedia(id: number): Promise<Media> {
+  async findOne(stream_name: string): Promise<Media> {
+    const media = await this.mediaRepository.findOne({
+      where: { stream_name },
+    });
+    if (!media) {
+      throw new NotFoundException(
+        `Media with stream_name ${stream_name} not found`,
+      );
+    }
+    return media;
+  }
+
+  async findOneById(id: number): Promise<Media> {
     const media = await this.mediaRepository.findOne({
       where: { id },
     });
@@ -41,7 +73,31 @@ export class SqliteService {
     return media;
   }
 
-  async findRandomMedia(type: string, count: number): Promise<Media[]> {
+  async updateMedia(media: MediaObjectDTO): Promise<Media> {
+    await this.findOne(media.stream_name);
+    return await this.mediaRepository.save(media);
+  }
+
+  async findRandomMedia(
+    type: string,
+    count: number,
+    local?: boolean,
+  ): Promise<Media[]> {
+    if (local) {
+      const mediaIds = this.localSeasonsRepository
+        .createQueryBuilder('ls')
+        .select('DISTINCT ls.media_id')
+        .execute();
+
+      return await this.mediaRepository
+        .createQueryBuilder('media')
+        .where('media.type = :type', { type })
+        .where('m.id IN (:...mediaIds)')
+        .setParameters({ mediaIds })
+        .orderBy('RANDOM()')
+        .limit(count)
+        .getMany();
+    }
     return await this.mediaRepository
       .createQueryBuilder('media')
       .where('media.type = :type', { type })
@@ -67,9 +123,9 @@ export class SqliteService {
     return await this.tagsRepository.save(newTag);
   }
 
-  async findTrending(): Promise<Trending[]> {
-    return this.trendingRepository.find({
-      select: ['media_id', 'type'],
+  async findTrending(mediaType: string): Promise<Trending[]> {
+    return await this.trendingRepository.find({
+      where: { type: mediaType },
     });
   }
 

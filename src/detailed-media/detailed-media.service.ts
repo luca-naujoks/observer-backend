@@ -1,9 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { HttpErrorByCode } from '@nestjs/common/utils/http-error-by-code.util';
-import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
 import { AppService } from 'src/app.service';
-import { IBackendMedia } from 'src/IBackendMedia.schema';
+import { Media } from 'src/enities/media.entity';
+
 import {
   ISearchTvResponse,
   ISeasonDetails,
@@ -11,10 +10,11 @@ import {
   ItmdbData,
   ITvSeriesDetails,
 } from 'src/interfaces';
+import { SqliteService } from 'src/sqlite/sqlite.service';
 
 @Injectable()
 export class DetailedMediaService {
-  constructor(@InjectModel('Media') private mediaModel: Model<IBackendMedia>) {}
+  constructor(private readonly sqliteService: SqliteService) {}
 
   async getSeasonForMedia(
     tmdbID: number,
@@ -33,18 +33,16 @@ export class DetailedMediaService {
     return (await response.json()) as ISeasonDetails;
   }
 
-  async getDetailedMedia(streamName: string): Promise<IShow> {
+  async getDetailedMedia(stream_name: string): Promise<IShow> {
     let tmdbData: ItmdbData;
 
-    const localData = await this.mediaModel
-      .findOne({ streamName: streamName })
-      .exec();
+    const localData: Media = await this.sqliteService.findOne(stream_name);
 
     if (!localData) {
       throw new HttpErrorByCode[404]('Media not found');
     }
 
-    if (localData.tmdbID === 0) {
+    if (localData.tmdb_id === 0) {
       const localDataObject: ItmdbData = {
         vote_average: 0,
         tags: [],
@@ -61,7 +59,7 @@ export class DetailedMediaService {
       tmdbData = localDataObject;
     } else {
       const response = await fetch(
-        `https://api.themoviedb.org/3/tv/${localData.tmdbID}`,
+        `https://api.themoviedb.org/3/tv/${localData.tmdb_id}`,
         {
           headers: {
             'Content-Type': 'application/json',
@@ -97,16 +95,16 @@ export class DetailedMediaService {
 
     return {
       type: localData.type,
-      tmdbID: localData.tmdbID,
-      streamName: localData.streamName,
+      tmdbID: localData.tmdb_id,
+      streamName: localData.stream_name,
       name: localData.name,
       tags: tmdbData.tags,
       poster: localData.poster,
       backdrop: localData.backdrop,
-      localSeasons: localData.localSeasons,
-      onlineSeasons: localData.onlineSeasons,
-      state: localData.state,
-      hasErrors: localData.hasErrors,
+      localSeasons: undefined,
+      onlineSeasons: undefined,
+      state: 'online',
+      hasErrors: false,
 
       vote_average: tmdbData?.vote_average,
       original_name: tmdbData.original_name,
@@ -135,36 +133,5 @@ export class DetailedMediaService {
 
     const tmdbData = (await response.json()) as ISearchTvResponse;
     return tmdbData.results;
-  }
-
-  async updateTMDB(streamName: string, tmdbID: number): Promise<void> {
-    const tmdbData = await requestMediaData(tmdbID);
-    console.log(tmdbData);
-
-    async function requestMediaData(tmdbID: number) {
-      const response = await fetch(
-        `https://api.themoviedb.org/3/tv/${tmdbID}`,
-        {
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization:
-              'Bearer ' + (await AppService.getConfig()).TMDB_API_KEY,
-          },
-        },
-      );
-      return (await response.json()) as ITvSeriesDetails;
-    }
-
-    const newData = {
-      tmdbID: tmdbID,
-      name: tmdbData.name,
-      tags: tmdbData.genres
-        ? tmdbData.genres.map((genre: { id: number }) => genre.id.toString())
-        : [],
-      poster: 'https://image.tmdb.org/t/p/original' + tmdbData.poster_path,
-      backdrop: 'https://image.tmdb.org/t/p/original/' + tmdbData.backdrop_path,
-    };
-
-    await this.mediaModel.updateOne({ streamName: streamName }, newData);
   }
 }

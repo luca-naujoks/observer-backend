@@ -18,8 +18,8 @@ export class SqliteController {
   }
 
   @Get()
-  async getMedia(@Query('id') id: number) {
-    return await this.sqliteService.findOneMedia(id);
+  async getMedia(@Query('stream_name') stream_name: string) {
+    return await this.sqliteService.findOne(stream_name);
   }
 
   @ApiQuery({
@@ -29,8 +29,8 @@ export class SqliteController {
     description: 'The type of media to get',
   })
   @Get('all')
-  async getAllMedia(@Query('type') type?: string) {
-    return await this.sqliteService.findMedia(type);
+  async getAllMedia(@Query('type') type: string) {
+    return await this.sqliteService.findMedia(type, 0, false);
   }
 
   @ApiBody({
@@ -77,8 +77,8 @@ export class SqliteController {
   }
 
   @Get('trending')
-  async getTrending() {
-    return await this.sqliteService.findTrending();
+  async getTrending(@Query('type') type: string) {
+    return await this.sqliteService.findTrending(type);
   }
 
   @ApiBody({
