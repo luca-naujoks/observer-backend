@@ -3,7 +3,7 @@
   "retiredSessionsCount": 0,
   "sessions": [
     {
-      "id": "session_G7DYDfhfUo",
+      "id": "session_pLzGfmJ1oF",
       "cookieJar": {
         "version": "tough-cookie@5.1.2",
         "storeType": "MemoryCookieStore",
@@ -14,67 +14,67 @@
         "cookies": [
           {
             "key": "__ddg8_",
-            "value": "O2tpnDUEhCrgKMO2",
-            "expires": "2025-03-07T00:43:51.000Z",
+            "value": "fYKZoFQNGlQ4Gyiw",
+            "expires": "2025-03-09T11:22:22.000Z",
             "domain": "aniworld.to",
             "path": "/",
             "hostOnly": false,
-            "creation": "2025-03-07T00:23:51.438Z",
-            "lastAccessed": "2025-03-07T00:23:51.438Z"
+            "creation": "2025-03-09T11:02:23.694Z",
+            "lastAccessed": "2025-03-09T11:02:23.694Z"
           },
           {
             "key": "__ddg10_",
-            "value": "1741307031",
-            "expires": "2025-03-07T00:43:51.000Z",
+            "value": "1741518142",
+            "expires": "2025-03-09T11:22:22.000Z",
             "domain": "aniworld.to",
             "path": "/",
             "hostOnly": false,
-            "creation": "2025-03-07T00:23:51.439Z",
-            "lastAccessed": "2025-03-07T00:23:51.439Z"
+            "creation": "2025-03-09T11:02:23.695Z",
+            "lastAccessed": "2025-03-09T11:02:23.695Z"
           },
           {
             "key": "__ddg9_",
             "value": "41.65.31.100",
-            "expires": "2025-03-07T00:43:51.000Z",
+            "expires": "2025-03-09T11:22:22.000Z",
             "domain": "aniworld.to",
             "path": "/",
             "hostOnly": false,
-            "creation": "2025-03-07T00:23:51.439Z",
-            "lastAccessed": "2025-03-07T00:23:51.439Z"
+            "creation": "2025-03-09T11:02:23.695Z",
+            "lastAccessed": "2025-03-09T11:02:23.695Z"
           },
           {
             "key": "__ddg1_",
-            "value": "jAzN1ivXAWSy4ALvrbIQ",
-            "expires": "2026-03-07T00:23:51.000Z",
+            "value": "4zUHxM598D1qfP6TK5Fi",
+            "expires": "2026-03-09T11:02:22.000Z",
             "domain": "aniworld.to",
             "path": "/",
             "httpOnly": true,
             "hostOnly": false,
-            "creation": "2025-03-07T00:23:51.439Z",
-            "lastAccessed": "2025-03-07T00:23:51.439Z"
+            "creation": "2025-03-09T11:02:23.695Z",
+            "lastAccessed": "2025-03-09T11:02:23.695Z"
           },
           {
             "key": "aniworld_session",
-            "value": "s2i3hj9e7cbr3hauojmn42ad24",
+            "value": "ofk4cmgkcje69tqvdfrq3t8v3p",
             "domain": "aniworld.to",
             "path": "/",
             "hostOnly": true,
-            "creation": "2025-03-07T00:23:51.439Z",
-            "lastAccessed": "2025-03-07T00:23:51.439Z"
+            "creation": "2025-03-09T11:02:23.695Z",
+            "lastAccessed": "2025-03-09T11:02:23.695Z"
           }
         ]
       },
       "userData": {},
       "maxErrorScore": 3,
       "errorScoreDecrement": 0.5,
-      "expiresAt": "2025-03-07T01:13:50.494Z",
-      "createdAt": "2025-03-07T00:23:50.494Z",
+      "expiresAt": "2025-03-09T11:52:21.923Z",
+      "createdAt": "2025-03-09T11:02:21.923Z",
       "usageCount": 1,
       "maxUsageCount": 50,
       "errorScore": 0
     },
     {
-      "id": "session_Qza5bR2hO8",
+      "id": "session_nLYKD2sSPh",
       "cookieJar": {
         "version": "tough-cookie@5.1.2",
         "storeType": "MemoryCookieStore",
@@ -85,61 +85,61 @@
         "cookies": [
           {
             "key": "__ddg8_",
-            "value": "LokNGfptVFoS1Tml",
-            "expires": "2025-03-07T00:43:52.000Z",
+            "value": "eAMkhQhj3rCFin5g",
+            "expires": "2025-03-09T11:22:25.000Z",
             "domain": "s.to",
             "path": "/",
             "hostOnly": false,
-            "creation": "2025-03-07T00:23:52.384Z",
-            "lastAccessed": "2025-03-07T00:23:52.384Z"
+            "creation": "2025-03-09T11:02:26.413Z",
+            "lastAccessed": "2025-03-09T11:02:26.413Z"
           },
           {
             "key": "__ddg10_",
-            "value": "1741307032",
-            "expires": "2025-03-07T00:43:52.000Z",
+            "value": "1741518145",
+            "expires": "2025-03-09T11:22:25.000Z",
             "domain": "s.to",
             "path": "/",
             "hostOnly": false,
-            "creation": "2025-03-07T00:23:52.384Z",
-            "lastAccessed": "2025-03-07T00:23:52.384Z"
+            "creation": "2025-03-09T11:02:26.413Z",
+            "lastAccessed": "2025-03-09T11:02:26.413Z"
           },
           {
             "key": "__ddg9_",
             "value": "41.65.31.100",
-            "expires": "2025-03-07T00:43:52.000Z",
+            "expires": "2025-03-09T11:22:25.000Z",
             "domain": "s.to",
             "path": "/",
             "hostOnly": false,
-            "creation": "2025-03-07T00:23:52.384Z",
-            "lastAccessed": "2025-03-07T00:23:52.384Z"
+            "creation": "2025-03-09T11:02:26.413Z",
+            "lastAccessed": "2025-03-09T11:02:26.413Z"
           },
           {
             "key": "__ddg1_",
-            "value": "uV6h41Fn7b4NdSuNlPRp",
-            "expires": "2026-03-07T00:23:52.000Z",
+            "value": "ciUtE1XzcSVaVVpKrt9C",
+            "expires": "2026-03-09T11:02:25.000Z",
             "domain": "s.to",
             "path": "/",
             "httpOnly": true,
             "hostOnly": false,
-            "creation": "2025-03-07T00:23:52.384Z",
-            "lastAccessed": "2025-03-07T00:23:52.384Z"
+            "creation": "2025-03-09T11:02:26.413Z",
+            "lastAccessed": "2025-03-09T11:02:26.413Z"
           },
           {
             "key": "PHPSESSID",
-            "value": "5qu1v45ncecqt7v1vfpsalg1ut",
+            "value": "foqpssl76lkimv33gvcjm1pfsu",
             "domain": "s.to",
             "path": "/",
             "hostOnly": true,
-            "creation": "2025-03-07T00:23:52.384Z",
-            "lastAccessed": "2025-03-07T00:23:52.384Z"
+            "creation": "2025-03-09T11:02:26.413Z",
+            "lastAccessed": "2025-03-09T11:02:26.413Z"
           }
         ]
       },
       "userData": {},
       "maxErrorScore": 3,
       "errorScoreDecrement": 0.5,
-      "expiresAt": "2025-03-07T01:13:51.505Z",
-      "createdAt": "2025-03-07T00:23:51.505Z",
+      "expiresAt": "2025-03-09T11:52:23.780Z",
+      "createdAt": "2025-03-09T11:02:23.780Z",
       "usageCount": 1,
       "maxUsageCount": 50,
       "errorScore": 0

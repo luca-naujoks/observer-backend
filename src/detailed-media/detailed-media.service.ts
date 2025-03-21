@@ -36,7 +36,9 @@ export class DetailedMediaService {
   async getDetailedMedia(stream_name: string): Promise<IShow> {
     let tmdbData: ItmdbData;
 
-    const localData: Media = await this.sqliteService.findOne(stream_name);
+    const localData: Media = await this.sqliteService.findOne({
+      stream_name: stream_name,
+    });
 
     if (!localData) {
       throw new HttpErrorByCode[404]('Media not found');
@@ -96,7 +98,7 @@ export class DetailedMediaService {
     return {
       type: localData.type,
       tmdbID: localData.tmdb_id,
-      streamName: localData.stream_name,
+      stream_name: localData.stream_name,
       name: localData.name,
       tags: tmdbData.tags,
       poster: localData.poster,

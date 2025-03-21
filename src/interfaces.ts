@@ -1,7 +1,7 @@
 export interface IShow {
   type: string;
   tmdbID: number;
-  streamName: string;
+  stream_name: string;
   name: string;
   tags: { id: number; name: string }[];
   poster: string;
@@ -260,7 +260,7 @@ export interface IerrorObject {
 export interface IFullMediaObject {
   type: string;
   tmdbID: number;
-  streamName: string;
+  stream_name: string;
   name: string;
   tags: string[];
   poster: string;

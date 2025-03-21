@@ -13,11 +13,11 @@ export class MediaService {
       search +
         ' is not passed to as a where prop to the sqlite database. still needs implementation',
     );
-    const media: Media[] = await this.sqliteService.findMedia(
-      'anime',
-      page,
-      false,
-    );
+    const media: Media[] = await this.sqliteService.findMedia({
+      type: 'anime',
+      page: page,
+      local: false,
+    });
     return media;
   }
 
@@ -26,27 +26,24 @@ export class MediaService {
       search +
         ' is not passed to as a where prop to the sqlite database. still needs implementation',
     );
-    const media: Media[] = await this.sqliteService.findMedia(
-      'anime',
-      page,
-      false,
-    );
+    const media: Media[] = await this.sqliteService.findMedia({
+      type: 'series',
+      page: page,
+      local: false,
+    });
     return media;
   }
 
   async getLocal(type: string, page: number, search: string): Promise<Media[]> {
     this.logger.warn(
-      'There is a only local prop missing. aswell is the only local thing not implemented inside the sqliteService',
-    );
-    this.logger.warn(
       search +
         ' is not passed to as a where prop to the sqlite database. still needs implementation',
     );
-    const media: Media[] = await this.sqliteService.findMedia(
-      'anime',
-      page,
-      true,
-    );
+    const media: Media[] = await this.sqliteService.findMedia({
+      type: type,
+      page: page,
+      local: true,
+    });
     return media;
   }
 }

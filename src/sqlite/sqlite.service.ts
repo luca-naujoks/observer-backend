@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { AppService } from 'src/app.service';
 import { LocalSeasonDTO } from 'src/dtos/localSeason.dto';
@@ -22,23 +22,30 @@ export class SqliteService {
     private trendingRepository: Repository<Trending>,
   ) {}
 
-  async findMedia(
-    type: string,
-    page: number,
-    local: boolean,
-    selectedFields?: (keyof Media)[],
-  ): Promise<Media[]> {
+  async findMedia({
+    type,
+    page,
+    local,
+    selectedFields,
+  }: {
+    type: string;
+    page: number;
+    local: boolean;
+    selectedFields?: (keyof Media)[];
+  }): Promise<Media[]> {
     if (local) {
-      const mediaIds = this.localSeasonsRepository
+      const mediaIds = (await this.localSeasonsRepository
         .createQueryBuilder('ls')
         .select('DISTINCT ls.media_id')
-        .execute();
+        .execute()) as Array<{ media_id: string }>;
+
+      const media_ids = mediaIds.map((item) => item.media_id);
 
       return this.mediaRepository
         .createQueryBuilder('media')
         .where('media.type = :type', { type })
-        .where('m.id IN (:...mediaIds)')
-        .setParameters({ mediaIds })
+        .where('media.id IN (:...media_ids)')
+        .setParameters({ media_ids })
         .skip(page ? page * (await AppService.getConfig()).PAGE_SIZE : 0)
         .take((await AppService.getConfig()).PAGE_SIZE)
         .getMany();
@@ -51,7 +58,7 @@ export class SqliteService {
     });
   }
 
-  async findOne(stream_name: string): Promise<Media> {
+  async findOne({ stream_name }: { stream_name: string }): Promise<Media> {
     const media = await this.mediaRepository.findOne({
       where: { stream_name },
     });
@@ -63,7 +70,7 @@ export class SqliteService {
     return media;
   }
 
-  async findOneById(id: number): Promise<Media> {
+  async findOneById({ id }: { id: number }): Promise<Media> {
     const media = await this.mediaRepository.findOne({
       where: { id },
     });
@@ -74,26 +81,32 @@ export class SqliteService {
   }
 
   async updateMedia(media: MediaObjectDTO): Promise<Media> {
-    await this.findOne(media.stream_name);
+    await this.findOne({ stream_name: media.stream_name });
     return await this.mediaRepository.save(media);
   }
 
-  async findRandomMedia(
-    type: string,
-    count: number,
-    local?: boolean,
-  ): Promise<Media[]> {
+  async findRandomMedia({
+    type,
+    count,
+    local,
+  }: {
+    type: string;
+    count: number;
+    local?: boolean;
+  }): Promise<Media[]> {
     if (local) {
-      const mediaIds = this.localSeasonsRepository
+      const mediaIds = (await this.localSeasonsRepository
         .createQueryBuilder('ls')
         .select('DISTINCT ls.media_id')
-        .execute();
+        .execute()) as Array<{ media_id: string }>;
+
+      const media_ids = mediaIds.map((item) => item.media_id);
 
       return await this.mediaRepository
         .createQueryBuilder('media')
         .where('media.type = :type', { type })
-        .where('m.id IN (:...mediaIds)')
-        .setParameters({ mediaIds })
+        .where('media.id IN (:...media_ids)')
+        .setParameters({ media_ids })
         .orderBy('RANDOM()')
         .limit(count)
         .getMany();
@@ -111,7 +124,7 @@ export class SqliteService {
     return await this.mediaRepository.save(newMedia);
   }
 
-  async getTags(media_id: number): Promise<Tag[]> {
+  async getTags({ media_id }: { media_id: number }): Promise<Tag[]> {
     return this.tagsRepository.find({
       where: { media_id: media_id },
       select: ['tag_id'],
@@ -123,7 +136,11 @@ export class SqliteService {
     return await this.tagsRepository.save(newTag);
   }
 
-  async findTrending(mediaType: string): Promise<Trending[]> {
+  async findTrending({
+    mediaType,
+  }: {
+    mediaType: string;
+  }): Promise<Trending[]> {
     return await this.trendingRepository.find({
       where: { type: mediaType },
     });
@@ -134,7 +151,11 @@ export class SqliteService {
     return await this.trendingRepository.save(newTrending);
   }
 
-  async getLocalSeasons(media_id: number): Promise<LocalSeason[]> {
+  async getLocalSeasons({
+    media_id,
+  }: {
+    media_id: number;
+  }): Promise<LocalSeason[]> {
     return this.localSeasonsRepository.find({
       where: { media_id: media_id },
       select: ['season', 'episode', 'attention'],
@@ -146,9 +167,9 @@ export class SqliteService {
     return await this.localSeasonsRepository.save(newLocalSeason);
   }
 
-  // Telemetrics an analytics
+  // Telemetrics and analytics
 
-  async countMedia(type: string): Promise<number> {
+  async countMedia({ type }: { type: string }): Promise<number> {
     return this.mediaRepository.count({ where: { type: type } });
   }
 }

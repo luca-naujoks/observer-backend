@@ -21,7 +21,7 @@ export class IBackendMediaType {
   tmdbID: number;
 
   @Prop()
-  streamName: string;
+  stream_name: string;
 
   @Prop()
   name: string;

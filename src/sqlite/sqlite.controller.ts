@@ -4,6 +4,7 @@ import { MediaObjectDTO } from 'src/dtos/mediaObject.dto';
 import { ApiBody, ApiQuery } from '@nestjs/swagger';
 import { Tag } from 'src/enities/tags.entity';
 import { Trending } from 'src/enities/trending.entity';
+import { LocalSeason } from 'src/enities/localSeasons.entity';
 
 @Controller('sqlite')
 export class SqliteController {
@@ -14,12 +15,15 @@ export class SqliteController {
     @Query('type') type: string,
     @Query('count') count: number,
   ) {
-    return await this.sqliteService.findRandomMedia(type, count);
+    return await this.sqliteService.findRandomMedia({
+      type: type,
+      count: count,
+    });
   }
 
   @Get()
   async getMedia(@Query('stream_name') stream_name: string) {
-    return await this.sqliteService.findOne(stream_name);
+    return await this.sqliteService.findOne({ stream_name: stream_name });
   }
 
   @ApiQuery({
@@ -30,7 +34,11 @@ export class SqliteController {
   })
   @Get('all')
   async getAllMedia(@Query('type') type: string) {
-    return await this.sqliteService.findMedia(type, 0, false);
+    return await this.sqliteService.findMedia({
+      type: type,
+      page: 0,
+      local: false,
+    });
   }
 
   @ApiBody({
@@ -57,7 +65,7 @@ export class SqliteController {
 
   @Get('tags')
   async getTags(@Query('media_id') media_id: number) {
-    return await this.sqliteService.getTags(media_id);
+    return await this.sqliteService.getTags({ media_id: media_id });
   }
 
   @ApiBody({
@@ -78,7 +86,7 @@ export class SqliteController {
 
   @Get('trending')
   async getTrending(@Query('type') type: string) {
-    return await this.sqliteService.findTrending(type);
+    return await this.sqliteService.findTrending({ mediaType: type });
   }
 
   @ApiBody({
@@ -97,11 +105,33 @@ export class SqliteController {
     return await this.sqliteService.createTrending(trending);
   }
 
-  // Telemetrics an analytics
+  @Get('localSeasons')
+  async getLocalSeasons(@Query('media_id') media_id: number) {
+    return await this.sqliteService.getLocalSeasons({ media_id: media_id });
+  }
+  @ApiBody({
+    type: LocalSeason,
+    examples: {
+      example1: {
+        value: {
+          media_id: 1,
+          season: 1,
+          episode: 1,
+          attention: false,
+        },
+      },
+    },
+  })
+  @Post('localSeasons')
+  async createLocalSeason(@Body() seasonObject: LocalSeason) {
+    return await this.sqliteService.createLocalSeason(seasonObject);
+  }
+
+  // Telemetrics and analytics
 
   @Get('mediaCount')
   async countMedia(@Query('type') type: string) {
-    return await this.sqliteService.countMedia(type);
+    return await this.sqliteService.countMedia({ type: type });
   }
 }
 
