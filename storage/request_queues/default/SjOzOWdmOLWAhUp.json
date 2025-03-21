@@ -1,0 +1,9 @@
+{
+	"id": "SjOzOWdmOLWAhUp",
+	"json": "{\"id\":\"SjOzOWdmOLWAhUp\",\"url\":\"https://aniworld.to/animes\",\"loadedUrl\":\"https://aniworld.to/animes\",\"uniqueKey\":\"https://aniworld.to/animes\",\"method\":\"GET\",\"noRetry\":false,\"retryCount\":0,\"errorMessages\":[],\"headers\":{},\"userData\":{\"__crawlee\":{\"state\":4}},\"handledAt\":\"2025-03-09T11:02:23.711Z\"}",
+	"method": "GET",
+	"orderNo": null,
+	"retryCount": 0,
+	"uniqueKey": "https://aniworld.to/animes",
+	"url": "https://aniworld.to/animes"
+}

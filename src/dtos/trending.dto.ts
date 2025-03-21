@@ -5,6 +5,10 @@ export class TrendingDTO {
   @IsInt()
   id: number;
 
+  @IsNotEmpty({ message: 'Field media_id must be added' })
+  @IsInt()
+  media_id: number;
+
   @IsNotEmpty({ message: 'Field type must be added' })
   @IsString()
   type: string;

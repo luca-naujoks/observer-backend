@@ -4,10 +4,6 @@ import { AppService } from './app.service';
 
 import * as fs from 'fs';
 import { Iconfig } from './interfaces';
-import { MongooseModule } from '@nestjs/mongoose';
-import { MediaModule } from './media/media.module';
-import { TrendingModule } from './trending/trending.module';
-import { RandomModule } from './random/random.module';
 import { DetailedMediaModule } from './detailed-media/detailed-media.module';
 import { SetupModule } from './setup/setup.module';
 import { SetupController } from './setup/setup.controller';
@@ -16,7 +12,7 @@ import { MediaController } from './media/media.controller';
 import { TrendingController } from './trending/trending.controller';
 import { DetailedMediaController } from './detailed-media/detailed-media.controller';
 import { RandomController } from './random/random.controller';
-import { IBackendMedia } from './IBackendMedia.schema';
+
 import { TrendingService } from './trending/trending.service';
 import { MediaService } from './media/media.service';
 import { DetailedMediaService } from './detailed-media/detailed-media.service';
@@ -34,6 +30,9 @@ import { Media } from './enities/media.entity';
 import { Tag } from './enities/tags.entity';
 import { Trending } from './enities/trending.entity';
 import { LocalSeason } from './enities/localSeasons.entity';
+import { MediaModule } from './media/media.module';
+import { RandomModule } from './random/random.module';
+import { TrendingModule } from './trending/trending.module';
 
 function checkConfig() {
   if (!fs.existsSync('configuration')) {
@@ -49,8 +48,9 @@ function checkConfig() {
           RABBITMQ_URI: '',
           RABBITMQ_QUEUE: '',
           TMDB_API_KEY: '',
-          animeLocalPath: '',
-          seriesLocalPath: '',
+          LOCAL_ANIME_PATH: '',
+          LOCAL_SERIES_PATH: '',
+          PAGE_SIZE: 100,
         },
         null,
         2,
@@ -88,21 +88,6 @@ function getConfig(): Iconfig {
     TrendingModule,
     RandomModule,
     DetailedMediaModule,
-
-    MongooseModule.forFeature([
-      {
-        name: 'Trending',
-        schema: IBackendMedia,
-        collection: 'trending',
-      },
-      { name: 'Media', schema: IBackendMedia, collection: 'media' },
-      {
-        name: 'Random',
-        schema: IBackendMedia,
-        collection: 'random',
-      },
-    ]),
-    MongooseModule.forRoot(getConfig().MONGO_URI),
     ConfigModule,
     SchedulesModule,
     SqliteModule,

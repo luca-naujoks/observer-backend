@@ -1,7 +1,7 @@
 export interface IShow {
   type: string;
   tmdbID: number;
-  streamName: string;
+  stream_name: string;
   name: string;
   tags: { id: number; name: string }[];
   poster: string;
@@ -249,6 +249,7 @@ export interface Iconfig {
   TMDB_API_KEY: string;
   LOCAL_ANIME_PATH: string;
   LOCAL_SERIES_PATH: string;
+  PAGE_SIZE: number;
 }
 
 export interface IerrorObject {
@@ -259,7 +260,7 @@ export interface IerrorObject {
 export interface IFullMediaObject {
   type: string;
   tmdbID: number;
-  streamName: string;
+  stream_name: string;
   name: string;
   tags: string[];
   poster: string;

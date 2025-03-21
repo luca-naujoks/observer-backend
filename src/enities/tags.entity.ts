@@ -1,18 +1,12 @@
-import {
-  Entity,
-  PrimaryGeneratedColumn,
-  Column,
-  JoinColumn,
-  OneToOne,
-} from 'typeorm';
-import { Media } from './media.entity';
+import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
 
 @Entity('tags')
 export class Tag {
   @PrimaryGeneratedColumn()
-  @OneToOne(() => Media)
-  @JoinColumn({ name: 'id' })
   id: number;
+
+  @Column({ name: 'media_id', type: 'int', nullable: false, unique: false })
+  media_id: number;
 
   @Column({ name: 'tag_id', type: 'int', nullable: false })
   tag_id: number;

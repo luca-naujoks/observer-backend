@@ -1,23 +1,43 @@
 import { Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
-import { IBackendMedia } from 'src/IBackendMedia.schema';
+import { Media } from 'src/enities/media.entity';
+import { Trending } from 'src/enities/trending.entity';
+import { SqliteService } from 'src/sqlite/sqlite.service';
 
 @Injectable()
 export class TrendingService {
-  constructor(
-    @InjectModel('Trending') private trendingModel: Model<IBackendMedia>,
-  ) {}
+  constructor(private readonly sqliteService: SqliteService) {}
 
-  async getTrendingAnime(limit: number): Promise<IBackendMedia[]> {
-    const media: IBackendMedia[] = await this.trendingModel.find().exec();
-    const anime = media.filter((m) => m.type === 'anime');
-    return anime.sort(() => 0.5 - Math.random()).slice(0, limit);
+  async getTrendingAnime(limit: number): Promise<Media[]> {
+    const trendingItems: Trending[] = await this.sqliteService.findTrending({
+      mediaType: 'anime',
+    });
+
+    const mediaList = Promise.all(
+      trendingItems.map(async (trendingItem) => {
+        const media: Media = await this.sqliteService.findOneById({
+          id: trendingItem.media_id,
+        });
+        return media;
+      }),
+    );
+
+    return (await mediaList).sort(() => 0.5 - Math.random()).slice(0, limit);
   }
 
-  async getTrendingSerie(limit: number): Promise<IBackendMedia[]> {
-    const media: IBackendMedia[] = await this.trendingModel.find().exec();
-    const series = media.filter((m) => m.type === 'serie');
-    return series.sort(() => 0.5 - Math.random()).slice(0, limit);
+  async getTrendingSerie(limit: number): Promise<Media[]> {
+    const trendingItems: Trending[] = await this.sqliteService.findTrending({
+      mediaType: 'series',
+    });
+
+    const mediaList = Promise.all(
+      trendingItems.map(async (trendingItem) => {
+        const media: Media = await this.sqliteService.findOneById({
+          id: trendingItem.media_id,
+        });
+        return media;
+      }),
+    );
+
+    return (await mediaList).sort(() => 0.5 - Math.random()).slice(0, limit);
   }
 }

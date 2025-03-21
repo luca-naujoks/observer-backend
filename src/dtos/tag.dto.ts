@@ -1,9 +1,9 @@
 import { IsInt, IsNotEmpty } from 'class-validator';
 
 export class TagDto {
-  @IsNotEmpty({ message: 'Field stream_name must be added' })
+  @IsNotEmpty({ message: 'Field media_id must be added' })
   @IsInt()
-  id: number;
+  media_id: number;
 
   @IsNotEmpty({ message: 'Field tag_id must be added' })
   @IsInt()

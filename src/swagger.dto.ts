@@ -43,4 +43,10 @@ export class ConfigDto implements Iconfig {
     example: '/series',
   })
   LOCAL_SERIES_PATH: string;
+
+  @ApiProperty({
+    description: 'The Page Size used for paginated media',
+    example: 100,
+  })
+  PAGE_SIZE: number;
 }

@@ -1,40 +1,36 @@
 import { Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
-import { IBackendMedia } from 'src/IBackendMedia.schema';
+import { Media } from 'src/enities/media.entity';
+import { SqliteService } from 'src/sqlite/sqlite.service';
 
 @Injectable()
 export class RandomService {
-  constructor(@InjectModel('Media') private mediaModel: Model<IBackendMedia>) {}
+  constructor(private readonly sqliteService: SqliteService) {}
 
-  async getRandomAnimes(limit: number): Promise<IBackendMedia[]> {
-    const randomAnimes: IBackendMedia[] = await this.mediaModel.aggregate([
-      { $match: { type: 'anime' } },
-      { $sample: { size: Number(limit) } },
-    ]);
+  async getRandomAnimes(limit: number): Promise<Media[]> {
+    const randomAnimes: Media[] = await this.sqliteService.findRandomMedia({
+      type: 'anime',
+      count: limit,
+    });
 
     return randomAnimes;
   }
 
-  async getRandomSeries(limit: number): Promise<IBackendMedia[]> {
-    const randomSeries: IBackendMedia[] = await this.mediaModel.aggregate([
-      { $match: { type: 'serie' } },
-      { $sample: { size: Number(limit) } },
-    ]);
+  async getRandomSeries(limit: number): Promise<Media[]> {
+    const randomSeries: Media[] = await this.sqliteService.findRandomMedia({
+      type: 'series',
+      count: limit,
+    });
 
     return randomSeries;
   }
 
-  async getRandomLocalContent(
-    type: string,
-    limit: number,
-  ): Promise<IBackendMedia[]> {
-    const randomLocalContent: IBackendMedia[] = await this.mediaModel.aggregate(
-      [
-        { $match: { type: type, localSeasons: { $ne: [] } } },
-        { $sample: { size: Number(limit) } },
-      ],
-    );
+  async getRandomLocalContent(type: string, limit: number): Promise<Media[]> {
+    const randomLocalContent: Media[] =
+      await this.sqliteService.findRandomMedia({
+        type: type,
+        count: limit,
+        local: true,
+      });
 
     return randomLocalContent;
   }

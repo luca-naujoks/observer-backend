@@ -13,7 +13,7 @@ export class DetailedMediaController {
 
   @Get()
   @ApiQuery({
-    name: 'streamName',
+    name: 'stream_name',
     type: String,
     example: 'gods-games-we-play',
     description: 'The Stream Name of the Media to get detailed information for',
@@ -27,8 +27,8 @@ export class DetailedMediaController {
   @ApiAmbiguousResponse({
     description: 'The detailed media object was not found',
   })
-  getDetailedMedia(@Query('streamName') streamName: string) {
-    return this.detailedMediaService.getDetailedMedia(streamName);
+  getDetailedMedia(@Query('stream_name') stream_name: string) {
+    return this.detailedMediaService.getDetailedMedia(stream_name);
   }
 
   @Get('season')
@@ -52,16 +52,16 @@ export class DetailedMediaController {
   }
 
   @Put('update-tmdb')
-  async updateTmdbData(
-    @Query('streamName') streamName: string,
+  updateTmdbData(
+    @Query('stream_name') stream_name: string,
     @Query('tmdbID') tmdbID: number,
   ) {
     console.log(
       'Updating TMDB Data for Stream:',
-      streamName,
+      stream_name,
       'with TMDB ID:',
       tmdbID,
     );
-    return this.detailedMediaService.updateTMDB(streamName, tmdbID);
+    return;
   }
 }
