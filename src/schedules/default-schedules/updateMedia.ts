@@ -23,10 +23,8 @@ export async function updateMedia() {
 
   async function mediaComperator(url: string, type: string): Promise<void> {
     const dbMedia: string[] = await sqliteService
-      .findMedia({
+      .findAllMedia({
         type: type,
-        page: 0,
-        local: false,
         selectedFields: ['stream_name'],
       })
       .then((media) => media.map((media) => media.stream_name));

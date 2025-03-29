@@ -1,4 +1,4 @@
-import { Injectable, Logger, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { AppService } from 'src/app.service';
 import { LocalSeasonDTO } from 'src/dtos/localSeason.dto';
@@ -21,6 +21,19 @@ export class SqliteService {
     @InjectRepository(Trending)
     private trendingRepository: Repository<Trending>,
   ) {}
+
+  async findAllMedia({
+    type,
+    selectedFields,
+  }: {
+    type: string;
+    selectedFields?: (keyof Media)[];
+  }): Promise<Media[]> {
+    return this.mediaRepository.find({
+      where: { type: type },
+      select: selectedFields ? selectedFields : undefined,
+    });
+  }
 
   async findMedia({
     type,

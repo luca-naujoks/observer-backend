@@ -1,6 +1,8 @@
-import { Injectable, OnModuleInit } from '@nestjs/common';
+import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { SchedulerRegistry } from '@nestjs/schedule';
 import { CronJob, CronTime } from 'cron';
+import { updateMedia } from './default-schedules/updateMedia';
+import { collectTrendingMedia } from './default-schedules/collectTrendingMedia';
 
 @Injectable()
 export class SchedulesService implements OnModuleInit {
@@ -10,17 +12,24 @@ export class SchedulesService implements OnModuleInit {
     this.addTask({
       taskName: 'default-local-scanner',
       task: () => console.log('test'),
-      schedule: '* * 5 * * *',
+      schedule: '0 0 14 * * *',
     });
     this.addTask({
       taskName: 'default-scan-for-new-media',
-      task: () => console.log('test'),
-      schedule: '5 * 5 * * *',
+      task: () => {
+        updateMedia().catch((error) =>
+          Logger.error('Error in updateMedia:', error),
+        );
+        collectTrendingMedia().catch((error) =>
+          Logger.error('Error in collectTrendingMedia:', error),
+        );
+      },
+      schedule: '0 0 14 * * *',
     });
     this.addTask({
       taskName: 'default-scan-for-new-episodes',
       task: () => console.log('test'),
-      schedule: '5 * 5 * * *',
+      schedule: '0 0 14 * * *',
     });
   }
 
