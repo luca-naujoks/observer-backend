@@ -1,10 +1,6 @@
 import { IsNotEmpty, IsInt, IsBoolean } from 'class-validator';
 
 export class LocalSeasonDTO {
-  @IsNotEmpty({ message: 'Field id must be added' })
-  @IsInt()
-  id: number;
-
   @IsNotEmpty({ message: 'Field media_id must be added' })
   @IsInt()
   media_id: number;

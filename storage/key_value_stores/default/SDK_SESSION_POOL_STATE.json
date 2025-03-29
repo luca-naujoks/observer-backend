@@ -1,9 +1,9 @@
 {
-  "usableSessionsCount": 2,
+  "usableSessionsCount": 3,
   "retiredSessionsCount": 0,
   "sessions": [
     {
-      "id": "session_pLzGfmJ1oF",
+      "id": "session_r7eLsA9t9f",
       "cookieJar": {
         "version": "tough-cookie@5.1.2",
         "storeType": "MemoryCookieStore",
@@ -14,67 +14,87 @@
         "cookies": [
           {
             "key": "__ddg8_",
-            "value": "fYKZoFQNGlQ4Gyiw",
-            "expires": "2025-03-09T11:22:22.000Z",
+            "value": "a2PXKV4bGRUk5qFe",
+            "expires": "2025-03-29T00:42:31.000Z",
             "domain": "aniworld.to",
             "path": "/",
             "hostOnly": false,
-            "creation": "2025-03-09T11:02:23.694Z",
-            "lastAccessed": "2025-03-09T11:02:23.694Z"
+            "creation": "2025-03-29T00:22:31.294Z",
+            "lastAccessed": "2025-03-29T00:22:31.294Z"
           },
           {
             "key": "__ddg10_",
-            "value": "1741518142",
-            "expires": "2025-03-09T11:22:22.000Z",
+            "value": "1743207751",
+            "expires": "2025-03-29T00:42:31.000Z",
             "domain": "aniworld.to",
             "path": "/",
             "hostOnly": false,
-            "creation": "2025-03-09T11:02:23.695Z",
-            "lastAccessed": "2025-03-09T11:02:23.695Z"
+            "creation": "2025-03-29T00:22:31.294Z",
+            "lastAccessed": "2025-03-29T00:22:31.294Z"
           },
           {
             "key": "__ddg9_",
-            "value": "41.65.31.100",
-            "expires": "2025-03-09T11:22:22.000Z",
+            "value": "192.196.193.139",
+            "expires": "2025-03-29T00:42:31.000Z",
             "domain": "aniworld.to",
             "path": "/",
             "hostOnly": false,
-            "creation": "2025-03-09T11:02:23.695Z",
-            "lastAccessed": "2025-03-09T11:02:23.695Z"
+            "creation": "2025-03-29T00:22:31.294Z",
+            "lastAccessed": "2025-03-29T00:22:31.294Z"
           },
           {
             "key": "__ddg1_",
-            "value": "4zUHxM598D1qfP6TK5Fi",
-            "expires": "2026-03-09T11:02:22.000Z",
+            "value": "qQWJNr5fkrYotDQDaDHT",
+            "expires": "2026-03-29T00:22:31.000Z",
             "domain": "aniworld.to",
             "path": "/",
             "httpOnly": true,
             "hostOnly": false,
-            "creation": "2025-03-09T11:02:23.695Z",
-            "lastAccessed": "2025-03-09T11:02:23.695Z"
+            "creation": "2025-03-29T00:22:31.294Z",
+            "lastAccessed": "2025-03-29T00:22:31.294Z"
           },
           {
             "key": "aniworld_session",
-            "value": "ofk4cmgkcje69tqvdfrq3t8v3p",
+            "value": "gaiegkcpgqn4hfp00g17asj7oa",
             "domain": "aniworld.to",
             "path": "/",
             "hostOnly": true,
-            "creation": "2025-03-09T11:02:23.695Z",
-            "lastAccessed": "2025-03-09T11:02:23.695Z"
+            "creation": "2025-03-29T00:22:31.294Z",
+            "lastAccessed": "2025-03-29T00:22:31.294Z"
           }
         ]
       },
       "userData": {},
       "maxErrorScore": 3,
       "errorScoreDecrement": 0.5,
-      "expiresAt": "2025-03-09T11:52:21.923Z",
-      "createdAt": "2025-03-09T11:02:21.923Z",
+      "expiresAt": "2025-03-29T01:12:30.944Z",
+      "createdAt": "2025-03-29T00:22:30.944Z",
       "usageCount": 1,
       "maxUsageCount": 50,
       "errorScore": 0
     },
     {
-      "id": "session_nLYKD2sSPh",
+      "id": "session_vX6gfh6WAg",
+      "cookieJar": {
+        "version": "tough-cookie@5.1.2",
+        "storeType": "MemoryCookieStore",
+        "rejectPublicSuffixes": true,
+        "enableLooseMode": false,
+        "allowSpecialUseDomain": true,
+        "prefixSecurity": "silent",
+        "cookies": []
+      },
+      "userData": {},
+      "maxErrorScore": 3,
+      "errorScoreDecrement": 0.5,
+      "expiresAt": "2025-03-29T01:12:31.017Z",
+      "createdAt": "2025-03-29T00:22:31.017Z",
+      "usageCount": 0,
+      "maxUsageCount": 50,
+      "errorScore": 0
+    },
+    {
+      "id": "session_UwCfPcHozx",
       "cookieJar": {
         "version": "tough-cookie@5.1.2",
         "storeType": "MemoryCookieStore",
@@ -85,61 +105,61 @@
         "cookies": [
           {
             "key": "__ddg8_",
-            "value": "eAMkhQhj3rCFin5g",
-            "expires": "2025-03-09T11:22:25.000Z",
+            "value": "Ny8vy9bsdQDpWxHz",
+            "expires": "2025-03-29T00:42:31.000Z",
             "domain": "s.to",
             "path": "/",
             "hostOnly": false,
-            "creation": "2025-03-09T11:02:26.413Z",
-            "lastAccessed": "2025-03-09T11:02:26.413Z"
+            "creation": "2025-03-29T00:22:31.632Z",
+            "lastAccessed": "2025-03-29T00:22:31.632Z"
           },
           {
             "key": "__ddg10_",
-            "value": "1741518145",
-            "expires": "2025-03-09T11:22:25.000Z",
+            "value": "1743207751",
+            "expires": "2025-03-29T00:42:31.000Z",
             "domain": "s.to",
             "path": "/",
             "hostOnly": false,
-            "creation": "2025-03-09T11:02:26.413Z",
-            "lastAccessed": "2025-03-09T11:02:26.413Z"
+            "creation": "2025-03-29T00:22:31.632Z",
+            "lastAccessed": "2025-03-29T00:22:31.632Z"
           },
           {
             "key": "__ddg9_",
-            "value": "41.65.31.100",
-            "expires": "2025-03-09T11:22:25.000Z",
+            "value": "192.196.193.139",
+            "expires": "2025-03-29T00:42:31.000Z",
             "domain": "s.to",
             "path": "/",
             "hostOnly": false,
-            "creation": "2025-03-09T11:02:26.413Z",
-            "lastAccessed": "2025-03-09T11:02:26.413Z"
+            "creation": "2025-03-29T00:22:31.632Z",
+            "lastAccessed": "2025-03-29T00:22:31.632Z"
           },
           {
             "key": "__ddg1_",
-            "value": "ciUtE1XzcSVaVVpKrt9C",
-            "expires": "2026-03-09T11:02:25.000Z",
+            "value": "hLsFWC1FsRcX7bw899Fo",
+            "expires": "2026-03-29T00:22:31.000Z",
             "domain": "s.to",
             "path": "/",
             "httpOnly": true,
             "hostOnly": false,
-            "creation": "2025-03-09T11:02:26.413Z",
-            "lastAccessed": "2025-03-09T11:02:26.413Z"
+            "creation": "2025-03-29T00:22:31.632Z",
+            "lastAccessed": "2025-03-29T00:22:31.632Z"
           },
           {
             "key": "PHPSESSID",
-            "value": "foqpssl76lkimv33gvcjm1pfsu",
+            "value": "9jdaa2f3k40mji1bea7f31fgfn",
             "domain": "s.to",
             "path": "/",
             "hostOnly": true,
-            "creation": "2025-03-09T11:02:26.413Z",
-            "lastAccessed": "2025-03-09T11:02:26.413Z"
+            "creation": "2025-03-29T00:22:31.632Z",
+            "lastAccessed": "2025-03-29T00:22:31.632Z"
           }
         ]
       },
       "userData": {},
       "maxErrorScore": 3,
       "errorScoreDecrement": 0.5,
-      "expiresAt": "2025-03-09T11:52:23.780Z",
-      "createdAt": "2025-03-09T11:02:23.780Z",
+      "expiresAt": "2025-03-29T01:12:31.451Z",
+      "createdAt": "2025-03-29T00:22:31.451Z",
       "usageCount": 1,
       "maxUsageCount": 50,
       "errorScore": 0

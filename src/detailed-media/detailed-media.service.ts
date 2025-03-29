@@ -122,7 +122,7 @@ export class DetailedMediaService {
   }
 
   async searchTMDB(query: string): Promise<ISearchTvResponse['results']> {
-    const response = await fetch(
+    const tvResponse = await fetch(
       `https://api.themoviedb.org/3/search/tv?query=${query}`,
       {
         headers: {
@@ -133,7 +133,20 @@ export class DetailedMediaService {
       },
     );
 
-    const tmdbData = (await response.json()) as ISearchTvResponse;
-    return tmdbData.results;
+    const movieResponse = await fetch(
+      `https://api.themoviedb.org/3/search/movie?query=${query}`,
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization:
+            'Bearer ' + (await AppService.getConfig()).TMDB_API_KEY,
+        },
+      },
+    );
+
+    const tvData = (await tvResponse.json()) as ISearchTvResponse;
+    const movieData = (await movieResponse.json()) as ISearchTvResponse;
+
+    return [...tvData.results, ...movieData.results];
   }
 }
