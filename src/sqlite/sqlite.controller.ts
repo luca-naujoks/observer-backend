@@ -23,7 +23,9 @@ export class SqliteController {
 
   @Get()
   async getMedia(@Query('stream_name') stream_name: string) {
-    return await this.sqliteService.findOne({ stream_name: stream_name });
+    return await this.sqliteService.findOne({
+      stream_name: stream_name,
+    });
   }
 
   @ApiQuery({
@@ -32,12 +34,22 @@ export class SqliteController {
     required: false,
     description: 'The type of media to get',
   })
+  @ApiQuery({
+    name: 'search',
+    type: String,
+    required: false,
+    description: 'The search term to filter media',
+  })
   @Get('all')
-  async getAllMedia(@Query('type') type: string) {
+  async getAllMedia(
+    @Query('type') type: string,
+    @Query('search') search: string,
+  ) {
     return await this.sqliteService.findMedia({
       type: type,
       page: 0,
       local: false,
+      search: search,
     });
   }
 

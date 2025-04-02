@@ -17,6 +17,7 @@ export class MediaService {
       type: 'anime',
       page: page,
       local: false,
+      search: search,
     });
     return media;
   }
@@ -30,6 +31,7 @@ export class MediaService {
       type: 'series',
       page: page,
       local: false,
+      search: search,
     });
     return media;
   }
@@ -43,6 +45,7 @@ export class MediaService {
       type: type,
       page: page,
       local: true,
+      search: search,
     });
     return media;
   }

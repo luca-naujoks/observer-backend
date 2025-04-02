@@ -1,9 +1,0 @@
-{
-	"id": "uUw6zX0iRgsjJxQ",
-	"json": "{\"id\":\"uUw6zX0iRgsjJxQ\",\"url\":\"https://s.to/serien\",\"loadedUrl\":\"https://s.to/serien\",\"uniqueKey\":\"https://s.to/serien\",\"method\":\"GET\",\"noRetry\":false,\"retryCount\":0,\"errorMessages\":[],\"headers\":{},\"userData\":{\"__crawlee\":{\"state\":4}},\"handledAt\":\"2025-03-29T00:22:31.655Z\"}",
-	"method": "GET",
-	"orderNo": null,
-	"retryCount": 0,
-	"uniqueKey": "https://s.to/serien",
-	"url": "https://s.to/serien"
-}

@@ -1,4 +1,4 @@
-import { Controller, Get, Put, Query } from '@nestjs/common';
+import { Controller, Get, Logger, Put, Query } from '@nestjs/common';
 import {
   ApiAmbiguousResponse,
   ApiOkResponse,
@@ -6,10 +6,15 @@ import {
   ApiQuery,
 } from '@nestjs/swagger';
 import { DetailedMediaService } from './detailed-media.service';
+import { SqliteService } from 'src/sqlite/sqlite.service';
+import { Media } from 'src/enities/media.entity';
 
 @Controller('detailed-media')
 export class DetailedMediaController {
-  constructor(private readonly detailedMediaService: DetailedMediaService) {}
+  constructor(
+    private readonly detailedMediaService: DetailedMediaService,
+    private readonly sqliteService: SqliteService,
+  ) {}
 
   @Get()
   @ApiQuery({
@@ -52,16 +57,34 @@ export class DetailedMediaController {
   }
 
   @Put('update-tmdb')
-  updateTmdbData(
+  async updateTmdbData(
     @Query('stream_name') stream_name: string,
-    @Query('tmdbID') tmdbID: number,
+    @Query('tmdb_id') tmdb_id: number,
   ) {
-    console.log(
-      'Updating TMDB Data for Stream:',
-      stream_name,
-      'with TMDB ID:',
-      tmdbID,
-    );
-    return;
+    const oldMedia: Media = await this.sqliteService.findOne({
+      stream_name: stream_name,
+    });
+    if (!oldMedia) {
+      console.error('Media not found:', stream_name);
+      return;
+    }
+    const tmdbData = await this.detailedMediaService.getTmdbData(tmdb_id);
+    if (!tmdbData) {
+      console.error('TMDB data not found for ID:', tmdb_id);
+      return;
+    }
+    const updatedMedia: Media = {
+      ...oldMedia,
+      tmdb_id: tmdbData.id,
+      name: tmdbData.name,
+      poster: 'https://image.tmdb.org/t/p/original' + tmdbData.poster_path,
+      backdrop: 'https://image.tmdb.org/t/p/original' + tmdbData.backdrop_path,
+    };
+
+    Logger.log(updatedMedia);
+
+    await this.sqliteService.updateMedia(updatedMedia);
+
+    return updatedMedia;
   }
 }

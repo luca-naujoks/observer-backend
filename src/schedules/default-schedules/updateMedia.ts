@@ -28,6 +28,7 @@ export async function updateMedia() {
         selectedFields: ['stream_name'],
       })
       .then((media) => media.map((media) => media.stream_name));
+    Logger.log('Found ' + dbMedia.length + ' ' + type);
     const onlineMedia: string[] = [];
 
     // Collect the online media data of aniworld and s.to. Also filter out the animes from s.to.
@@ -111,9 +112,6 @@ export async function updateMedia() {
     }
 
     if (mediaObject.tmdb_id == 0) {
-      Logger.error(
-        `TMDB ID not found for ${mediaObject.type} ${mediaObject.stream_name}`,
-      );
       continue;
     } else {
       await insertMediaData(mediaObject, tags);
@@ -197,6 +195,12 @@ export async function updateMedia() {
     type: string,
     stream_name: string,
   ): Promise<INeededData> {
+    // Just dummy to satisfy the typescript compiler
+    try {
+      await sqliteService.findOne({ stream_name: stream_name });
+    } catch (error) {
+      Logger.warn(`Error in collectMediaData from website: ${error}`);
+    }
     return {
       name: '',
       tags: [],

@@ -39,11 +39,13 @@ export class SqliteService {
     type,
     page,
     local,
+    search,
     selectedFields,
   }: {
     type: string;
     page: number;
     local: boolean;
+    search?: string;
     selectedFields?: (keyof Media)[];
   }): Promise<Media[]> {
     if (local) {
@@ -59,16 +61,23 @@ export class SqliteService {
         .where('media.type = :type', { type })
         .where('media.id IN (:...media_ids)')
         .setParameters({ media_ids })
+        .andWhere('media.name LIKE :name', {
+          name: `%${search ? search : ''}%`,
+        })
         .skip(page ? page * (await AppService.getConfig()).PAGE_SIZE : 0)
         .take((await AppService.getConfig()).PAGE_SIZE)
         .getMany();
     }
-    return this.mediaRepository.find({
-      where: { type: type },
-      select: selectedFields ? selectedFields : undefined,
-      skip: page ? page * (await AppService.getConfig()).PAGE_SIZE : 0,
-      take: (await AppService.getConfig()).PAGE_SIZE,
-    });
+    return this.mediaRepository
+      .createQueryBuilder('media')
+      .where('media.type = :type', { type })
+      .andWhere('media.name LIKE :name', { name: search ? `%${search}%` : '%' })
+      .skip(page ? page * (await AppService.getConfig()).PAGE_SIZE : 0)
+      .take((await AppService.getConfig()).PAGE_SIZE)
+      .addSelect(
+        selectedFields ? selectedFields.map((field) => `media.${field}`) : [],
+      )
+      .getMany();
   }
 
   async findOne({ stream_name }: { stream_name: string }): Promise<Media> {

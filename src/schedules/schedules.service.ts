@@ -27,6 +27,15 @@ export class SchedulesService implements OnModuleInit {
       schedule: '0 0 14 * * *',
     });
     this.addTask({
+      taskName: 'default-collect-trending-media',
+      task: () => {
+        collectTrendingMedia().catch((error) =>
+          Logger.error('Error in collectTrendingMedia:', error),
+        );
+      },
+      schedule: '0 0 14 * * *',
+    });
+    this.addTask({
       taskName: 'default-scan-for-new-episodes',
       task: () => console.log('test'),
       schedule: '0 0 14 * * *',

@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { HttpErrorByCode } from '@nestjs/common/utils/http-error-by-code.util';
 import { AppService } from 'src/app.service';
 import { Media } from 'src/enities/media.entity';
@@ -148,5 +148,23 @@ export class DetailedMediaService {
     const movieData = (await movieResponse.json()) as ISearchTvResponse;
 
     return [...tvData.results, ...movieData.results];
+  }
+
+  async getTmdbData(tmdb_id: number): Promise<ITvSeriesDetails> {
+    Logger.log(tmdb_id);
+    const response = await fetch(`https://api.themoviedb.org/3/tv/${tmdb_id}`, {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer ' + (await AppService.getConfig()).TMDB_API_KEY,
+      },
+    });
+
+    const data = (await response.json()) as ITvSeriesDetails;
+    Logger.log(data);
+    if (!data) {
+      Logger.error('media Not found');
+    }
+
+    return data;
   }
 }
