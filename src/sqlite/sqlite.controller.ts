@@ -1,7 +1,7 @@
-import { Body, Controller, Get, Post, Query } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Post, Query } from '@nestjs/common';
 import { SqliteService } from './sqlite.service';
 import { MediaObjectDTO } from 'src/dtos/mediaObject.dto';
-import { ApiBody, ApiQuery } from '@nestjs/swagger';
+import { ApiBody, ApiOperation, ApiQuery } from '@nestjs/swagger';
 import { Tag } from 'src/enities/tags.entity';
 import { Trending } from 'src/enities/trending.entity';
 import { LocalSeason } from 'src/enities/localSeasons.entity';
@@ -23,7 +23,9 @@ export class SqliteController {
 
   @Get()
   async getMedia(@Query('stream_name') stream_name: string) {
-    return await this.sqliteService.findOne({ stream_name: stream_name });
+    return await this.sqliteService.findOne({
+      stream_name: stream_name,
+    });
   }
 
   @ApiQuery({
@@ -32,12 +34,22 @@ export class SqliteController {
     required: false,
     description: 'The type of media to get',
   })
+  @ApiQuery({
+    name: 'search',
+    type: String,
+    required: false,
+    description: 'The search term to filter media',
+  })
   @Get('all')
-  async getAllMedia(@Query('type') type: string) {
+  async getAllMedia(
+    @Query('type') type: string,
+    @Query('search') search: string,
+  ) {
     return await this.sqliteService.findMedia({
       type: type,
       page: 0,
       local: false,
+      search: search,
     });
   }
 
@@ -105,6 +117,13 @@ export class SqliteController {
     return await this.sqliteService.createTrending(trending);
   }
 
+  @ApiOperation({
+    summary: 'Clears the Trending Table and leaves a clear empty table',
+  })
+  @Delete('trending')
+  async clearTrendingMediaTable() {
+    return await this.sqliteService.clearTrendingMediaTable();
+  }
   @Get('localSeasons')
   async getLocalSeasons(@Query('media_id') media_id: number) {
     return await this.sqliteService.getLocalSeasons({ media_id: media_id });

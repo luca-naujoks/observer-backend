@@ -28,6 +28,6 @@ export class Media {
   @Column({ name: 'backdrop', type: 'varchar', length: 255, nullable: false })
   backdrop: string;
 
-  @Column({ name: 'online_aviable', type: 'boolean', default: true })
-  online_aviable: boolean;
+  @Column({ name: 'online_available', type: 'boolean', default: true })
+  online_available: boolean;
 }

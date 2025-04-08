@@ -24,13 +24,15 @@ export class SqliteService {
 
   async findAllMedia({
     type,
+    online_available,
     selectedFields,
   }: {
     type: string;
+    online_available?: boolean;
     selectedFields?: (keyof Media)[];
   }): Promise<Media[]> {
     return this.mediaRepository.find({
-      where: { type: type },
+      where: { type: type, online_available: online_available },
       select: selectedFields ? selectedFields : undefined,
     });
   }
@@ -39,11 +41,13 @@ export class SqliteService {
     type,
     page,
     local,
+    search,
     selectedFields,
   }: {
     type: string;
     page: number;
     local: boolean;
+    search?: string;
     selectedFields?: (keyof Media)[];
   }): Promise<Media[]> {
     if (local) {
@@ -59,16 +63,23 @@ export class SqliteService {
         .where('media.type = :type', { type })
         .where('media.id IN (:...media_ids)')
         .setParameters({ media_ids })
-        .skip(page ? page * (await AppService.getConfig()).PAGE_SIZE : 0)
-        .take((await AppService.getConfig()).PAGE_SIZE)
+        .andWhere('media.name LIKE :name', {
+          name: `%${search ? search : ''}%`,
+        })
+        .skip(page ? page * (await AppService.getConfig()).PageSize : 0)
+        .take((await AppService.getConfig()).PageSize)
         .getMany();
     }
-    return this.mediaRepository.find({
-      where: { type: type },
-      select: selectedFields ? selectedFields : undefined,
-      skip: page ? page * (await AppService.getConfig()).PAGE_SIZE : 0,
-      take: (await AppService.getConfig()).PAGE_SIZE,
-    });
+    return this.mediaRepository
+      .createQueryBuilder('media')
+      .where('media.type = :type', { type })
+      .andWhere('media.name LIKE :name', { name: search ? `%${search}%` : '%' })
+      .skip(page ? page * (await AppService.getConfig()).PageSize : 0)
+      .take((await AppService.getConfig()).PageSize)
+      .addSelect(
+        selectedFields ? selectedFields.map((field) => `media.${field}`) : [],
+      )
+      .getMany();
   }
 
   async findOne({ stream_name }: { stream_name: string }): Promise<Media> {
@@ -89,6 +100,16 @@ export class SqliteService {
     });
     if (!media) {
       throw new NotFoundException(`Media with id ${id} not found`);
+    }
+    return media;
+  }
+
+  async findByTmdbID({ tmdb_id }: { tmdb_id: number }): Promise<Media> {
+    const media = await this.mediaRepository.findOne({
+      where: { tmdb_id: tmdb_id },
+    });
+    if (!media) {
+      throw new NotFoundException(`Media with id ${tmdb_id} not found`);
     }
     return media;
   }
@@ -175,9 +196,33 @@ export class SqliteService {
     });
   }
 
+  async checkLocalEpisode({
+    media_id,
+    season_number,
+    episode_number,
+  }: {
+    media_id: number;
+    season_number: number;
+    episode_number: number;
+  }): Promise<boolean> {
+    const isEpisodeLocalAvailable = await this.localSeasonsRepository.findOne({
+      where: {
+        media_id: media_id,
+        season: season_number,
+        episode: episode_number,
+      },
+    });
+
+    return isEpisodeLocalAvailable ? true : false;
+  }
+
   async createLocalSeason(localSeason: LocalSeasonDTO): Promise<LocalSeason> {
     const newLocalSeason = this.localSeasonsRepository.create(localSeason);
     return await this.localSeasonsRepository.save(newLocalSeason);
+  }
+
+  async clearTrendingMediaTable() {
+    return await this.trendingRepository.clear();
   }
 
   // Telemetrics and analytics

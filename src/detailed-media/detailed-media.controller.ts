@@ -1,4 +1,4 @@
-import { Controller, Get, Put, Query } from '@nestjs/common';
+import { Controller, Get, Logger, Put, Query } from '@nestjs/common';
 import {
   ApiAmbiguousResponse,
   ApiOkResponse,
@@ -6,10 +6,16 @@ import {
   ApiQuery,
 } from '@nestjs/swagger';
 import { DetailedMediaService } from './detailed-media.service';
+import { SqliteService } from 'src/sqlite/sqlite.service';
+import { Media } from 'src/enities/media.entity';
+import { IDetailedMedia, ISeason } from 'src/OutputInterfaces';
 
 @Controller('detailed-media')
 export class DetailedMediaController {
-  constructor(private readonly detailedMediaService: DetailedMediaService) {}
+  constructor(
+    private readonly detailedMediaService: DetailedMediaService,
+    private readonly sqliteService: SqliteService,
+  ) {}
 
   @Get()
   @ApiQuery({
@@ -31,6 +37,8 @@ export class DetailedMediaController {
     return this.detailedMediaService.getDetailedMedia(stream_name);
   }
 
+  //TODO modify to return the new season object that only contains the episodes
+  //Modified ;)
   @Get('season')
   @ApiOperation({
     summary:
@@ -40,28 +48,57 @@ export class DetailedMediaController {
     description: 'The detailed media object was successfully returned',
   })
   async getSeasonForMedia(
-    @Query('tmdbID') tmdbID: number,
+    @Query('tmdb_id') tmdb_id: number,
     @Query('seasonNumber') seasonNumber: number,
-  ) {
-    return this.detailedMediaService.getSeasonForMedia(tmdbID, seasonNumber);
+  ): Promise<ISeason> {
+    return this.detailedMediaService.getSeasonForMedia(tmdb_id, seasonNumber);
   }
 
-  @Get('tmdb-search')
-  async getTmdbData(@Query('query') query: string) {
+  //TODO modify to return detailedMedia Objects
+  @ApiOperation({
+    summary: 'Search tmdb and get a list of type Media as return',
+  })
+  @Get('search')
+  async getTmdbData(@Query('query') query: string): Promise<IDetailedMedia[]> {
     return this.detailedMediaService.searchTMDB(query);
   }
 
+  @ApiOperation({
+    summary:
+      'Update tmdb_id, name, poster and backdrop my passing a new tmdb_id',
+  })
+  @ApiOkResponse({
+    description: 'Returns the upadted Media object',
+  })
   @Put('update-tmdb')
-  updateTmdbData(
+  async updateTmdbData(
     @Query('stream_name') stream_name: string,
-    @Query('tmdbID') tmdbID: number,
+    @Query('tmdb_id') tmdb_id: number,
   ) {
-    console.log(
-      'Updating TMDB Data for Stream:',
-      stream_name,
-      'with TMDB ID:',
-      tmdbID,
-    );
-    return;
+    const oldMedia: Media = await this.sqliteService.findOne({
+      stream_name: stream_name,
+    });
+    if (!oldMedia) {
+      console.error('Media not found:', stream_name);
+      return;
+    }
+    const tmdbData = await this.detailedMediaService.getTmdbData(tmdb_id);
+    if (!tmdbData) {
+      console.error('TMDB data not found for ID:', tmdb_id);
+      return;
+    }
+    const updatedMedia: Media = {
+      ...oldMedia,
+      tmdb_id: tmdbData.id,
+      name: tmdbData.name,
+      poster: 'https://image.tmdb.org/t/p/original' + tmdbData.poster_path,
+      backdrop: 'https://image.tmdb.org/t/p/original' + tmdbData.backdrop_path,
+    };
+
+    Logger.log(updatedMedia);
+
+    await this.sqliteService.updateMedia(updatedMedia);
+
+    return updatedMedia;
   }
 }

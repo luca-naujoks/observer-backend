@@ -9,7 +9,7 @@ export async function collectTrendingMedia() {
   const app = await NestFactory.createApplicationContext(AppModule);
   const sqliteService = app.get(SqliteService);
 
-  const URLs = ['https://aniworld.to', 'https://s.to'];
+  const URLs = ['https://aniworld.to', 'http://186.2.175.5'];
   const trendingMedia: { stream_name: string; type: string }[] = [];
 
   const trendingCrawler = new CheerioCrawler({
@@ -29,15 +29,18 @@ export async function collectTrendingMedia() {
   });
 
   await trendingCrawler.run(URLs);
+
+  await sqliteService.clearTrendingMediaTable();
+
   for (const media of trendingMedia) {
     try {
-      const media_id: Media = await sqliteService.findOne({
+      const media_entry: Media = await sqliteService.findOne({
         stream_name: media.stream_name,
       });
 
-      if (media_id && media_id.id) {
+      if (media_entry && media_entry.id) {
         await sqliteService.createTrending({
-          media_id: media_id.id,
+          media_id: media_entry.id,
           type: media.type + (media.type === 'anime' ? '' : 's'),
         });
       }

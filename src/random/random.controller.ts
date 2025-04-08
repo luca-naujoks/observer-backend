@@ -1,6 +1,7 @@
 import { Controller, Get, Query } from '@nestjs/common';
 import { ApiOkResponse, ApiOperation, ApiQuery } from '@nestjs/swagger';
 import { RandomService } from './random.service';
+import { Media } from 'src/enities/media.entity';
 
 @Controller('random')
 export class RandomController {
@@ -19,7 +20,7 @@ export class RandomController {
   @ApiOkResponse({
     description: 'Get x random Anime',
   })
-  getRandomAnimes(@Query('amount') limit: number) {
+  getRandomAnimes(@Query('amount') limit: number): Promise<Media[]> {
     return this.randomMedia.getRandomAnimes(limit);
   }
 
@@ -36,7 +37,7 @@ export class RandomController {
   @ApiOkResponse({
     description: 'Get x random Series',
   })
-  getRandomSeries(@Query('amount') limit: number) {
+  getRandomSeries(@Query('amount') limit: number): Promise<Media[]> {
     return this.randomMedia.getRandomSeries(limit);
   }
 
@@ -62,7 +63,7 @@ export class RandomController {
   getRandomLocalContent(
     @Query('amount') limit: number,
     @Query('type') type: string,
-  ) {
+  ): Promise<Media[]> {
     return this.randomMedia.getRandomLocalContent(type, limit);
   }
 }

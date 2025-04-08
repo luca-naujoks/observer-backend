@@ -26,9 +26,9 @@ export class MediaObjectDTO {
   @IsString()
   backdrop: string;
 
-  @IsNotEmpty({ message: 'Field online_aviable must be added' })
+  @IsNotEmpty({ message: 'Field online_available must be added' })
   @IsBoolean()
-  online_aviable: boolean;
+  online_available: boolean;
 }
 
 export class UpdateMediaObjectDTO {
@@ -37,8 +37,8 @@ export class UpdateMediaObjectDTO {
   @IsInt()
   tmdb_id?: number;
 
-  @IsNotEmpty({ message: 'Field online_aviable must be added' })
+  @IsNotEmpty({ message: 'Field online_available must be added' })
   @Optional()
   @IsBoolean()
-  online_aviable?: boolean;
+  online_available?: boolean;
 }
