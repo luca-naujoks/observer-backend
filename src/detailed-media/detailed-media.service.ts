@@ -6,34 +6,98 @@ import { Media } from 'src/enities/media.entity';
 import {
   ISearchTvResponse,
   ISeasonDetails,
-  IShow,
-  ItmdbData,
   ITvSeriesDetails,
-} from 'src/interfaces';
+} from 'src/tmdbInterfaces';
+import { IDetailedMedia, ISeason } from 'src/OutputInterfaces';
 import { SqliteService } from 'src/sqlite/sqlite.service';
+
+//TODO remove these both interfaces and use the general tmdb interface
+interface ItmdbData {
+  tags: { id: number; name: string }[];
+  vote_average: number;
+  original_name: string;
+  overview: string;
+  original_language: string;
+  first_air_date: string;
+  status: string;
+  episode_run_time: number;
+  number_of_episodes: number;
+  production_country: string;
+  seasons: ItmdbSeasonObject[];
+}
+
+interface ItmdbSeasonObject {
+  air_date: string;
+  episode_count: number;
+  id: number;
+  name: string;
+  overview: string;
+  poster_path: string;
+  season_number: number;
+  vote_average: number;
+}
 
 @Injectable()
 export class DetailedMediaService {
   constructor(private readonly sqliteService: SqliteService) {}
 
   async getSeasonForMedia(
-    tmdbID: number,
+    tmdb_id: number,
     seasonNumber: number,
-  ): Promise<ISeasonDetails> {
-    const response = await fetch(
-      `https://api.themoviedb.org/3/tv/${tmdbID}/season/${seasonNumber}`,
-      {
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization:
-            'Bearer ' + (await AppService.getConfig()).TMDB_API_KEY,
+  ): Promise<ISeason> {
+    const media: Media = await this.sqliteService.findByTmdbID({
+      tmdb_id: tmdb_id,
+    });
+    async function apiRequest(): Promise<ISeasonDetails> {
+      const response = await fetch(
+        `https://api.themoviedb.org/3/tv/${tmdb_id}/season/${seasonNumber}`,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization:
+              'Bearer ' + (await AppService.getConfig()).TmdbApiKey,
+          },
         },
-      },
-    );
-    return (await response.json()) as ISeasonDetails;
+      );
+      return (await response.json()) as ISeasonDetails;
+    }
+
+    const isEpisodeLocalAvailable = async ({
+      season,
+      episode,
+    }: {
+      season: number;
+      episode: number;
+    }): Promise<boolean> => {
+      return await this.sqliteService.checkLocalEpisode({
+        media_id: media.id,
+        season_number: season,
+        episode_number: episode,
+      });
+    };
+
+    const tmdbSeasonData: ISeasonDetails = await apiRequest();
+    const season: ISeason = {
+      episodes: await Promise.all(
+        tmdbSeasonData.episodes.map(async (episode) => {
+          return {
+            name: episode.name,
+            air_date: episode.air_date,
+            episode_number: episode.episode_number,
+            episode_type: episode.episode_type,
+            local_available: await isEpisodeLocalAvailable({
+              season: episode.season_number,
+              episode: episode.episode_number,
+            }),
+          };
+        }),
+      ),
+    };
+
+    return season;
   }
 
-  async getDetailedMedia(stream_name: string): Promise<IShow> {
+  async getDetailedMedia(stream_name: string): Promise<IDetailedMedia> {
     let tmdbData: ItmdbData;
 
     const localData: Media = await this.sqliteService.findOne({
@@ -66,7 +130,7 @@ export class DetailedMediaService {
           headers: {
             'Content-Type': 'application/json',
             Authorization:
-              'Bearer ' + (await AppService.getConfig()).TMDB_API_KEY,
+              'Bearer ' + (await AppService.getConfig()).TmdbApiKey,
           },
         },
       );
@@ -97,16 +161,12 @@ export class DetailedMediaService {
 
     return {
       type: localData.type,
-      tmdbID: localData.tmdb_id,
+      tmdb_id: localData.tmdb_id,
       stream_name: localData.stream_name,
       name: localData.name,
       tags: tmdbData.tags,
       poster: localData.poster,
       backdrop: localData.backdrop,
-      localSeasons: undefined,
-      onlineSeasons: undefined,
-      state: 'online',
-      hasErrors: false,
 
       vote_average: tmdbData?.vote_average,
       original_name: tmdbData.original_name,
@@ -121,41 +181,54 @@ export class DetailedMediaService {
     };
   }
 
-  async searchTMDB(query: string): Promise<ISearchTvResponse['results']> {
+  async searchTMDB(query: string): Promise<IDetailedMedia[]> {
     const tvResponse = await fetch(
       `https://api.themoviedb.org/3/search/tv?query=${query}`,
       {
         headers: {
           'Content-Type': 'application/json',
-          Authorization:
-            'Bearer ' + (await AppService.getConfig()).TMDB_API_KEY,
-        },
-      },
-    );
-
-    const movieResponse = await fetch(
-      `https://api.themoviedb.org/3/search/movie?query=${query}`,
-      {
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization:
-            'Bearer ' + (await AppService.getConfig()).TMDB_API_KEY,
+          Authorization: 'Bearer ' + (await AppService.getConfig()).TmdbApiKey,
         },
       },
     );
 
     const tvData = (await tvResponse.json()) as ISearchTvResponse;
-    const movieData = (await movieResponse.json()) as ISearchTvResponse;
 
-    return [...tvData.results, ...movieData.results];
+    const tvDataToDetailedMedia: IDetailedMedia[] = tvData.results.map(
+      (result) => {
+        return {
+          type: 'unknown',
+          tmdb_id: result.id,
+          stream_name: 'unknown',
+          name: result.name,
+          tags: [] as { id: number; name: string }[],
+          poster: 'https://image.tmdb.org/t/p/original' + result.poster_path,
+          backdrop:
+            'https://image.tmdb.org/t/p/original' + result.backdrop_path,
+
+          vote_average: result.vote_average,
+          original_name: result.original_name,
+          overview: result.overview,
+          original_language: result.original_language,
+          first_air_date: result.first_air_date,
+          status: 'unknown',
+          episode_run_time: 0,
+          number_of_episodes: 0,
+          production_country: 'unknown',
+
+          seasons: [] as { name: string; season_number: number }[],
+        };
+      },
+    );
+
+    return tvDataToDetailedMedia;
   }
 
   async getTmdbData(tmdb_id: number): Promise<ITvSeriesDetails> {
-    Logger.log(tmdb_id);
     const response = await fetch(`https://api.themoviedb.org/3/tv/${tmdb_id}`, {
       headers: {
         'Content-Type': 'application/json',
-        Authorization: 'Bearer ' + (await AppService.getConfig()).TMDB_API_KEY,
+        Authorization: 'Bearer ' + (await AppService.getConfig()).TmdbApiKey,
       },
     });
 

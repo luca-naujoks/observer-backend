@@ -1,6 +1,7 @@
 import { Controller, Get, Query } from '@nestjs/common';
 import { ApiOkResponse, ApiOperation, ApiQuery } from '@nestjs/swagger';
 import { TrendingService } from './trending.service';
+import { Media } from 'src/enities/media.entity';
 
 @Controller('trending')
 export class TrendingController {
@@ -19,7 +20,7 @@ export class TrendingController {
   @ApiOkResponse({
     description: 'Get x random Anime of the 21 Trending ones',
   })
-  getTrendingAnime(@Query('amount') limit: number) {
+  getTrendingAnime(@Query('amount') limit: number): Promise<Media[]> {
     return this.trendingService.getTrendingAnime(limit);
   }
 
@@ -36,7 +37,7 @@ export class TrendingController {
   @ApiOkResponse({
     description: 'Get x random Series of the 21 Trending ones',
   })
-  getTrendingSeries(@Query('amount') limit: number) {
+  getTrendingSeries(@Query('amount') limit: number): Promise<Media[]> {
     return this.trendingService.getTrendingSerie(limit);
   }
 }

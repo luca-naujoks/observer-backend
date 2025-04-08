@@ -7,21 +7,17 @@ import {
 } from '@nestjs/swagger';
 
 import * as fs from 'fs';
-import { Iconfig } from './interfaces';
+import { IBackendConfig } from './OutputInterfaces';
 
 const configDir = 'configuration';
 
 function createConfigFileSync() {
   const configFile = `${configDir}/appConfig.json`;
-  const defaultConfig: Iconfig = {
-    CONFIGURED: false,
-    MONGO_URI: '',
-    RABBITMQ_URI: '',
-    RABBITMQ_QUEUE: '',
-    TMDB_API_KEY: '',
-    LOCAL_ANIME_PATH: '',
-    LOCAL_SERIES_PATH: '',
-    PAGE_SIZE: 100,
+  const defaultConfig: IBackendConfig = {
+    TmdbApiKey: '',
+    AnimeDir: '',
+    SeriesDir: '',
+    PageSize: 100,
   };
 
   if (!fs.existsSync(configDir)) {

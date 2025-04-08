@@ -5,7 +5,7 @@ import { AppModule } from 'src/app.module';
 import { AppService } from 'src/app.service';
 import { MediaObjectDTO } from 'src/dtos/mediaObject.dto';
 import { TagDto } from 'src/dtos/tag.dto';
-import { ISearchTvResponse, ITvSeriesDetails } from 'src/interfaces';
+import { ISearchTvResponse, ITvSeriesDetails } from 'src/tmdbInterfaces';
 import { SqliteService } from 'src/sqlite/sqlite.service';
 
 interface INeededData {
@@ -16,19 +16,37 @@ interface INeededData {
 }
 
 export async function updateMedia() {
+  const animeURL: string = 'http://186.2.175.5/serien';
+  const serienURL: string = 'http://186.2.175.5/serien';
+
   const app = await NestFactory.createApplicationContext(AppModule);
   const sqliteService = app.get(SqliteService);
   const newMedia: { stream_name: string; type: string }[] = [];
   const removedMedia: { stream_name: string; type: string }[] = [];
+  const onlineRemovedMedia: { stream_name: string; type: string }[] = [];
 
-  async function mediaComperator(url: string, type: string): Promise<void> {
+  async function mediaComperator({
+    url,
+    type,
+  }: {
+    url: string;
+    type: string;
+  }): Promise<void> {
     const dbMedia: string[] = await sqliteService
       .findAllMedia({
         type: type,
         selectedFields: ['stream_name'],
       })
       .then((media) => media.map((media) => media.stream_name));
-    Logger.log('Found ' + dbMedia.length + ' ' + type);
+
+    const online_removed: string[] = await sqliteService
+      .findAllMedia({
+        type: type,
+        online_available: false,
+        selectedFields: ['stream_name'],
+      })
+      .then((media) => media.map((media) => media.stream_name));
+
     const onlineMedia: string[] = [];
 
     // Collect the online media data of aniworld and s.to. Also filter out the animes from s.to.
@@ -67,31 +85,33 @@ export async function updateMedia() {
 
     removedMedia.push(...removedMediaItems);
 
-    // Logger.log(
-    //   newMedia.length + ` new ${type == 'anime' ? 'Animes' : 'Series'}`,
-    // );
-    // Logger.log(
-    //   removedMedia.length + ` removed ${type == 'anime' ? 'Animes' : 'Series'}`,
-    // );
+    // Compare the online removed Media with online media to find wich are back online
+    const backOnlineMediaItems: { stream_name: string; type: string }[] =
+      online_removed
+        .filter((media) => onlineMedia.map((media) => media).includes(media))
+        .map((stream_name) => ({ stream_name, type }));
+
+    onlineRemovedMedia.push(...backOnlineMediaItems);
   }
 
-  await mediaComperator('https://aniworld.to/animes', 'anime');
-  await mediaComperator('https://s.to/serien', 'series');
+  await mediaComperator({ url: animeURL, type: 'anime' });
+  await mediaComperator({ url: serienURL, type: 'series' });
 
-  // loop through all removed media and update the online_aviable property
+  // loop through all removed media and update the online_available property
   for (const media of removedMedia) {
     await updateOnlineAviable(media.stream_name);
   }
 
+  // loop through all newMedia, collect aditional Details and insert them
   for (const media of newMedia) {
     const mediaObject: MediaObjectDTO = {
       type: media.type,
-      tmdb_id: await isTMDBIDAvailable(media.stream_name),
+      tmdb_id: await istmdb_idAvailable(media.stream_name),
       stream_name: media.stream_name,
       name: '',
       poster: '',
       backdrop: '',
-      online_aviable: true,
+      online_available: true,
     };
     const tags: number[] = [];
     if (mediaObject.tmdb_id != 0) {
@@ -126,7 +146,12 @@ export async function updateMedia() {
     }
   }
 
-  async function isTMDBIDAvailable(stream_name: string): Promise<number> {
+  // loop through all online Removed media to check if they are available again
+  for (const media of onlineRemovedMedia) {
+    await updateOnlineAviable(media.stream_name);
+  }
+
+  async function istmdb_idAvailable(stream_name: string): Promise<number> {
     const response: ISearchTvResponse = await request(stream_name);
 
     async function request(stream_name: string): Promise<ISearchTvResponse> {
@@ -137,7 +162,7 @@ export async function updateMedia() {
           headers: {
             'Content-Type': 'application/json',
             Authorization:
-              'Bearer ' + (await AppService.getConfig()).TMDB_API_KEY,
+              'Bearer ' + (await AppService.getConfig()).TmdbApiKey,
           },
         },
       );
@@ -152,12 +177,12 @@ export async function updateMedia() {
     }
   }
 
-  // set the online_aviable property to false of passed stream_name
+  // set the online_available property to false of passed stream_name
   async function updateOnlineAviable(stream_name: string) {
     await sqliteService
       .findOne({ stream_name: stream_name })
       .then(async (media) => {
-        media.online_aviable = false;
+        media.online_available = !media.online_available;
         await sqliteService.updateMedia(media);
       });
   }
@@ -174,7 +199,7 @@ export async function updateMedia() {
           headers: {
             'Content-Type': 'application/json',
             Authorization:
-              'Bearer ' + (await AppService.getConfig()).TMDB_API_KEY,
+              'Bearer ' + (await AppService.getConfig()).TmdbApiKey,
           },
         },
       );
@@ -228,10 +253,18 @@ export async function updateMedia() {
       ' removed Animes',
   );
   Logger.log(
+    onlineRemovedMedia.filter((media) => media.type == 'anime').length +
+      ' Animes are back online',
+  );
+  Logger.log(
     newMedia.filter((media) => media.type == 'series').length + ' new Series',
   );
   Logger.log(
     removedMedia.filter((media) => media.type == 'series').length +
       ' removed Series',
+  );
+  Logger.log(
+    onlineRemovedMedia.filter((media) => media.type == 'series').length +
+      ' Series are back online',
   );
 }

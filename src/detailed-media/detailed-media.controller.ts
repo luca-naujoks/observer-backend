@@ -8,6 +8,7 @@ import {
 import { DetailedMediaService } from './detailed-media.service';
 import { SqliteService } from 'src/sqlite/sqlite.service';
 import { Media } from 'src/enities/media.entity';
+import { IDetailedMedia, ISeason } from 'src/OutputInterfaces';
 
 @Controller('detailed-media')
 export class DetailedMediaController {
@@ -36,6 +37,8 @@ export class DetailedMediaController {
     return this.detailedMediaService.getDetailedMedia(stream_name);
   }
 
+  //TODO modify to return the new season object that only contains the episodes
+  //Modified ;)
   @Get('season')
   @ApiOperation({
     summary:
@@ -45,17 +48,28 @@ export class DetailedMediaController {
     description: 'The detailed media object was successfully returned',
   })
   async getSeasonForMedia(
-    @Query('tmdbID') tmdbID: number,
+    @Query('tmdb_id') tmdb_id: number,
     @Query('seasonNumber') seasonNumber: number,
-  ) {
-    return this.detailedMediaService.getSeasonForMedia(tmdbID, seasonNumber);
+  ): Promise<ISeason> {
+    return this.detailedMediaService.getSeasonForMedia(tmdb_id, seasonNumber);
   }
 
-  @Get('tmdb-search')
-  async getTmdbData(@Query('query') query: string) {
+  //TODO modify to return detailedMedia Objects
+  @ApiOperation({
+    summary: 'Search tmdb and get a list of type Media as return',
+  })
+  @Get('search')
+  async getTmdbData(@Query('query') query: string): Promise<IDetailedMedia[]> {
     return this.detailedMediaService.searchTMDB(query);
   }
 
+  @ApiOperation({
+    summary:
+      'Update tmdb_id, name, poster and backdrop my passing a new tmdb_id',
+  })
+  @ApiOkResponse({
+    description: 'Returns the upadted Media object',
+  })
   @Put('update-tmdb')
   async updateTmdbData(
     @Query('stream_name') stream_name: string,

@@ -1,7 +1,7 @@
-import { Body, Controller, Get, Post, Query } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Post, Query } from '@nestjs/common';
 import { SqliteService } from './sqlite.service';
 import { MediaObjectDTO } from 'src/dtos/mediaObject.dto';
-import { ApiBody, ApiQuery } from '@nestjs/swagger';
+import { ApiBody, ApiOperation, ApiQuery } from '@nestjs/swagger';
 import { Tag } from 'src/enities/tags.entity';
 import { Trending } from 'src/enities/trending.entity';
 import { LocalSeason } from 'src/enities/localSeasons.entity';
@@ -117,6 +117,13 @@ export class SqliteController {
     return await this.sqliteService.createTrending(trending);
   }
 
+  @ApiOperation({
+    summary: 'Clears the Trending Table and leaves a clear empty table',
+  })
+  @Delete('trending')
+  async clearTrendingMediaTable() {
+    return await this.sqliteService.clearTrendingMediaTable();
+  }
   @Get('localSeasons')
   async getLocalSeasons(@Query('media_id') media_id: number) {
     return await this.sqliteService.getLocalSeasons({ media_id: media_id });

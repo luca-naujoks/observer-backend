@@ -3,7 +3,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 
 import * as fs from 'fs';
-import { Iconfig } from './interfaces';
+import { IBackendConfig } from './OutputInterfaces';
 import { DetailedMediaModule } from './detailed-media/detailed-media.module';
 import { SetupModule } from './setup/setup.module';
 import { SetupController } from './setup/setup.controller';
@@ -44,9 +44,6 @@ function checkConfig() {
       JSON.stringify(
         {
           CONFIGURED: false,
-          MONGO_URI: '',
-          RABBITMQ_URI: '',
-          RABBITMQ_QUEUE: '',
           TMDB_API_KEY: '',
           LOCAL_ANIME_PATH: '',
           LOCAL_SERIES_PATH: '',
@@ -59,12 +56,12 @@ function checkConfig() {
   }
 }
 
-function getConfig(): Iconfig {
+function getConfig(): IBackendConfig {
   checkConfig();
 
-  const config: Iconfig = JSON.parse(
+  const config: IBackendConfig = JSON.parse(
     fs.readFileSync('configuration/appConfig.json', 'utf-8'),
-  ) as Iconfig;
+  ) as IBackendConfig;
 
   return config;
 }

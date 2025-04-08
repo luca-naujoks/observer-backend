@@ -6,6 +6,7 @@ import {
   ApiQuery,
 } from '@nestjs/swagger';
 import { MediaService } from './media.service';
+import { Media } from 'src/enities/media.entity';
 
 ApiTags('Anisquid Observer');
 @Controller('media')
@@ -36,7 +37,7 @@ export class MediaController {
   async getAnimes(
     @Query('page') page: number,
     @Query('search') search: string,
-  ) {
+  ): Promise<Media[]> {
     return this.mediaService.getAnimes(page, search);
   }
 
@@ -64,7 +65,7 @@ export class MediaController {
   async getSeries(
     @Query('page') page: number,
     @Query('search') search: string,
-  ) {
+  ): Promise<Media[]> {
     return this.mediaService.getSeries(page, search);
   }
 
@@ -101,7 +102,7 @@ export class MediaController {
     @Query('type') type: string,
     @Query('page') page: number,
     @Query('search') search: string,
-  ) {
+  ): Promise<Media[]> {
     return this.mediaService.getLocal(type, page, search);
   }
 }
