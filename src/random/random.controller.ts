@@ -1,5 +1,5 @@
 import { Controller, Get, Query } from '@nestjs/common';
-import { ApiOkResponse, ApiOperation, ApiQuery } from '@nestjs/swagger';
+import { ApiResponse, ApiOperation, ApiQuery } from '@nestjs/swagger';
 import { RandomService } from './random.service';
 import { Media } from 'src/enities/media.entity';
 
@@ -17,7 +17,7 @@ export class RandomController {
     example: 5,
     description: 'Number of items to return',
   })
-  @ApiOkResponse({
+  @ApiResponse({
     description: 'Get x random Anime',
   })
   getRandomAnimes(@Query('amount') limit: number): Promise<Media[]> {
@@ -34,7 +34,7 @@ export class RandomController {
     example: 5,
     description: 'Number of items to return',
   })
-  @ApiOkResponse({
+  @ApiResponse({
     description: 'Get x random Series',
   })
   getRandomSeries(@Query('amount') limit: number): Promise<Media[]> {
@@ -57,7 +57,7 @@ export class RandomController {
     example: 'anime',
     description: 'Type of content to return',
   })
-  @ApiOkResponse({
+  @ApiResponse({
     description: 'Get x random Local Content',
   })
   getRandomLocalContent(

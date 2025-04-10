@@ -1,10 +1,5 @@
 import { Controller, Get, Query } from '@nestjs/common';
-import {
-  ApiOperation,
-  ApiOkResponse,
-  ApiTags,
-  ApiQuery,
-} from '@nestjs/swagger';
+import { ApiOperation, ApiResponse, ApiTags, ApiQuery } from '@nestjs/swagger';
 import { MediaService } from './media.service';
 import { Media } from 'src/enities/media.entity';
 
@@ -17,7 +12,7 @@ export class MediaController {
   @ApiOperation({
     summary: 'Request a Page of Anime Media. Each Page contains 100 Items',
   })
-  @ApiOkResponse({
+  @ApiResponse({
     description: 'The page was successfully returned',
   })
   @ApiQuery({
@@ -45,7 +40,7 @@ export class MediaController {
   @ApiOperation({
     summary: 'Request a Page of Series Media. Each Page contains 100 Items',
   })
-  @ApiOkResponse({
+  @ApiResponse({
     description: 'The page was successfully returned',
   })
   @ApiQuery({
@@ -74,7 +69,7 @@ export class MediaController {
     summary:
       'Request a Page of Local Media by Type. Each Page contains 100 Items',
   })
-  @ApiOkResponse({
+  @ApiResponse({
     description: 'The page was successfully returned',
   })
   @ApiQuery({

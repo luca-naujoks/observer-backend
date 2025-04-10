@@ -1,7 +1,7 @@
 import { Controller, Get, Logger, Put, Query } from '@nestjs/common';
 import {
   ApiAmbiguousResponse,
-  ApiOkResponse,
+  ApiResponse,
   ApiOperation,
   ApiQuery,
 } from '@nestjs/swagger';
@@ -27,7 +27,7 @@ export class DetailedMediaController {
   @ApiOperation({
     summary: 'Request the Detailed Media Object of a specific Media',
   })
-  @ApiOkResponse({
+  @ApiResponse({
     description: 'The detailed media object was successfully returned',
   })
   @ApiAmbiguousResponse({
@@ -44,7 +44,7 @@ export class DetailedMediaController {
     summary:
       'Request the Season Details of a specific Media by its TMDB ID and Season Number',
   })
-  @ApiOkResponse({
+  @ApiResponse({
     description: 'The detailed media object was successfully returned',
   })
   async getSeasonForMedia(
@@ -67,7 +67,7 @@ export class DetailedMediaController {
     summary:
       'Update tmdb_id, name, poster and backdrop my passing a new tmdb_id',
   })
-  @ApiOkResponse({
+  @ApiResponse({
     description: 'Returns the upadted Media object',
   })
   @Put('update-tmdb')
