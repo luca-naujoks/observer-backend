@@ -18,9 +18,5 @@ export class AppService {
       'configuration/appConfig.json',
       JSON.stringify(config, null, 2),
     );
-
-    setTimeout(() => {
-      process.exit(0);
-    }, 1000);
   }
 }
