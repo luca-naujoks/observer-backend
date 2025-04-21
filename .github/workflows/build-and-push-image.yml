@@ -1,8 +1,6 @@
 name: Create and Publish docker image
 
 on:
-  push:
-    branches: ['production']
   pull_request:
     branches: ['production']
 
