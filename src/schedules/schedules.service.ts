@@ -1,12 +1,16 @@
-import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
+import { Injectable, OnModuleInit } from '@nestjs/common';
 import { SchedulerRegistry } from '@nestjs/schedule';
 import { CronJob, CronTime } from 'cron';
 import { updateMedia } from './default-schedules/updateMedia';
 import { collectTrendingMedia } from './default-schedules/collectTrendingMedia';
+import { SqliteService } from 'src/sqlite/sqlite.service';
 
 @Injectable()
 export class SchedulesService implements OnModuleInit {
-  constructor(private schedulerRegistry: SchedulerRegistry) {}
+  constructor(
+    private schedulerRegistry: SchedulerRegistry,
+    private readonly sqliteService: SqliteService,
+  ) {}
 
   onModuleInit() {
     this.addTask({
@@ -17,11 +21,21 @@ export class SchedulesService implements OnModuleInit {
     this.addTask({
       taskName: 'default-scan-for-new-media',
       task: () => {
-        updateMedia().catch((error) =>
-          Logger.error('Error in updateMedia:', error),
+        updateMedia().catch(
+          async (error) =>
+            await this.sqliteService.createLog({
+              type: 'error',
+              user: 'system',
+              message: `Error in Media update: ${error}`,
+            }),
         );
-        collectTrendingMedia().catch((error) =>
-          Logger.error('Error in collectTrendingMedia:', error),
+        collectTrendingMedia().catch(
+          async (error) =>
+            await this.sqliteService.createLog({
+              type: 'error',
+              user: 'system',
+              message: `Error in Trending collection: ${error}`,
+            }),
         );
       },
       schedule: '0 0 14 * * *',
@@ -29,8 +43,13 @@ export class SchedulesService implements OnModuleInit {
     this.addTask({
       taskName: 'default-collect-trending-media',
       task: () => {
-        collectTrendingMedia().catch((error) =>
-          Logger.error('Error in collectTrendingMedia:', error),
+        collectTrendingMedia().catch(
+          async (error) =>
+            await this.sqliteService.createLog({
+              type: 'error',
+              user: 'system',
+              message: `Error in Trending collection: ${error}`,
+            }),
         );
       },
       schedule: '0 0 14 * * *',

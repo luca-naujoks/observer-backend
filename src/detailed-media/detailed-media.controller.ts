@@ -1,4 +1,4 @@
-import { Controller, Get, Logger, Put, Query } from '@nestjs/common';
+import { Controller, Get, Put, Query } from '@nestjs/common';
 import {
   ApiAmbiguousResponse,
   ApiResponse,
@@ -95,7 +95,13 @@ export class DetailedMediaController {
       backdrop: 'https://image.tmdb.org/t/p/original' + tmdbData.backdrop_path,
     };
 
-    Logger.log(updatedMedia);
+    await this.sqliteService.createLog([
+      {
+        type: 'info',
+        user: 'system',
+        message: `Updated ${updatedMedia.stream_name}, new tmdb_id: ${updatedMedia.tmdb_id}`,
+      },
+    ]);
 
     await this.sqliteService.updateMedia(updatedMedia);
 

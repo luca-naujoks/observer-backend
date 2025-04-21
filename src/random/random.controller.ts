@@ -41,7 +41,6 @@ export class RandomController {
     return this.randomMedia.getRandomSeries(limit);
   }
 
-  @Get('local')
   @ApiOperation({
     summary: 'Get random Local Content based of the amount requested',
   })
@@ -60,6 +59,7 @@ export class RandomController {
   @ApiResponse({
     description: 'Get x random Local Content',
   })
+  @Get('local')
   getRandomLocalContent(
     @Query('amount') limit: number,
     @Query('type') type: string,

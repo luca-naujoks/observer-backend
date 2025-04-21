@@ -6,6 +6,8 @@ import { MediaObjectDTO } from 'src/dtos/mediaObject.dto';
 import { TagDto } from 'src/dtos/tag.dto';
 import { TrendingDTO } from 'src/dtos/trending.dto';
 import { LocalSeason } from 'src/enities/localSeasons.entity';
+import { LogDto } from 'src/dtos/log.dto';
+import { Log } from 'src/enities/log.entity';
 import { Media } from 'src/enities/media.entity';
 import { Tag } from 'src/enities/tags.entity';
 import { Trending } from 'src/enities/trending.entity';
@@ -20,6 +22,8 @@ export class SqliteService {
     private localSeasonsRepository: Repository<LocalSeason>,
     @InjectRepository(Trending)
     private trendingRepository: Repository<Trending>,
+    @InjectRepository(Log)
+    private logRepository: Repository<Log>,
   ) {}
 
   async findAllMedia({
@@ -61,7 +65,7 @@ export class SqliteService {
       return this.mediaRepository
         .createQueryBuilder('media')
         .where('media.type = :type', { type })
-        .where('media.id IN (:...media_ids)')
+        .andWhere('media.id IN (:...media_ids)')
         .setParameters({ media_ids })
         .andWhere('media.name LIKE :name', {
           name: `%${search ? search : ''}%`,
@@ -139,12 +143,13 @@ export class SqliteService {
       return await this.mediaRepository
         .createQueryBuilder('media')
         .where('media.type = :type', { type })
-        .where('media.id IN (:...media_ids)')
+        .andWhere('media.id IN (:...media_ids)')
         .setParameters({ media_ids })
         .orderBy('RANDOM()')
         .limit(count)
         .getMany();
     }
+
     return await this.mediaRepository
       .createQueryBuilder('media')
       .where('media.type = :type', { type })
@@ -153,7 +158,7 @@ export class SqliteService {
       .getMany();
   }
 
-  async createMedia(media: MediaObjectDTO): Promise<Media> {
+  async createMedia(media: MediaObjectDTO[]): Promise<Media[]> {
     const newMedia = this.mediaRepository.create(media);
     return await this.mediaRepository.save(newMedia);
   }
@@ -165,7 +170,7 @@ export class SqliteService {
     });
   }
 
-  async createTag(tag: TagDto): Promise<Tag> {
+  async createTag(tag: TagDto[]): Promise<Tag[]> {
     const newTag = this.tagsRepository.create(tag);
     return await this.tagsRepository.save(newTag);
   }
@@ -180,7 +185,7 @@ export class SqliteService {
     });
   }
 
-  async createTrending(trending: TrendingDTO): Promise<Trending> {
+  async createTrending(trending: TrendingDTO[]): Promise<Trending[]> {
     const newTrending = this.trendingRepository.create(trending);
     return await this.trendingRepository.save(newTrending);
   }
@@ -216,13 +221,61 @@ export class SqliteService {
     return isEpisodeLocalAvailable ? true : false;
   }
 
-  async createLocalSeason(localSeason: LocalSeasonDTO): Promise<LocalSeason> {
+  async createLocalSeason(
+    localSeason: LocalSeasonDTO[],
+  ): Promise<LocalSeason[]> {
     const newLocalSeason = this.localSeasonsRepository.create(localSeason);
     return await this.localSeasonsRepository.save(newLocalSeason);
   }
 
   async clearTrendingMediaTable() {
     return await this.trendingRepository.clear();
+  }
+
+  // Audit and Logs
+
+  async getLogs({
+    timestampFrom,
+    timestampTill,
+    type,
+    user,
+  }: {
+    timestampFrom?: Date;
+    timestampTill?: Date;
+    type?: string;
+    user?: string;
+  }): Promise<Log[]> {
+    const queryBuilder = this.logRepository.createQueryBuilder('log');
+
+    if (timestampFrom) {
+      queryBuilder.andWhere('log.timestamp >= :timestampFrom', {
+        timestampFrom: timestampFrom,
+      });
+    }
+    if (timestampTill) {
+      queryBuilder.andWhere('log.timestamp <= :timestampTill', {
+        timestampTill: timestampTill,
+      });
+    }
+    if (type) {
+      queryBuilder.andWhere('log.type = :type', { type: type });
+    }
+
+    if (user) {
+      queryBuilder.andWhere('log.user = :user', { user: user });
+    }
+
+    return queryBuilder.getMany();
+  }
+
+  async createLog(logs: LogDto[] | LogDto): Promise<Log[]> {
+    if (!Array.isArray(logs)) {
+      logs = [logs];
+    }
+    const newLogs = this.logRepository.create(
+      logs.map((log) => ({ ...log, timestamp: new Date() })),
+    );
+    return await this.logRepository.save(newLogs);
   }
 
   // Telemetrics and analytics

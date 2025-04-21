@@ -1,4 +1,3 @@
-import { Logger } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { CheerioCrawler } from 'crawlee';
 import { AppModule } from 'src/app.module';
@@ -7,6 +6,7 @@ import { MediaObjectDTO } from 'src/dtos/mediaObject.dto';
 import { TagDto } from 'src/dtos/tag.dto';
 import { ISearchTvResponse, ITvSeriesDetails } from 'src/tmdbInterfaces';
 import { SqliteService } from 'src/sqlite/sqlite.service';
+import { Media } from 'src/enities/media.entity';
 
 interface INeededData {
   name: string;
@@ -113,6 +113,7 @@ export async function updateMedia() {
       backdrop: '',
       online_available: true,
     };
+
     const tags: number[] = [];
     if (mediaObject.tmdb_id != 0) {
       const data = await getTMDBData(mediaObject.tmdb_id);
@@ -135,14 +136,6 @@ export async function updateMedia() {
       continue;
     } else {
       await insertMediaData(mediaObject, tags);
-      Logger.log(
-        'Inserted ' +
-          mediaObject.type +
-          ' ' +
-          mediaObject.stream_name +
-          ' with TMDB ID ' +
-          mediaObject.tmdb_id,
-      );
     }
   }
 
@@ -223,8 +216,12 @@ export async function updateMedia() {
     // Just dummy to satisfy the typescript compiler
     try {
       await sqliteService.findOne({ stream_name: stream_name });
-    } catch (error) {
-      Logger.warn(`Error in collectMediaData from website: ${error}`);
+    } catch {
+      await sqliteService.createLog({
+        type: 'Error',
+        user: 'system',
+        message: 'failed to collect Media from Website',
+      });
     }
     return {
       name: '',
@@ -235,36 +232,44 @@ export async function updateMedia() {
   }
 
   async function insertMediaData(media: MediaObjectDTO, tags: number[]) {
-    const createdMedia = await sqliteService.createMedia(media);
+    const createdMedia: Media[] = await sqliteService.createMedia([media]);
     for (const tag of tags) {
       const newTag: TagDto = {
-        media_id: createdMedia.id,
+        media_id: createdMedia[0].id,
         tag_id: tag,
       };
-      await sqliteService.createTag(newTag);
+      await sqliteService.createTag([newTag]);
     }
   }
+  await sqliteService.createLog({
+    type: 'info',
+    user: 'service',
+    message: `SheduledTask - ${newMedia.filter((media) => media.type == 'anime').length} new Animes`,
+  });
+  await sqliteService.createLog({
+    type: 'info',
+    user: 'service',
+    message: `SheduledTask - ${onlineRemovedMedia.filter((media) => media.type == 'anime').length} Animes are back online`,
+  });
+  await sqliteService.createLog({
+    type: 'info',
+    user: 'service',
+    message: `SheduledTask - ${removedMedia.filter((media) => media.type == 'anime').length} removed Animes`,
+  });
 
-  Logger.log(
-    newMedia.filter((media) => media.type == 'anime').length + ' new Animes',
-  );
-  Logger.log(
-    removedMedia.filter((media) => media.type == 'anime').length +
-      ' removed Animes',
-  );
-  Logger.log(
-    onlineRemovedMedia.filter((media) => media.type == 'anime').length +
-      ' Animes are back online',
-  );
-  Logger.log(
-    newMedia.filter((media) => media.type == 'series').length + ' new Series',
-  );
-  Logger.log(
-    removedMedia.filter((media) => media.type == 'series').length +
-      ' removed Series',
-  );
-  Logger.log(
-    onlineRemovedMedia.filter((media) => media.type == 'series').length +
-      ' Series are back online',
-  );
+  await sqliteService.createLog({
+    type: 'info',
+    user: 'service',
+    message: `SheduledTask - ${newMedia.filter((media) => media.type == 'series').length} new Series`,
+  });
+  await sqliteService.createLog({
+    type: 'info',
+    user: 'service',
+    message: `SheduledTask - ${onlineRemovedMedia.filter((media) => media.type == 'series').length} Series are back online`,
+  });
+  await sqliteService.createLog({
+    type: 'info',
+    user: 'service',
+    message: `SheduledTask - ${removedMedia.filter((media) => media.type == 'series').length} removed Series`,
+  });
 }

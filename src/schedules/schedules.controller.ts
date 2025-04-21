@@ -1,25 +1,14 @@
-import {
-  Controller,
-  Delete,
-  Get,
-  Logger,
-  Post,
-  Put,
-  Query,
-} from '@nestjs/common';
-import { SchedulerRegistry } from '@nestjs/schedule';
+import { Controller, Delete, Get, Post, Put, Query } from '@nestjs/common';
 import { ApiOperation, ApiQuery } from '@nestjs/swagger';
 import { CronTime } from 'cron';
 import { SchedulesService } from './schedules.service';
+import { SqliteService } from 'src/sqlite/sqlite.service';
 
 @Controller('schedules')
 export class SchedulesController {
-  private readonly logger = new Logger('SchedulesController');
+  private readonly sqliteService: SqliteService;
 
-  constructor(
-    private schedulerRegistry: SchedulerRegistry,
-    private readonly scheduleService: SchedulesService,
-  ) {}
+  constructor(private readonly scheduleService: SchedulesService) {}
 
   @ApiOperation({
     summary: 'Get a scheduled task',
@@ -63,8 +52,8 @@ export class SchedulesController {
     @Query('time') time: string,
     @Query('taskName') taskName: string,
   ) {
-    const task = (taskName: string) => {
-      this.logger.warn(`Cron job: ${taskName} running`);
+    const task = () => {
+      return;
     };
 
     this.scheduleService.addTask({

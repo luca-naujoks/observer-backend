@@ -1,4 +1,3 @@
-import { Logger } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { CheerioCrawler } from 'crawlee';
 import { AppModule } from 'src/app.module';
@@ -39,13 +38,21 @@ export async function collectTrendingMedia() {
       });
 
       if (media_entry && media_entry.id) {
-        await sqliteService.createTrending({
-          media_id: media_entry.id,
-          type: media.type + (media.type === 'anime' ? '' : 's'),
-        });
+        await sqliteService.createTrending([
+          {
+            media_id: media_entry.id,
+            type: media.type + (media.type === 'anime' ? '' : 's'),
+          },
+        ]);
       }
-    } catch (error) {
-      Logger.warn(`Error in collectTrendingMedia: ${error}`);
+    } catch {
+      await sqliteService.createLog([
+        {
+          type: 'warning',
+          user: 'system',
+          message: 'cant collect Trending Media item',
+        },
+      ]);
     }
   }
 }

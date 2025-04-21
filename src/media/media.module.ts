@@ -6,9 +6,10 @@ import { Media } from 'src/enities/media.entity';
 import { Tag } from 'src/enities/tags.entity';
 import { Trending } from 'src/enities/trending.entity';
 import { SqliteService } from 'src/sqlite/sqlite.service';
+import { Log } from 'src/enities/log.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Media, LocalSeason, Tag, Trending])],
+  imports: [TypeOrmModule.forFeature([Media, LocalSeason, Tag, Trending, Log])],
   providers: [MediaService, SqliteService],
 })
 export class MediaModule {}
