@@ -1,11 +1,4 @@
-import {
-  Body,
-  Controller,
-  Get,
-  HttpException,
-  Logger,
-  Post,
-} from '@nestjs/common';
+import { Body, Controller, Get, HttpException, Post } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
   ApiBody,
@@ -52,10 +45,6 @@ export class SetupController {
   @Get()
   async getConfig() {
     const config: IBackendConfig = await AppService.getConfig();
-
-    if (config.TmdbApiKey) {
-      config.TmdbApiKey = '1234567890';
-    }
 
     return config;
   }
@@ -104,7 +93,6 @@ export class SetupController {
   })
   @Post()
   async configureBackend(@Body() config: IBackendConfig) {
-    Logger.log(config);
     const TmdbApiKey = await this.setupService.validateTmdbAPIKey(
       config.TmdbApiKey,
     );

@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { HttpErrorByCode } from '@nestjs/common/utils/http-error-by-code.util';
 import { AppService } from 'src/app.service';
 import { Media } from 'src/enities/media.entity';
@@ -233,9 +233,13 @@ export class DetailedMediaService {
     });
 
     const data = (await response.json()) as ITvSeriesDetails;
-    Logger.log(data);
     if (!data) {
-      Logger.error('media Not found');
+      await this.sqliteService.createLog({
+        type: 'warning',
+        user: 'system',
+        message:
+          'Detailed Information Request - No data aviable for the requested tmdb_id',
+      });
     }
 
     return data;

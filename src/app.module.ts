@@ -33,6 +33,7 @@ import { LocalSeason } from './enities/localSeasons.entity';
 import { MediaModule } from './media/media.module';
 import { RandomModule } from './random/random.module';
 import { TrendingModule } from './trending/trending.module';
+import { Log } from './enities/log.entity';
 
 function checkConfig() {
   if (!fs.existsSync('configuration')) {
@@ -74,7 +75,7 @@ function getConfig(): IBackendConfig {
       entities: [__dirname + '/**/*.entity{.ts,.js}'],
       synchronize: true,
     }),
-    TypeOrmModule.forFeature([Media, Tag, Trending, LocalSeason]),
+    TypeOrmModule.forFeature([Media, Tag, Trending, LocalSeason, Log]),
     ConfigModule.forRoot({
       isGlobal: true,
       load: [getConfig],

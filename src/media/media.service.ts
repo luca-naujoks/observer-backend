@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { Media } from 'src/enities/media.entity';
 import { SqliteService } from 'src/sqlite/sqlite.service';
 
@@ -7,7 +7,6 @@ export class MediaService {
   constructor(private readonly sqliteService: SqliteService) {}
 
   async getAnimes(page: number, search: string): Promise<Media[]> {
-    Logger.log(page);
     const media: Media[] = await this.sqliteService.findMedia({
       type: 'anime',
       page: page,

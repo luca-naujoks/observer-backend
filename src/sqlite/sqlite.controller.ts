@@ -5,10 +5,13 @@ import { ApiBody, ApiOperation, ApiQuery } from '@nestjs/swagger';
 import { Tag } from 'src/enities/tags.entity';
 import { Trending } from 'src/enities/trending.entity';
 import { LocalSeason } from 'src/enities/localSeasons.entity';
+import { LogDto } from 'src/dtos/log.dto';
 
 @Controller('sqlite')
 export class SqliteController {
   constructor(private readonly sqliteService: SqliteService) {}
+
+  // media related endpoints
 
   @Get('aggregated')
   async getRandomMedia(
@@ -71,9 +74,11 @@ export class SqliteController {
     },
   })
   @Post('media')
-  async createMediaEntry(@Body() media: MediaObjectDTO) {
+  async createMediaEntry(@Body() media: MediaObjectDTO[]) {
     return await this.sqliteService.createMedia(media);
   }
+
+  // tag related endpoints
 
   @Get('tags')
   async getTags(@Query('media_id') media_id: number) {
@@ -92,9 +97,11 @@ export class SqliteController {
     },
   })
   @Post('tags')
-  async createTag(@Body() tag: Tag) {
+  async createTag(@Body() tag: Tag[]) {
     return await this.sqliteService.createTag(tag);
   }
+
+  // trending related endpoints
 
   @Get('trending')
   async getTrending(@Query('type') type: string) {
@@ -105,15 +112,17 @@ export class SqliteController {
     type: Trending,
     examples: {
       example1: {
-        value: {
-          media_id: 1,
-          type: 'anime',
-        },
+        value: [
+          {
+            media_id: 1,
+            type: 'anime',
+          },
+        ],
       },
     },
   })
   @Post('trending')
-  async createTrending(@Body() trending: Trending) {
+  async createTrending(@Body() trending: Trending[]) {
     return await this.sqliteService.createTrending(trending);
   }
 
@@ -124,26 +133,77 @@ export class SqliteController {
   async clearTrendingMediaTable() {
     return await this.sqliteService.clearTrendingMediaTable();
   }
+
+  // localSeason related endpoints
+
   @Get('localSeasons')
   async getLocalSeasons(@Query('media_id') media_id: number) {
     return await this.sqliteService.getLocalSeasons({ media_id: media_id });
   }
+
   @ApiBody({
     type: LocalSeason,
     examples: {
       example1: {
-        value: {
-          media_id: 1,
-          season: 1,
-          episode: 1,
-          attention: false,
-        },
+        value: [
+          {
+            media_id: 1,
+            season: 1,
+            episode: 1,
+            attention: false,
+          },
+        ],
       },
     },
   })
   @Post('localSeasons')
-  async createLocalSeason(@Body() seasonObject: LocalSeason) {
+  async createLocalSeason(@Body() seasonObject: LocalSeason[]) {
     return await this.sqliteService.createLocalSeason(seasonObject);
+  }
+
+  // Audit and Logs
+  @ApiQuery({
+    name: 'timestampFrom',
+    type: Date,
+    required: false,
+    description: 'The starting timestamp for filtering logs',
+  })
+  @ApiQuery({
+    name: 'timestampTill',
+    type: Date,
+    required: false,
+    description: 'The ending timestamp for filtering logs',
+  })
+  @ApiQuery({
+    name: 'type',
+    type: String,
+    required: false,
+    description: 'The type of log to filter',
+  })
+  @ApiQuery({
+    name: 'user',
+    type: String,
+    required: false,
+    description: 'The user associated with the logs',
+  })
+  @Get('log')
+  async getLogs(
+    @Query('timestampFrom') timestampFrom: Date,
+    @Query('timestampTill') timestampTill: Date,
+    @Query('type') type: string,
+    @Query('user') user: string,
+  ) {
+    return await this.sqliteService.getLogs({
+      timestampFrom: timestampFrom,
+      timestampTill: timestampTill,
+      type: type,
+      user: user,
+    });
+  }
+
+  @Post('log')
+  async createLogs(@Body() logs: LogDto[]) {
+    return await this.sqliteService.createLog(logs);
   }
 
   // Telemetrics and analytics
