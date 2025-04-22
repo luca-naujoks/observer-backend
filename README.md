@@ -1,5 +1,5 @@
 <p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://github.com/luca-naujoks/observer-backend/blob/main/public/icon.png" width="120" alt="AniStream Logo" /></a>
+  <a href="http://nestjs.com/" target="blank"><img src="https://github.com/luca-naujoks/observer-backend/blob/development/public/icon.png" width="120" alt="AniStream Logo" /></a>
     <h1 align="center">AniStream Observatory</h1>
 </p>
 
