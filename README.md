@@ -53,4 +53,4 @@ Check out a few resources that may come in handy when working with this Project:
 
 ## License
 
-Nest is [MIT licensed](https://github.com/luca-naujoks/oberser-backend/blob/master/LICENSE).
+AniStream is [MIT licensed](https://github.com/luca-naujoks/observer-backend/blob/development/LICENSE).
