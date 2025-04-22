@@ -1,18 +1,19 @@
 import { Body, Controller, Delete, Get, Post, Query } from '@nestjs/common';
 import { SqliteService } from './sqlite.service';
 import { MediaObjectDTO } from 'src/dtos/mediaObject.dto';
-import { ApiBody, ApiOperation, ApiQuery } from '@nestjs/swagger';
+import { ApiBody, ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { Tag } from 'src/enities/tags.entity';
 import { Trending } from 'src/enities/trending.entity';
 import { LocalSeason } from 'src/enities/localSeasons.entity';
 import { LogDto } from 'src/dtos/log.dto';
 
+@ApiTags()
 @Controller('sqlite')
 export class SqliteController {
   constructor(private readonly sqliteService: SqliteService) {}
 
   // media related endpoints
-
+  @ApiTags('SQLMedia')
   @Get('aggregated')
   async getRandomMedia(
     @Query('type') type: string,
@@ -24,6 +25,7 @@ export class SqliteController {
     });
   }
 
+  @ApiTags('SQLMedia')
   @Get()
   async getMedia(@Query('stream_name') stream_name: string) {
     return await this.sqliteService.findOne({
@@ -31,6 +33,7 @@ export class SqliteController {
     });
   }
 
+  @ApiTags('SQLMedia')
   @ApiQuery({
     name: 'type',
     type: String,
@@ -56,6 +59,7 @@ export class SqliteController {
     });
   }
 
+  @ApiTags('SQLMedia')
   @ApiBody({
     type: MediaObjectDTO,
     examples: {
@@ -79,12 +83,13 @@ export class SqliteController {
   }
 
   // tag related endpoints
-
+  @ApiTags('Tags')
   @Get('tags')
   async getTags(@Query('media_id') media_id: number) {
     return await this.sqliteService.getTags({ media_id: media_id });
   }
 
+  @ApiTags('Tags')
   @ApiBody({
     type: Tag,
     examples: {
@@ -102,12 +107,13 @@ export class SqliteController {
   }
 
   // trending related endpoints
-
+  @ApiTags('SQLTrending')
   @Get('trending')
   async getTrending(@Query('type') type: string) {
     return await this.sqliteService.findTrending({ mediaType: type });
   }
 
+  @ApiTags('SQLTrending')
   @ApiBody({
     type: Trending,
     examples: {
@@ -126,6 +132,7 @@ export class SqliteController {
     return await this.sqliteService.createTrending(trending);
   }
 
+  @ApiTags('SQLTrending')
   @ApiOperation({
     summary: 'Clears the Trending Table and leaves a clear empty table',
   })
@@ -135,12 +142,13 @@ export class SqliteController {
   }
 
   // localSeason related endpoints
-
+  @ApiTags('LocalSeason')
   @Get('localSeasons')
   async getLocalSeasons(@Query('media_id') media_id: number) {
     return await this.sqliteService.getLocalSeasons({ media_id: media_id });
   }
 
+  @ApiTags('LocalSeason')
   @ApiBody({
     type: LocalSeason,
     examples: {
@@ -162,6 +170,7 @@ export class SqliteController {
   }
 
   // Audit and Logs
+  @ApiTags('Logs')
   @ApiQuery({
     name: 'timestampFrom',
     type: Date,
@@ -201,13 +210,14 @@ export class SqliteController {
     });
   }
 
+  @ApiTags('Logs')
   @Post('log')
   async createLogs(@Body() logs: LogDto[]) {
     return await this.sqliteService.createLog(logs);
   }
 
   // Telemetrics and analytics
-
+  @ApiTags('Telemetrics')
   @Get('mediaCount')
   async countMedia(@Query('type') type: string) {
     return await this.sqliteService.countMedia({ type: type });
