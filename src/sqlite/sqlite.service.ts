@@ -33,7 +33,7 @@ export class SqliteService {
     online_available,
     selectedFields,
   }: {
-    type: string;
+    type?: string;
     online_available?: boolean;
     selectedFields?: (keyof Media)[];
   }): Promise<Media[]> {

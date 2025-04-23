@@ -16,8 +16,8 @@ interface INeededData {
 }
 
 export async function updateMedia() {
-  const animeURL: string = 'http://186.2.175.5/serien';
-  const serienURL: string = 'http://186.2.175.5/serien';
+  const animeURL: string = 'https://aniworld.to//animes';
+  const serienURL: string = 'https://s.to/serien';
 
   const app = await NestFactory.createApplicationContext(AppModule);
   const sqliteService = app.get(SqliteService);
