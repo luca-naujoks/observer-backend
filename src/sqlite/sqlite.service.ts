@@ -26,7 +26,9 @@ export class SqliteService {
     private logRepository: Repository<Log>,
   ) {}
 
-  async findAllMedia({
+  // Media
+
+  async getAllMedia({
     type,
     online_available,
     selectedFields,
@@ -41,7 +43,7 @@ export class SqliteService {
     });
   }
 
-  async findMedia({
+  async getMedia({
     type,
     page,
     local,
@@ -86,7 +88,7 @@ export class SqliteService {
       .getMany();
   }
 
-  async findOne({ stream_name }: { stream_name: string }): Promise<Media> {
+  async getOne({ stream_name }: { stream_name: string }): Promise<Media> {
     const media = await this.mediaRepository.findOne({
       where: { stream_name },
     });
@@ -98,7 +100,7 @@ export class SqliteService {
     return media;
   }
 
-  async findOneById({ id }: { id: number }): Promise<Media> {
+  async getOneById({ id }: { id: number }): Promise<Media> {
     const media = await this.mediaRepository.findOne({
       where: { id },
     });
@@ -108,7 +110,7 @@ export class SqliteService {
     return media;
   }
 
-  async findByTmdbID({ tmdb_id }: { tmdb_id: number }): Promise<Media> {
+  async getByTmdbID({ tmdb_id }: { tmdb_id: number }): Promise<Media> {
     const media = await this.mediaRepository.findOne({
       where: { tmdb_id: tmdb_id },
     });
@@ -119,11 +121,11 @@ export class SqliteService {
   }
 
   async updateMedia(media: MediaObjectDTO): Promise<Media> {
-    await this.findOne({ stream_name: media.stream_name });
+    await this.getOne({ stream_name: media.stream_name });
     return await this.mediaRepository.save(media);
   }
 
-  async findRandomMedia({
+  async getRandomMedia({
     type,
     count,
     local,
@@ -163,6 +165,8 @@ export class SqliteService {
     return await this.mediaRepository.save(newMedia);
   }
 
+  // Tags
+
   async getTags({ media_id }: { media_id: number }): Promise<Tag[]> {
     return this.tagsRepository.find({
       where: { media_id: media_id },
@@ -175,11 +179,9 @@ export class SqliteService {
     return await this.tagsRepository.save(newTag);
   }
 
-  async findTrending({
-    mediaType,
-  }: {
-    mediaType: string;
-  }): Promise<Trending[]> {
+  // Trending
+
+  async getTrending({ mediaType }: { mediaType: string }): Promise<Trending[]> {
     return await this.trendingRepository.find({
       where: { type: mediaType },
     });
@@ -189,6 +191,8 @@ export class SqliteService {
     const newTrending = this.trendingRepository.create(trending);
     return await this.trendingRepository.save(newTrending);
   }
+
+  // Local Seasons
 
   async getLocalSeasons({
     media_id,

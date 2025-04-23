@@ -1,25 +1,30 @@
 import { Body, Controller, Delete, Get, Post, Query } from '@nestjs/common';
 import { SqliteService } from './sqlite.service';
 import { MediaObjectDTO } from 'src/dtos/mediaObject.dto';
-import { ApiBody, ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBody,
+  ApiExcludeController,
+  ApiOperation,
+  ApiQuery,
+  ApiTags,
+} from '@nestjs/swagger';
 import { Tag } from 'src/enities/tags.entity';
 import { Trending } from 'src/enities/trending.entity';
 import { LocalSeason } from 'src/enities/localSeasons.entity';
 import { LogDto } from 'src/dtos/log.dto';
 
-@ApiTags()
+@ApiExcludeController()
 @Controller('sqlite')
 export class SqliteController {
   constructor(private readonly sqliteService: SqliteService) {}
 
   // media related endpoints
-  @ApiTags('SQLMedia')
-  @Get('aggregated')
+  @Get('/aggregated')
   async getRandomMedia(
     @Query('type') type: string,
     @Query('count') count: number,
   ) {
-    return await this.sqliteService.findRandomMedia({
+    return await this.sqliteService.getRandomMedia({
       type: type,
       count: count,
     });
@@ -28,7 +33,7 @@ export class SqliteController {
   @ApiTags('SQLMedia')
   @Get()
   async getMedia(@Query('stream_name') stream_name: string) {
-    return await this.sqliteService.findOne({
+    return await this.sqliteService.getOne({
       stream_name: stream_name,
     });
   }
@@ -51,7 +56,7 @@ export class SqliteController {
     @Query('type') type: string,
     @Query('search') search: string,
   ) {
-    return await this.sqliteService.findMedia({
+    return await this.sqliteService.getMedia({
       type: type,
       page: 0,
       local: false,
@@ -110,7 +115,7 @@ export class SqliteController {
   @ApiTags('SQLTrending')
   @Get('trending')
   async getTrending(@Query('type') type: string) {
-    return await this.sqliteService.findTrending({ mediaType: type });
+    return await this.sqliteService.getTrending({ mediaType: type });
   }
 
   @ApiTags('SQLTrending')

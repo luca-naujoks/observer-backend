@@ -33,14 +33,14 @@ export async function updateMedia() {
     type: string;
   }): Promise<void> {
     const dbMedia: string[] = await sqliteService
-      .findAllMedia({
+      .getAllMedia({
         type: type,
         selectedFields: ['stream_name'],
       })
       .then((media) => media.map((media) => media.stream_name));
 
     const online_removed: string[] = await sqliteService
-      .findAllMedia({
+      .getAllMedia({
         type: type,
         online_available: false,
         selectedFields: ['stream_name'],
@@ -173,7 +173,7 @@ export async function updateMedia() {
   // set the online_available property to false of passed stream_name
   async function updateOnlineAviable(stream_name: string) {
     await sqliteService
-      .findOne({ stream_name: stream_name })
+      .getOne({ stream_name: stream_name })
       .then(async (media) => {
         media.online_available = !media.online_available;
         await sqliteService.updateMedia(media);
@@ -215,7 +215,7 @@ export async function updateMedia() {
   ): Promise<INeededData> {
     // Just dummy to satisfy the typescript compiler
     try {
-      await sqliteService.findOne({ stream_name: stream_name });
+      await sqliteService.getOne({ stream_name: stream_name });
     } catch {
       await sqliteService.createLog({
         type: 'Error',

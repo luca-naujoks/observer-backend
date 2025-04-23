@@ -45,7 +45,7 @@ export class DetailedMediaService {
     tmdb_id: number,
     seasonNumber: number,
   ): Promise<ISeason> {
-    const media: Media = await this.sqliteService.findByTmdbID({
+    const media: Media = await this.sqliteService.getByTmdbID({
       tmdb_id: tmdb_id,
     });
     async function apiRequest(): Promise<ISeasonDetails> {
@@ -100,7 +100,7 @@ export class DetailedMediaService {
   async getDetailedMedia(stream_name: string): Promise<IDetailedMedia> {
     let tmdbData: ItmdbData;
 
-    const localData: Media = await this.sqliteService.findOne({
+    const localData: Media = await this.sqliteService.getOne({
       stream_name: stream_name,
     });
 

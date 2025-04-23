@@ -35,11 +35,11 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule, { cors: true });
 
   const config = new DocumentBuilder()
-    .setTitle('AniSquid Observer API')
+    .setTitle('AniStream API')
     .setDescription(
-      'The AniSquid Observer API Backend for the AniSquid Observer App',
+      'The AniStream API is a universal backend for media servers',
     )
-    .setVersion('0.1.0')
+    .setVersion('1.2')
     .build();
 
   const options: SwaggerDocumentOptions = {

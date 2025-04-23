@@ -7,7 +7,7 @@ export class RandomService {
   constructor(private readonly sqliteService: SqliteService) {}
 
   async getRandomAnimes(limit: number): Promise<Media[]> {
-    const randomAnimes: Media[] = await this.sqliteService.findRandomMedia({
+    const randomAnimes: Media[] = await this.sqliteService.getRandomMedia({
       type: 'anime',
       count: limit,
     });
@@ -16,7 +16,7 @@ export class RandomService {
   }
 
   async getRandomSeries(limit: number): Promise<Media[]> {
-    const randomSeries: Media[] = await this.sqliteService.findRandomMedia({
+    const randomSeries: Media[] = await this.sqliteService.getRandomMedia({
       type: 'series',
       count: limit,
     });
@@ -25,12 +25,13 @@ export class RandomService {
   }
 
   async getRandomLocalContent(type: string, limit: number): Promise<Media[]> {
-    const randomLocalContent: Media[] =
-      await this.sqliteService.findRandomMedia({
+    const randomLocalContent: Media[] = await this.sqliteService.getRandomMedia(
+      {
         type: type,
         count: limit,
         local: true,
-      });
+      },
+    );
 
     return randomLocalContent;
   }

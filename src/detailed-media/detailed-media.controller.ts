@@ -75,7 +75,7 @@ export class DetailedMediaController {
     @Query('stream_name') stream_name: string,
     @Query('tmdb_id') tmdb_id: number,
   ) {
-    const oldMedia: Media = await this.sqliteService.findOne({
+    const oldMedia: Media = await this.sqliteService.getOne({
       stream_name: stream_name,
     });
     if (!oldMedia) {
