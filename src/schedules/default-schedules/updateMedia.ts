@@ -241,6 +241,7 @@ export async function updateMedia() {
       await sqliteService.createTag([newTag]);
     }
   }
+
   await sqliteService.createLog({
     type: 'info',
     user: 'service',

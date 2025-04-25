@@ -38,7 +38,7 @@ export class SqliteService {
     selectedFields?: (keyof Media)[];
   }): Promise<Media[]> {
     return this.mediaRepository.find({
-      where: { type: type, online_available: online_available },
+      where: { type: type, online_available: !online_available },
       select: selectedFields ? selectedFields : undefined,
     });
   }
