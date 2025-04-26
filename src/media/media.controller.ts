@@ -1,9 +1,11 @@
-import { Controller, Get, Query } from '@nestjs/common';
+import { Controller, Get, Query, UseGuards } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags, ApiQuery } from '@nestjs/swagger';
 import { MediaService } from './media.service';
 import { Media } from 'src/enities/media.entity';
+import { ConfigGuard } from 'src/guards/configuration.guard';
 
 ApiTags('Anisquid Observer');
+@UseGuards(ConfigGuard)
 @Controller('media')
 export class MediaController {
   constructor(private readonly mediaService: MediaService) {}

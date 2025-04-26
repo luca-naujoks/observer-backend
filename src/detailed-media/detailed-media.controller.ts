@@ -1,4 +1,4 @@
-import { Controller, Get, Put, Query } from '@nestjs/common';
+import { Controller, Get, Put, Query, UseGuards } from '@nestjs/common';
 import {
   ApiAmbiguousResponse,
   ApiResponse,
@@ -9,7 +9,9 @@ import { DetailedMediaService } from './detailed-media.service';
 import { SqliteService } from 'src/sqlite/sqlite.service';
 import { Media } from 'src/enities/media.entity';
 import { IDetailedMedia, ISeason } from 'src/OutputInterfaces';
+import { ConfigGuard } from 'src/guards/configuration.guard';
 
+@UseGuards(ConfigGuard)
 @Controller('detailed-media')
 export class DetailedMediaController {
   constructor(
