@@ -1,29 +1,12 @@
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  Post,
-  Query,
-  UseGuards,
-} from '@nestjs/common';
+import { Body, Controller, Delete, Get, Post, Query } from '@nestjs/common';
 import { SqliteService } from './sqlite.service';
 import { MediaObjectDTO } from 'src/dtos/mediaObject.dto';
-import {
-  ApiBody,
-  ApiExcludeController,
-  ApiOperation,
-  ApiQuery,
-  ApiTags,
-} from '@nestjs/swagger';
+import { ApiBody, ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { Tag } from 'src/enities/tags.entity';
 import { Trending } from 'src/enities/trending.entity';
 import { LocalSeason } from 'src/enities/localSeasons.entity';
 import { LogDto } from 'src/dtos/log.dto';
-import { DisabledGuard } from 'src/guards/disable.guard';
 
-@ApiExcludeController()
-@UseGuards(DisabledGuard)
 @Controller('sqlite')
 export class SqliteController {
   constructor(private readonly sqliteService: SqliteService) {}

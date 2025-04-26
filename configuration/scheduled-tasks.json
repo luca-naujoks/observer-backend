@@ -1,17 +1,20 @@
 [
   {
+    "displayName": "Scan for local media",
     "taskName": "default-local-scanner",
     "schedule": "0 0 0 * * *",
     "task": "script1.js",
     "description": "Scan for new loacal media"
   },
   {
-    "taskName": "default-scan-for-new-media",
+    "displayName": "Scan online for new media",
+    "taskName": "general-media-scan",
     "schedule": "0 0 0 * * *",
     "task": "script1.js",
     "description": "Scan for new media aviable on online sources (aniworld/s.to)"
   },
   {
+    "displayName": "Scan for new Episodes or Seasons",
     "taskName": "default-scan-for-new-episodes",
     "schedule": "0 0 0 * * *",
     "task": "script1.js",
