@@ -3,7 +3,7 @@ import { ApiOperation, ApiQuery } from '@nestjs/swagger';
 import { CronTime } from 'cron';
 import { SchedulesService } from './schedules.service';
 import { SqliteService } from 'src/sqlite/sqlite.service';
-import { generalMediaScan } from './default-schedules/scan-for-new-media';
+import { generalMediaScan } from './default-schedules/general-media-scan';
 
 @Controller('schedules')
 export class SchedulesController {

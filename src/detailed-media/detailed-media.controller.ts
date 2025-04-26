@@ -91,8 +91,8 @@ export class DetailedMediaController {
       ...oldMedia,
       tmdb_id: tmdbData.id,
       name: tmdbData.name,
-      poster: 'https://image.tmdb.org/t/p/original' + tmdbData.poster_path,
-      backdrop: 'https://image.tmdb.org/t/p/original' + tmdbData.backdrop_path,
+      poster: tmdbData.poster_path,
+      backdrop: tmdbData.backdrop_path,
     };
 
     await this.sqliteService.createLog([

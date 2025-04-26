@@ -6,7 +6,7 @@ import { MediaObjectDTO } from 'src/dtos/mediaObject.dto';
 import { TagDto } from 'src/dtos/tag.dto';
 import { Media } from 'src/enities/media.entity';
 import { SqliteService } from 'src/sqlite/sqlite.service';
-import { ISearchTvResponse } from 'src/tmdbInterfaces';
+import { ISearchTvResponse, ITvSeriesDetails } from 'src/tmdbInterfaces';
 
 interface IMediaArrayItem {
   stream_name: string;
@@ -66,16 +66,12 @@ export async function generalMediaScan() {
   );
 
   // Insert new media into the database
-  // Check for tmdb id
-  // If found, get NeededData from tmdb
-  // If not found, get NeededData from the website
-  // Insert the new media into the database
   for (const media of newMedia) {
     const tmdb_id: number = await istmdb_idAvailable(media.stream_name);
 
     if (tmdb_id !== 0) {
       //fetch the data from tmdb
-      const tmdbCall: INeededData = {} as INeededData;
+      const tmdbCall: INeededData = await getTMDBData(tmdb_id);
       const mediaData: MediaObjectDTO = {
         type: media.type,
         tmdb_id: tmdb_id,
@@ -93,7 +89,10 @@ export async function generalMediaScan() {
       });
     } else {
       //fetch the data of aniworld or s.to
-      const websiteCall: INeededData = {} as INeededData;
+      const websiteCall: INeededData = await getWebData(
+        media.type,
+        media.stream_name,
+      );
       const mediaData: MediaObjectDTO = {
         type: media.type,
         tmdb_id: tmdb_id,
@@ -104,17 +103,16 @@ export async function generalMediaScan() {
         online_available: true,
       };
       const tagsData: number[] = websiteCall.tags;
+      continue;
       await insertMediaData({
         media: mediaData,
         tags: tagsData,
         sqliteService: sqliteService,
       });
-      console.log('fetch data from streaming site');
     }
   }
 
-  // Update removed Media in the database
-  // update the online_available field to false
+  // Update removed Media in the database online_available -> false
   for (const media of removedMedia) {
     await updateOnlineAviable({
       sqliteService: sqliteService,
@@ -122,8 +120,7 @@ export async function generalMediaScan() {
     });
   }
 
-  // Update back online media in the database
-  // update the online_available field to true
+  // Update back online media in the database online_available -> true
   for (const media of backOnlineMedia) {
     await updateOnlineAviable({
       sqliteService: sqliteService,
@@ -132,6 +129,37 @@ export async function generalMediaScan() {
   }
 
   // Write logs to the database
+  await sqliteService.createLog({
+    type: 'info',
+    user: 'service',
+    message: `SheduledTask - ${newMedia.filter((media) => media.type == 'anime').length} new Animes`,
+  });
+  await sqliteService.createLog({
+    type: 'info',
+    user: 'service',
+    message: `SheduledTask - ${backOnlineMedia.filter((media) => media.type == 'anime').length} Animes are back online`,
+  });
+  await sqliteService.createLog({
+    type: 'info',
+    user: 'service',
+    message: `SheduledTask - ${removedMedia.filter((media) => media.type == 'anime').length} removed Animes`,
+  });
+
+  await sqliteService.createLog({
+    type: 'info',
+    user: 'service',
+    message: `SheduledTask - ${newMedia.filter((media) => media.type == 'series').length} new Series`,
+  });
+  await sqliteService.createLog({
+    type: 'info',
+    user: 'service',
+    message: `SheduledTask - ${backOnlineMedia.filter((media) => media.type == 'series').length} Series are back online`,
+  });
+  await sqliteService.createLog({
+    type: 'info',
+    user: 'service',
+    message: `SheduledTask - ${removedMedia.filter((media) => media.type == 'series').length} removed Series`,
+  });
 }
 
 async function fillBaseMedia(sqliteService: SqliteService) {
@@ -240,6 +268,64 @@ async function istmdb_idAvailable(stream_name: string): Promise<number> {
   } else {
     return response.results[0].id;
   }
+}
+
+async function getTMDBData(tmdb_id: number): Promise<INeededData> {
+  const tmdbData = await requestTMDB<ITvSeriesDetails>();
+
+  async function requestTMDB<ITvSeriesDetails>(): Promise<ITvSeriesDetails> {
+    const response = await fetch(`https://api.themoviedb.org/3/tv/${tmdb_id}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer ' + (await AppService.getConfig()).TmdbApiKey,
+      },
+    });
+
+    return (await response.json()) as ITvSeriesDetails;
+  }
+
+  return {
+    name: tmdbData.name,
+    tags: tmdbData.genres.map((genre) => genre.id),
+    poster: 'https://image.tmdb.org/t/p/original' + tmdbData.poster_path,
+    backdrop: 'https://image.tmdb.org/t/p/original' + tmdbData.backdrop_path,
+  };
+}
+
+async function getWebData(
+  type: string,
+  stream_name: string,
+): Promise<INeededData> {
+  const extractedData: INeededData = {
+    name: '',
+    tags: [],
+    poster: '',
+    backdrop: '',
+  };
+  const url: string = `${type == 'anime' ? 'https://aniworld.to/anime/stream/' : 'https://s.to/serie/stream/'}${stream_name}`;
+  const baseUrl: string =
+    type == 'anime' ? 'https://aniworld.to' : 'https://s.to';
+
+  const mediaCrawler = new CheerioCrawler({
+    requestHandler: ({ $ }) => {
+      const name: string = $('div.series-title').find('h1').text();
+      const poster: string =
+        $('div.seriesCoverBox').find('img').attr('data-src')?.trim() || '';
+      const backdrop: string =
+        $('div.backdrop')
+          .attr('style')
+          ?.match(/url\((['"]?)(.*?)\1\)/)?.[2] || '';
+      extractedData.name = name;
+      extractedData.poster = baseUrl + poster;
+      extractedData.backdrop = baseUrl + backdrop;
+    },
+  });
+
+  await mediaCrawler.run([url]);
+
+  // Just dummy to satisfy the typescript compiler
+  return extractedData;
 }
 
 async function insertMediaData({

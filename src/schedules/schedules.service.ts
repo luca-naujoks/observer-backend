@@ -1,9 +1,9 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { SchedulerRegistry } from '@nestjs/schedule';
 import { CronJob, CronTime } from 'cron';
-import { updateMedia } from './default-schedules/updateMedia';
 import { collectTrendingMedia } from './default-schedules/collectTrendingMedia';
 import { SqliteService } from 'src/sqlite/sqlite.service';
+import { generalMediaScan } from './default-schedules/general-media-scan';
 
 @Injectable()
 export class SchedulesService implements OnModuleInit {
@@ -19,9 +19,9 @@ export class SchedulesService implements OnModuleInit {
       schedule: '0 0 14 * * *',
     });
     this.addTask({
-      taskName: 'default-scan-for-new-media',
+      taskName: 'general-media-scan',
       task: () => {
-        updateMedia().catch(
+        generalMediaScan().catch(
           async (error) =>
             await this.sqliteService.createLog({
               type: 'error',
