@@ -1,8 +1,10 @@
-import { Controller, Get, Query } from '@nestjs/common';
+import { Controller, Get, Query, UseGuards } from '@nestjs/common';
 import { ApiResponse, ApiOperation, ApiQuery } from '@nestjs/swagger';
 import { TrendingService } from './trending.service';
 import { Media } from 'src/enities/media.entity';
+import { ConfigGuard } from 'src/guards/configuration.guard';
 
+@UseGuards(ConfigGuard)
 @Controller('trending')
 export class TrendingController {
   constructor(private readonly trendingService: TrendingService) {}

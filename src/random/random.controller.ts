@@ -1,8 +1,10 @@
-import { Controller, Get, Query } from '@nestjs/common';
+import { Controller, Get, Query, UseGuards } from '@nestjs/common';
 import { ApiResponse, ApiOperation, ApiQuery } from '@nestjs/swagger';
 import { RandomService } from './random.service';
 import { Media } from 'src/enities/media.entity';
+import { ConfigGuard } from 'src/guards/configuration.guard';
 
+@UseGuards(ConfigGuard)
 @Controller('random')
 export class RandomController {
   constructor(private readonly randomMedia: RandomService) {}
