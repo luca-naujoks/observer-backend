@@ -7,7 +7,7 @@ export class MediaService {
   constructor(private readonly sqliteService: SqliteService) {}
 
   async getAnimes(page: number, search: string): Promise<Media[]> {
-    const media: Media[] = await this.sqliteService.findMedia({
+    const media: Media[] = await this.sqliteService.getMedia({
       type: 'anime',
       page: page,
       local: false,
@@ -17,7 +17,7 @@ export class MediaService {
   }
 
   async getSeries(page: number, search: string): Promise<Media[]> {
-    const media: Media[] = await this.sqliteService.findMedia({
+    const media: Media[] = await this.sqliteService.getMedia({
       type: 'series',
       page: page,
       local: false,
@@ -27,7 +27,7 @@ export class MediaService {
   }
 
   async getLocal(type: string, page: number, search: string): Promise<Media[]> {
-    const media: Media[] = await this.sqliteService.findMedia({
+    const media: Media[] = await this.sqliteService.getMedia({
       type: type,
       page: page,
       local: true,

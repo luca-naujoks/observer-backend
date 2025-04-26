@@ -33,7 +33,7 @@ export async function collectTrendingMedia() {
 
   for (const media of trendingMedia) {
     try {
-      const media_entry: Media = await sqliteService.findOne({
+      const media_entry: Media = await sqliteService.getOne({
         stream_name: media.stream_name,
       });
 

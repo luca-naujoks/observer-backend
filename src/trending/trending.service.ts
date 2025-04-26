@@ -8,13 +8,13 @@ export class TrendingService {
   constructor(private readonly sqliteService: SqliteService) {}
 
   async getTrendingAnime(limit: number): Promise<Media[]> {
-    const trendingItems: Trending[] = await this.sqliteService.findTrending({
+    const trendingItems: Trending[] = await this.sqliteService.getTrending({
       mediaType: 'anime',
     });
 
     const mediaList = Promise.all(
       trendingItems.map(async (trendingItem) => {
-        const media: Media = await this.sqliteService.findOneById({
+        const media: Media = await this.sqliteService.getOneById({
           id: trendingItem.media_id,
         });
         return media;
@@ -25,13 +25,13 @@ export class TrendingService {
   }
 
   async getTrendingSerie(limit: number): Promise<Media[]> {
-    const trendingItems: Trending[] = await this.sqliteService.findTrending({
+    const trendingItems: Trending[] = await this.sqliteService.getTrending({
       mediaType: 'series',
     });
 
     const mediaList = Promise.all(
       trendingItems.map(async (trendingItem) => {
-        const media: Media = await this.sqliteService.findOneById({
+        const media: Media = await this.sqliteService.getOneById({
           id: trendingItem.media_id,
         });
         return media;
