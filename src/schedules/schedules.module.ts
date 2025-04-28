@@ -9,11 +9,19 @@ import { Tag } from 'src/enities/tags.entity';
 import { Trending } from 'src/enities/trending.entity';
 import { SqliteService } from 'src/sqlite/sqlite.service';
 import { Log } from 'src/enities/log.entity';
+import { WatchlistItem } from 'src/enities/watchlist.entity';
 
 @Module({
   imports: [
     ScheduleModule.forRoot(),
-    TypeOrmModule.forFeature([Media, LocalSeason, Tag, Trending, Log]),
+    TypeOrmModule.forFeature([
+      Media,
+      LocalSeason,
+      Tag,
+      Trending,
+      Log,
+      WatchlistItem,
+    ]),
   ],
   providers: [SchedulesService, SqliteService],
   controllers: [SchedulesController],

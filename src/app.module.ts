@@ -34,6 +34,10 @@ import { MediaModule } from './media/media.module';
 import { RandomModule } from './random/random.module';
 import { TrendingModule } from './trending/trending.module';
 import { Log } from './enities/log.entity';
+import { WatchlistController } from './watchlist/watchlist.controller';
+import { WatchlistModule } from './watchlist/watchlist.module';
+import { WatchlistItem } from './enities/watchlist.entity';
+import { WatchlistService } from './watchlist/watchlist.service';
 
 function checkConfig() {
   if (!fs.existsSync('configuration')) {
@@ -75,7 +79,14 @@ function getConfig(): IBackendConfig {
       entities: [__dirname + '/**/*.entity{.ts,.js}'],
       synchronize: true,
     }),
-    TypeOrmModule.forFeature([Media, Tag, Trending, LocalSeason, Log]),
+    TypeOrmModule.forFeature([
+      Media,
+      Tag,
+      Trending,
+      LocalSeason,
+      Log,
+      WatchlistItem,
+    ]),
     ConfigModule.forRoot({
       isGlobal: true,
       load: [getConfig],
@@ -89,6 +100,7 @@ function getConfig(): IBackendConfig {
     ConfigModule,
     SchedulesModule,
     SqliteModule,
+    WatchlistModule,
   ],
   controllers: [
     AppController,
@@ -99,6 +111,7 @@ function getConfig(): IBackendConfig {
     RandomController,
     SchedulesController,
     SqliteController,
+    WatchlistController,
   ],
   providers: [
     AppService,
@@ -108,6 +121,7 @@ function getConfig(): IBackendConfig {
     DetailedMediaService,
     RandomService,
     SqliteService,
+    WatchlistService,
   ],
 })
 export class AppModule {}
