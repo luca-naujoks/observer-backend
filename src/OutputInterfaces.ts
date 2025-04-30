@@ -7,6 +7,7 @@ export interface IBackendConfig {
 }
 
 export interface IDetailedMedia {
+  id: number;
   type: string; // unknown
   tmdb_id: number; // id
   stream_name: string; // unknown

@@ -160,6 +160,7 @@ export class DetailedMediaService {
     }
 
     return {
+      id: localData.id,
       type: localData.type,
       tmdb_id: localData.tmdb_id,
       stream_name: localData.stream_name,
@@ -197,6 +198,7 @@ export class DetailedMediaService {
     const tvDataToDetailedMedia: IDetailedMedia[] = tvData.results.map(
       (result) => {
         return {
+          id: 0,
           type: 'unknown',
           tmdb_id: result.id,
           stream_name: 'unknown',

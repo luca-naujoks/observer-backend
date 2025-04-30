@@ -12,6 +12,8 @@ import { Media } from 'src/enities/media.entity';
 import { Tag } from 'src/enities/tags.entity';
 import { Trending } from 'src/enities/trending.entity';
 import { Repository } from 'typeorm';
+import { WatchlistItem } from 'src/enities/watchlist.entity';
+import { WatchListDto } from 'src/dtos/watchlist.dto';
 
 @Injectable()
 export class SqliteService {
@@ -24,6 +26,8 @@ export class SqliteService {
     private trendingRepository: Repository<Trending>,
     @InjectRepository(Log)
     private logRepository: Repository<Log>,
+    @InjectRepository(WatchlistItem)
+    private watchListRepository: Repository<WatchlistItem>,
   ) {}
 
   // Media
@@ -280,6 +284,37 @@ export class SqliteService {
       logs.map((log) => ({ ...log, timestamp: new Date() })),
     );
     return await this.logRepository.save(newLogs);
+  }
+
+  // WatchList
+
+  async getWatchList({ user }: { user: number }): Promise<number[]> {
+    const media_ids: { watchlist_media_id: number }[] =
+      await this.watchListRepository
+        .createQueryBuilder('watchlist')
+        .where('watchlist.user = :user', { user: user })
+        .select(['watchlist.media_id AS watchlist_media_id'])
+        .getRawMany();
+
+    return media_ids.map(
+      (item: { watchlist_media_id: number }) => item.watchlist_media_id,
+    );
+  }
+
+  async createWatchListItem(
+    watchListItem: WatchListDto,
+  ): Promise<WatchlistItem> {
+    console.log('create w list item');
+    console.log(watchListItem);
+    const newWatchListItem = this.watchListRepository.create(watchListItem);
+    return await this.watchListRepository.save(newWatchListItem);
+  }
+
+  async deleteWatchListItem(watchListItem: WatchListDto) {
+    await this.watchListRepository.delete({
+      media_id: watchListItem.media_id,
+      user: watchListItem.user,
+    });
   }
 
   // Telemetrics and analytics
