@@ -5,6 +5,7 @@ import { AppService } from 'src/app.service';
 import { MediaObjectDTO } from 'src/dtos/mediaObject.dto';
 import { TagDto } from 'src/dtos/tag.dto';
 import { Media } from 'src/enities/media.entity';
+import { IBackendConfig } from 'src/OutputInterfaces';
 import { SqliteService } from 'src/sqlite/sqlite.service';
 import { ISearchTvResponse, ITvSeriesDetails } from 'src/tmdbInterfaces';
 
@@ -33,10 +34,11 @@ const backOnlineMedia: IMediaArrayItem[] = [];
 
 export async function generalMediaScan() {
   const app = await NestFactory.createApplicationContext(AppModule);
+  const appConfig = AppService.getConfig();
   const sqliteService = app.get(SqliteService);
 
   // Get and Fill the Base Data constants
-  await fillBaseMedia(sqliteService);
+  await fillBaseMedia(sqliteService, await appConfig);
 
   // Compare the online media with the local media and find the new ones
   newMedia.push(
@@ -103,7 +105,6 @@ export async function generalMediaScan() {
         online_available: true,
       };
       const tagsData: number[] = websiteCall.tags;
-      continue;
       await insertMediaData({
         media: mediaData,
         tags: tagsData,
@@ -162,7 +163,10 @@ export async function generalMediaScan() {
   });
 }
 
-async function fillBaseMedia(sqliteService: SqliteService) {
+async function fillBaseMedia(
+  sqliteService: SqliteService,
+  appConfig: IBackendConfig,
+) {
   const mediaFromDB: IMediaArrayItem[] = await sqliteService
     .getAllMedia({
       selectedFields: ['stream_name', 'type'],
@@ -215,11 +219,11 @@ async function fillBaseMedia(sqliteService: SqliteService) {
 
   await mediaCrawler.run([
     {
-      url: 'https://aniworld.to/animes',
+      url: appConfig.AnimeUrl,
       label: 'aniworld',
     },
     {
-      url: 'https://s.to/serien',
+      url: appConfig.SeriesUrl,
       label: 's.to',
     },
   ]);

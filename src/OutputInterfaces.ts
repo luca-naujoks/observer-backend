@@ -2,7 +2,9 @@
 export interface IBackendConfig {
   TmdbApiKey: string;
   AnimeDir: string;
+  AnimeUrl: string;
   SeriesDir: string;
+  SeriesUrl: string;
   PageSize: number;
 }
 
