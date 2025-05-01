@@ -1,5 +1,5 @@
 <p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://github.com/luca-naujoks/observer-backend/blob/development/public/icon.png" width="120" alt="AniStream Logo" /></a>
+  <a href="http://nestjs.com/" target="blank"><img src="https://github.com/luca-naujoks/anistream-api/blob/development/public/icon.png" width="120" alt="AniStream Logo" /></a>
     <h1 align="center">AniStream Observatory</h1>
 </p>
 
@@ -16,10 +16,10 @@ It should provide a base of functionality and connect the local storage to a bea
 
 ```bash
 # Clone the Repository
-$ git clone https://github.com/luca-naujoks/observer-backend.git
+$ git clone https://github.com/luca-naujoks/anistream-api.git
 
 # Move into project directory
-$ cd observer-backend
+$ cd anistream-api
 
 # install all dependencies
 $ npm install
@@ -93,7 +93,7 @@ Check out a few resources that may come in handy when working with this Project:
 
 - Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
 - For Informations about Docker click [here](https://docs.docker.com).
-- If you are interested in a Web UI that is using the AniStream API feel free to check out my Other Project [AniStream](https://github.com/luca-naujoks/observer)
+- If you are interested in a Web UI that is using the AniStream API feel free to check out my Other Project [AniStream](https://github.com/luca-naujoks/anistream)
 
 ## Stay in touch
 
@@ -101,4 +101,4 @@ Check out a few resources that may come in handy when working with this Project:
 
 ## License
 
-AniStream is [MIT licensed](https://github.com/luca-naujoks/observer-backend/blob/development/LICENSE).
+AniStream is [MIT licensed](https://github.com/luca-naujoks/anistream-api/blob/development/LICENSE).
