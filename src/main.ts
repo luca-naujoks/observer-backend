@@ -16,7 +16,9 @@ function createConfigFileSync() {
   const defaultConfig: IBackendConfig = {
     TmdbApiKey: '',
     AnimeDir: '',
+    AnimeUrl: '',
     SeriesDir: '',
+    SeriesUrl: '',
     PageSize: 100,
   };
 

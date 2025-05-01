@@ -39,8 +39,6 @@ export class DetailedMediaController {
     return this.detailedMediaService.getDetailedMedia(stream_name);
   }
 
-  //TODO modify to return the new season object that only contains the episodes
-  //Modified ;)
   @Get('season')
   @ApiOperation({
     summary:
@@ -93,8 +91,8 @@ export class DetailedMediaController {
       ...oldMedia,
       tmdb_id: tmdbData.id,
       name: tmdbData.name,
-      poster: tmdbData.poster_path,
-      backdrop: tmdbData.backdrop_path,
+      poster: 'https://image.tmdb.org/t/p/original' + tmdbData.poster_path,
+      backdrop: 'https://image.tmdb.org/t/p/original' + tmdbData.backdrop_path,
     };
 
     await this.sqliteService.createLog([
