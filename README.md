@@ -63,7 +63,7 @@ services:
     ports:
       - '3001:3001'
     volumes:
-      - /home/anistream-api/configuration: /app/configuration
+      - anistream-api_configuration:/app/configuration
 
   anistream:
     image: ghcr.io/luca-naujoks/anistream:latest
@@ -71,9 +71,13 @@ services:
     ports:
       - '3000:3000'
     volumes:
-      - /home/anistream-api/config: /app/config
+      - anistream_config:/app/config
     depends_on:
       - anistream-api
+
+volumes:
+  anistream-api_configuration:
+  anistream_config:
 ```
 
 #### Deploy with Docker Compose
