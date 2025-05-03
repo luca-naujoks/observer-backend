@@ -4,7 +4,7 @@ import { MediaService } from './media.service';
 import { Media } from 'src/enities/media.entity';
 import { ConfigGuard } from 'src/guards/configuration.guard';
 
-ApiTags('Anisquid Observer');
+ApiTags('AniStream');
 @UseGuards(ConfigGuard)
 @Controller('media')
 export class MediaController {
