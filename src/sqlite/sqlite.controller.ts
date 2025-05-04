@@ -213,13 +213,6 @@ export class SqliteController {
   async createLogs(@Body() logs: LogDto[]) {
     return await this.sqliteService.createLog(logs);
   }
-
-  // Telemetrics and analytics
-  @ApiTags('Telemetrics')
-  @Get('mediaCount')
-  async countMedia(@Query('type') type: string) {
-    return await this.sqliteService.countMedia({ type: type });
-  }
 }
 
 // {

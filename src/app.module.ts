@@ -38,6 +38,8 @@ import { WatchlistController } from './watchlist/watchlist.controller';
 import { WatchlistModule } from './watchlist/watchlist.module';
 import { WatchlistItem } from './enities/watchlist.entity';
 import { WatchlistService } from './watchlist/watchlist.service';
+import { TelemetricsController } from './telemetrics/telemetrics.controller';
+import { TelemetricsModule } from './telemetrics/telemetrics.module';
 
 function checkConfig() {
   if (!fs.existsSync('configuration')) {
@@ -75,7 +77,7 @@ function getConfig(): IBackendConfig {
   imports: [
     TypeOrmModule.forRoot({
       type: 'sqlite',
-      database: 'configuration/db/database.sqlite3',
+      database: 'configuration/db.sqlite3',
       entities: [__dirname + '/**/*.entity{.ts,.js}'],
       synchronize: true,
     }),
@@ -101,6 +103,7 @@ function getConfig(): IBackendConfig {
     SchedulesModule,
     SqliteModule,
     WatchlistModule,
+    TelemetricsModule,
   ],
   controllers: [
     AppController,
@@ -112,6 +115,7 @@ function getConfig(): IBackendConfig {
     SchedulesController,
     SqliteController,
     WatchlistController,
+    TelemetricsController,
   ],
   providers: [
     AppService,
