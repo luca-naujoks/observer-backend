@@ -63,7 +63,7 @@ services:
     ports:
       - '3001:3001'
     volumes:
-      - anistream-api_configuration:/app/configuration
+      - anistream-api_configuration:/app/storage
 
   anistream:
     image: ghcr.io/luca-naujoks/anistream:latest

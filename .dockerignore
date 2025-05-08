@@ -7,7 +7,7 @@ scripts
 node_modules
 coverage
 .env
-configuration
+storage
 public
 test
 storage

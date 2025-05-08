@@ -34,12 +34,12 @@ import { TelemetricsController } from './telemetrics/telemetrics.controller';
 import { TelemetricsModule } from './telemetrics/telemetrics.module';
 
 function checkConfig() {
-  if (!fs.existsSync('configuration')) {
-    fs.mkdirSync('configuration');
+  if (!fs.existsSync('storage')) {
+    fs.mkdirSync('storage');
   }
-  if (!fs.existsSync('configuration/appConfig.json')) {
+  if (!fs.existsSync('storage/appConfig.json')) {
     fs.writeFileSync(
-      'configuration/appConfig.json',
+      'storage/appConfig.json',
       JSON.stringify(
         {
           CONFIGURED: false,
@@ -59,7 +59,7 @@ function getConfig(): IBackendConfig {
   checkConfig();
 
   const config: IBackendConfig = JSON.parse(
-    fs.readFileSync('configuration/appConfig.json', 'utf-8'),
+    fs.readFileSync('storage/appConfig.json', 'utf-8'),
   ) as IBackendConfig;
 
   return config;
@@ -69,7 +69,7 @@ function getConfig(): IBackendConfig {
   imports: [
     TypeOrmModule.forRoot({
       type: 'sqlite',
-      database: 'configuration/db.sqlite3',
+      database: 'storage/db.sqlite3',
       entities: [__dirname + '/**/*.entity{.ts,.js}'],
       synchronize: true,
     }),

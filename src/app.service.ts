@@ -6,16 +6,16 @@ import * as fs from 'fs';
 export class AppService {
   static getConfig() {
     const config: IBackendConfig = JSON.parse(
-      fs.readFileSync('configuration/appConfig.json', 'utf8'),
+      fs.readFileSync('storage/appConfig.json', 'utf8'),
     ) as IBackendConfig;
     return Promise.resolve(config);
   }
 
   static configure(config: IBackendConfig) {
-    // validate and check the configuration
+    // validate and check the storage
 
     fs.writeFileSync(
-      'configuration/appConfig.json',
+      'storage/appConfig.json',
       JSON.stringify(config, null, 2),
     );
   }

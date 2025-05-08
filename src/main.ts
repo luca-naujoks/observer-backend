@@ -8,8 +8,9 @@ import {
 
 import * as fs from 'fs';
 import { IBackendConfig } from './shared/OutputInterfaces';
+import { Configuration } from 'crawlee';
 
-const configDir = 'configuration';
+const configDir = 'storage';
 
 function createConfigFileSync() {
   const configFile = `${configDir}/appConfig.json`;
@@ -33,6 +34,7 @@ function createConfigFileSync() {
 
 async function bootstrap() {
   createConfigFileSync();
+  Configuration.getGlobalConfig().set('persistStorage', false);
 
   const app = await NestFactory.create(AppModule, { cors: true });
 
