@@ -102,4 +102,102 @@ export class MediaController {
   ): Promise<Media[]> {
     return this.mediaService.getLocal(type, page, search);
   }
+
+  // Trending endpoints
+
+  @Get('trending/animes')
+  @ApiOperation({
+    summary: 'Get random Trending Anime based of the amount requested',
+  })
+  @ApiQuery({
+    name: 'amount',
+    type: Number,
+    example: 5,
+    description: 'Number of items to return',
+  })
+  @ApiResponse({
+    description: 'Get x random Anime of the 21 Trending ones',
+  })
+  getTrendingAnime(@Query('amount') limit: number): Promise<Media[]> {
+    return this.mediaService.getTrendingAnime(limit);
+  }
+
+  @Get('trending/series')
+  @ApiOperation({
+    summary: 'Get random Trending Series based of the amount requested',
+  })
+  @ApiQuery({
+    name: 'amount',
+    type: Number,
+    example: 5,
+    description: 'Number of items to return',
+  })
+  @ApiResponse({
+    description: 'Get x random Series of the 21 Trending ones',
+  })
+  getTrendingSeries(@Query('amount') limit: number): Promise<Media[]> {
+    return this.mediaService.getTrendingSeries(limit);
+  }
+
+  // Random endpoints
+
+  @Get('random/animes')
+  @ApiOperation({
+    summary: 'Get the requested amout of random anime from the db',
+  })
+  @ApiQuery({
+    name: 'amount',
+    type: Number,
+    example: 5,
+    description: 'Number of items to return',
+  })
+  @ApiResponse({
+    description: 'Get x random Anime',
+  })
+  getRandomAnimes(@Query('amount') limit: number): Promise<Media[]> {
+    return this.mediaService.getRandomAnimes(limit);
+  }
+
+  @Get('random/series')
+  @ApiOperation({
+    summary: 'Get the requested amout of random series from the db',
+  })
+  @ApiQuery({
+    name: 'amount',
+    type: Number,
+    example: 5,
+    description: 'Number of items to return',
+  })
+  @ApiResponse({
+    description: 'Get x random Series',
+  })
+  getRandomSeries(@Query('amount') limit: number): Promise<Media[]> {
+    return this.mediaService.getRandomSeries(limit);
+  }
+
+  @ApiOperation({
+    summary: 'Get random Local Content based of the amount requested',
+  })
+  @ApiQuery({
+    name: 'amount',
+    type: Number,
+    example: 5,
+    description: 'Number of items to return',
+  })
+  @ApiQuery({
+    name: 'type',
+    type: String,
+    example: 'anime',
+    description: 'Type of content to return',
+  })
+  @ApiResponse({
+    description: 'Get x random Local Content',
+  })
+  @Get('random/local')
+  getRandomLocalContent(
+    @Query('amount') limit: number,
+    @Query('type') type: string,
+  ): Promise<Media[]> {
+    return this.mediaService.getRandomLocalContent(type, limit);
+  }
 }

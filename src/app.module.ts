@@ -9,18 +9,12 @@ import { SetupModule } from './setup/setup.module';
 import { SetupController } from './setup/setup.controller';
 import { SetupService } from './setup/setup.service';
 import { MediaController } from './media/media.controller';
-import { TrendingController } from './trending/trending.controller';
 import { DetailedMediaController } from './detailed-media/detailed-media.controller';
-import { RandomController } from './random/random.controller';
 
-import { TrendingService } from './trending/trending.service';
 import { MediaService } from './media/media.service';
 import { DetailedMediaService } from './detailed-media/detailed-media.service';
-import { RandomService } from './random/random.service';
 import { ConfigModule } from '@nestjs/config';
 import { ScheduleModule } from '@nestjs/schedule';
-import { SchedulesController } from './schedules/schedules.controller';
-import { SchedulesModule } from './schedules/schedules.module';
 
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { SqliteModule } from './sqlite/sqlite.module';
@@ -31,8 +25,6 @@ import { Tag } from './enities/tags.entity';
 import { Trending } from './enities/trending.entity';
 import { LocalSeason } from './enities/localSeasons.entity';
 import { MediaModule } from './media/media.module';
-import { RandomModule } from './random/random.module';
-import { TrendingModule } from './trending/trending.module';
 import { Log } from './enities/log.entity';
 import { WatchlistController } from './watchlist/watchlist.controller';
 import { WatchlistModule } from './watchlist/watchlist.module';
@@ -96,11 +88,8 @@ function getConfig(): IBackendConfig {
     ScheduleModule.forRoot(),
     SetupModule,
     MediaModule,
-    TrendingModule,
-    RandomModule,
     DetailedMediaModule,
     ConfigModule,
-    SchedulesModule,
     SqliteModule,
     WatchlistModule,
     TelemetricsModule,
@@ -109,10 +98,7 @@ function getConfig(): IBackendConfig {
     AppController,
     SetupController,
     MediaController,
-    TrendingController,
     DetailedMediaController,
-    RandomController,
-    SchedulesController,
     SqliteController,
     WatchlistController,
     TelemetricsController,
@@ -121,9 +107,7 @@ function getConfig(): IBackendConfig {
     AppService,
     SetupService,
     MediaService,
-    TrendingService,
     DetailedMediaService,
-    RandomService,
     SqliteService,
     WatchlistService,
   ],
