@@ -9,6 +9,7 @@ export class TelemetricsController {
   async countAnimeInDB() {
     return await this.sqliteService.countMedia({ type: 'anime' });
   }
+
   @Get('series')
   async countSeriesInDB() {
     return await this.sqliteService.countMedia({ type: 'series' });

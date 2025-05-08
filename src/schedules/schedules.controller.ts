@@ -12,7 +12,7 @@ import { CronTime } from 'cron';
 import { SchedulesService } from './schedules.service';
 import { SqliteService } from 'src/sqlite/sqlite.service';
 import { generalMediaScan } from './default-schedules/general-media-scan';
-import { ConfigGuard } from 'src/guards/configuration.guard';
+import { ConfigGuard } from 'src/shared/configuration.guard';
 
 @UseGuards(ConfigGuard)
 @Controller('schedules')

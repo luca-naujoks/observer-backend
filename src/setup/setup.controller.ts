@@ -6,8 +6,8 @@ import {
   ApiResponse,
 } from '@nestjs/swagger';
 import { AppService } from 'src/app.service';
-import { IBackendConfig } from 'src/OutputInterfaces';
-import { ConfigDto } from 'src/swagger.dto';
+import { IBackendConfig } from 'src/shared/OutputInterfaces';
+import { ConfigDto } from 'src/shared/swagger.dto';
 import { SetupService } from './setup.service';
 
 interface SetupReturn {

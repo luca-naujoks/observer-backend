@@ -1,3 +1,4 @@
+import { Logger } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { CheerioCrawler } from 'crawlee';
 import { AppModule } from 'src/app.module';
@@ -5,9 +6,9 @@ import { AppService } from 'src/app.service';
 import { MediaObjectDTO } from 'src/dtos/mediaObject.dto';
 import { TagDto } from 'src/dtos/tag.dto';
 import { Media } from 'src/enities/media.entity';
-import { IBackendConfig } from 'src/OutputInterfaces';
+import { IBackendConfig } from 'src/shared/OutputInterfaces';
 import { SqliteService } from 'src/sqlite/sqlite.service';
-import { ISearchTvResponse, ITvSeriesDetails } from 'src/tmdbInterfaces';
+import { ISearchTvResponse, ITvSeriesDetails } from 'src/shared/tmdbInterfaces';
 
 interface IMediaArrayItem {
   stream_name: string;
@@ -36,6 +37,8 @@ export async function generalMediaScan() {
   const app = await NestFactory.createApplicationContext(AppModule);
   const appConfig = AppService.getConfig();
   const sqliteService = app.get(SqliteService);
+
+  Logger.log(appConfig);
 
   // Get and Fill the Base Data constants
   await fillBaseMedia(sqliteService, await appConfig);
@@ -195,8 +198,12 @@ async function fillBaseMedia(
 
   // Crawler for aniworld.to & s.to
   // gets all the different shows available and ignores the anime genre of s.to.
+  mediaFromWeb.length = 0;
+  //Configuration.getGlobalConfig().set('persistStorage', false);
   const mediaCrawler = new CheerioCrawler({
+    maxConcurrency: 5,
     requestHandler: ({ request, $ }) => {
+      Logger.log(request.url);
       const genres = $('div.genre');
       for (const genre of genres.toArray()) {
         const genreName = $(genre).find('h3').text();
@@ -328,7 +335,6 @@ async function getWebData(
 
   await mediaCrawler.run([url]);
 
-  // Just dummy to satisfy the typescript compiler
   return extractedData;
 }
 

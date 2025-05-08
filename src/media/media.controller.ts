@@ -2,7 +2,7 @@ import { Controller, Get, Query, UseGuards } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags, ApiQuery } from '@nestjs/swagger';
 import { MediaService } from './media.service';
 import { Media } from 'src/enities/media.entity';
-import { ConfigGuard } from 'src/guards/configuration.guard';
+import { ConfigGuard } from 'src/shared/configuration.guard';
 
 ApiTags('AniStream');
 @UseGuards(ConfigGuard)

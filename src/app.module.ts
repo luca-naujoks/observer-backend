@@ -3,7 +3,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 
 import * as fs from 'fs';
-import { IBackendConfig } from './OutputInterfaces';
+import { IBackendConfig } from './shared/OutputInterfaces';
 import { DetailedMediaModule } from './detailed-media/detailed-media.module';
 import { SetupModule } from './setup/setup.module';
 import { SetupController } from './setup/setup.controller';

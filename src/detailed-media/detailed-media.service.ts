@@ -7,8 +7,8 @@ import {
   ISearchTvResponse,
   ISeasonDetails,
   ITvSeriesDetails,
-} from 'src/tmdbInterfaces';
-import { IDetailedMedia, ISeason } from 'src/OutputInterfaces';
+} from 'src/shared/tmdbInterfaces';
+import { IDetailedMedia, ISeason } from 'src/shared/OutputInterfaces';
 import { SqliteService } from 'src/sqlite/sqlite.service';
 
 //TODO remove these both interfaces and use the general tmdb interface

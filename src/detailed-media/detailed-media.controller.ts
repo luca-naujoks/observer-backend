@@ -8,8 +8,8 @@ import {
 import { DetailedMediaService } from './detailed-media.service';
 import { SqliteService } from 'src/sqlite/sqlite.service';
 import { Media } from 'src/enities/media.entity';
-import { IDetailedMedia, ISeason } from 'src/OutputInterfaces';
-import { ConfigGuard } from 'src/guards/configuration.guard';
+import { IDetailedMedia, ISeason } from 'src/shared/OutputInterfaces';
+import { ConfigGuard } from 'src/shared/configuration.guard';
 
 @UseGuards(ConfigGuard)
 @Controller('detailed-media')

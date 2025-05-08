@@ -1,6 +1,6 @@
 import { Controller, Get, Post, Delete, Query } from '@nestjs/common';
 import { UseGuards } from '@nestjs/common';
-import { ConfigGuard } from 'src/guards/configuration.guard';
+import { ConfigGuard } from 'src/shared/configuration.guard';
 import { WatchlistService } from './watchlist.service';
 import { Media } from 'src/enities/media.entity';
 import { SqliteService } from 'src/sqlite/sqlite.service';

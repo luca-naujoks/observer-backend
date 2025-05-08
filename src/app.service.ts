@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { IBackendConfig } from './OutputInterfaces';
+import { IBackendConfig } from './shared/OutputInterfaces';
 import * as fs from 'fs';
 
 @Injectable()

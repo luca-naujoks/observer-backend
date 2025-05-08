@@ -7,7 +7,7 @@ import {
 } from '@nestjs/swagger';
 
 import * as fs from 'fs';
-import { IBackendConfig } from './OutputInterfaces';
+import { IBackendConfig } from './shared/OutputInterfaces';
 
 const configDir = 'configuration';
 
