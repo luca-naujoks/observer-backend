@@ -1,6 +1,8 @@
+import { Media } from 'src/enities/media.entity';
+
 export interface Provider {
-  id: string;
   name: string;
-  fetchData(): Promise<any>;
+  fetchData(): Promise<Media[]>;
+  trending?(): Promise<Media[]>;
   schedule?: string;
 }

@@ -15,7 +15,7 @@ export class AppService {
     // validate and check the storage
 
     fs.writeFileSync(
-      'storage/appConfig.json',
+      'configuration/appConfig.json',
       JSON.stringify(config, null, 2),
     );
   }

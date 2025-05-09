@@ -9,6 +9,8 @@ import {
 import * as fs from 'fs';
 import { IBackendConfig } from './shared/OutputInterfaces';
 import { Configuration } from 'crawlee';
+import { loadProviders } from './provider/loadProviders';
+import path from 'path';
 
 const configDir = 'storage';
 
@@ -17,14 +19,13 @@ function createConfigFileSync() {
   const defaultConfig: IBackendConfig = {
     TmdbApiKey: '',
     AnimeDir: '',
-    AnimeUrl: '',
     SeriesDir: '',
-    SeriesUrl: '',
     PageSize: 100,
   };
 
   if (!fs.existsSync(configDir)) {
     fs.mkdirSync(configDir);
+    fs.mkdirSync(path.join(configDir, 'providers'));
   }
 
   if (!fs.existsSync(configFile)) {
@@ -34,6 +35,9 @@ function createConfigFileSync() {
 
 async function bootstrap() {
   createConfigFileSync();
+
+  await loadProviders();
+
   Configuration.getGlobalConfig().set('persistStorage', false);
 
   const app = await NestFactory.create(AppModule, { cors: true });
