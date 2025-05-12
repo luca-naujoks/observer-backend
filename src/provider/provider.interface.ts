@@ -4,5 +4,6 @@ export interface Provider {
   name: string;
   fetchData(): Promise<Media[]>;
   trending?(): Promise<Media[]>;
-  schedule?: string;
+  schedule: string;
+  // request_url: string
 }

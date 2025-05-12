@@ -32,6 +32,8 @@ import { WatchlistItem } from './enities/watchlist.entity';
 import { WatchlistService } from './watchlist/watchlist.service';
 import { TelemetricsController } from './telemetrics/telemetrics.controller';
 import { TelemetricsModule } from './telemetrics/telemetrics.module';
+import { ProviderController } from './provider/provider.controller';
+import { ProviderModule } from './provider/provider.module';
 
 function checkConfig() {
   if (!fs.existsSync('storage')) {
@@ -93,6 +95,7 @@ function getConfig(): IBackendConfig {
     SqliteModule,
     WatchlistModule,
     TelemetricsModule,
+    ProviderModule,
   ],
   controllers: [
     AppController,
@@ -102,6 +105,7 @@ function getConfig(): IBackendConfig {
     SqliteController,
     WatchlistController,
     TelemetricsController,
+    ProviderController,
   ],
   providers: [
     AppService,
