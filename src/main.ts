@@ -11,6 +11,7 @@ import { IBackendConfig } from './shared/OutputInterfaces';
 import { Configuration } from 'crawlee';
 import { loadProviders } from './provider/loadProviders';
 import path from 'path';
+import { scheduleProviders } from './provider/scheduleProviders';
 
 const configDir = 'storage';
 
@@ -37,6 +38,7 @@ async function bootstrap() {
   createConfigFileSync();
 
   await loadProviders();
+  scheduleProviders();
 
   Configuration.getGlobalConfig().set('persistStorage', false);
 
