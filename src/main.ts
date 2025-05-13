@@ -50,6 +50,12 @@ async function bootstrap() {
       'The AniStream API is a universal backend for media servers',
     )
     .setVersion('1.2')
+    .addTag('Setup', 'Setup related Endpoints')
+    .addTag('Media', 'Media object related Endpoints')
+    .addTag('DetailedMedia', 'DetailedMedia related Endpoints')
+    .addTag('Providers', 'Provider related Endpoints')
+    .addTag('Watchlist', 'Watchlist related Endpoints')
+    .addTag('Telemetrics', 'Telemetric and Analysis related Endoints')
     .build();
 
   const options: SwaggerDocumentOptions = {

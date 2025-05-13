@@ -14,9 +14,6 @@ export class AppService {
   static configure(config: IBackendConfig) {
     // validate and check the storage
 
-    fs.writeFileSync(
-      'configuration/appConfig.json',
-      JSON.stringify(config, null, 2),
-    );
+    fs.writeFileSync('storage/appConfig.json', JSON.stringify(config, null, 2));
   }
 }
