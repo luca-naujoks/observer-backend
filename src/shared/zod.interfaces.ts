@@ -12,3 +12,10 @@ const MediaSchema = z.object({
 });
 
 export const MediaArraySchema = z.array(MediaSchema);
+
+export const ZProvider = z.object({
+  name: z.string(),
+  fetchData: z.function(),
+  trending: z.function().optional(),
+  schedule: z.string(),
+});

@@ -4,6 +4,7 @@ import * as path from 'path';
 import { Provider } from './provider.interface';
 import { ProviderRegistry } from './provider.regirsty';
 import { register } from 'ts-node';
+import { ZProvider } from 'src/shared/zod.interfaces';
 
 register();
 
@@ -28,10 +29,13 @@ export async function loadProviders(): Promise<void> {
         (providerModule as { default?: Provider }).default ||
         (providerModule as Provider);
 
-      if (!provider.name || typeof provider.fetchData !== 'function') {
+      const providerVadilityCheck = ZProvider.safeParse(provider);
+
+      if (!providerVadilityCheck.success) {
         Logger.warn(`Invalid Provider in file ${file}`);
         continue;
       }
+
       ProviderRegistry.registerProvider(provider);
       Logger.log(`Loaded provider with name: ${provider.name}`);
     } catch (error) {
