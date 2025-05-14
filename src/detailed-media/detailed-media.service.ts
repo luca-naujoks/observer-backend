@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import { HttpErrorByCode } from '@nestjs/common/utils/http-error-by-code.util';
-import { AppService } from 'src/app.service';
 import { Media } from 'src/enities/media.entity';
 
 import {
@@ -10,6 +9,7 @@ import {
 } from 'src/shared/tmdbInterfaces';
 import { IDetailedMedia, ISeason } from 'src/shared/OutputInterfaces';
 import { SqliteService } from 'src/sqlite/sqlite.service';
+import { ConfigService } from '@nestjs/config';
 
 //TODO remove these both interfaces and use the general tmdb interface
 interface ItmdbData {
@@ -39,7 +39,10 @@ interface ItmdbSeasonObject {
 
 @Injectable()
 export class DetailedMediaService {
-  constructor(private readonly sqliteService: SqliteService) {}
+  constructor(
+    private readonly sqliteService: SqliteService,
+    private readonly configService: ConfigService,
+  ) {}
 
   async getSeasonForMedia(
     tmdb_id: number,
@@ -48,19 +51,19 @@ export class DetailedMediaService {
     const media: Media = await this.sqliteService.getByTmdbID({
       tmdb_id: tmdb_id,
     });
-    async function apiRequest(): Promise<ISeasonDetails> {
+    const apiRequest = async (): Promise<ISeasonDetails> => {
       const response = await fetch(
         `https://api.themoviedb.org/3/tv/${tmdb_id}/season/${seasonNumber}`,
         {
           headers: {
             'Content-Type': 'application/json',
             Authorization:
-              'Bearer ' + (await AppService.getConfig()).TmdbApiKey,
+              'Bearer ' + this.configService.get<string>('TMDB_API_KEY'),
           },
         },
       );
       return (await response.json()) as ISeasonDetails;
-    }
+    };
 
     const isEpisodeLocalAvailable = async ({
       season,
@@ -130,7 +133,7 @@ export class DetailedMediaService {
           headers: {
             'Content-Type': 'application/json',
             Authorization:
-              'Bearer ' + (await AppService.getConfig()).TmdbApiKey,
+              'Bearer ' + this.configService.get<string>('TMDB_API_KEY'),
           },
         },
       );
@@ -188,7 +191,8 @@ export class DetailedMediaService {
       {
         headers: {
           'Content-Type': 'application/json',
-          Authorization: 'Bearer ' + (await AppService.getConfig()).TmdbApiKey,
+          Authorization:
+            'Bearer ' + this.configService.get<string>('TMDB_API_KEY'),
         },
       },
     );
@@ -230,7 +234,8 @@ export class DetailedMediaService {
     const response = await fetch(`https://api.themoviedb.org/3/tv/${tmdb_id}`, {
       headers: {
         'Content-Type': 'application/json',
-        Authorization: 'Bearer ' + (await AppService.getConfig()).TmdbApiKey,
+        Authorization:
+          'Bearer ' + this.configService.get<string>('TMDB_API_KEY'),
       },
     });
 

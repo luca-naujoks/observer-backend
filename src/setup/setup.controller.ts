@@ -5,10 +5,11 @@ import {
   ApiOperation,
   ApiResponse,
 } from '@nestjs/swagger';
-import { AppService } from 'src/app.service';
 import { IBackendConfig } from 'src/shared/OutputInterfaces';
 import { ConfigDto } from 'src/shared/swagger.dto';
 import { SetupService } from './setup.service';
+import { ConfigService } from '@nestjs/config';
+import { updateConfig } from 'src/app.config';
 
 interface SetupReturn {
   fieldData: {
@@ -33,7 +34,10 @@ interface SetupReturn {
 
 @Controller('setup')
 export class SetupController {
-  constructor(private readonly setupService: SetupService) {}
+  constructor(
+    private readonly setupService: SetupService,
+    private readonly configService: ConfigService,
+  ) {}
 
   @ApiOperation({ summary: 'Api Discovery request' })
   @Get('discovery')
@@ -43,8 +47,8 @@ export class SetupController {
 
   @ApiOperation({ summary: 'Returns the current configuration of the Backend' })
   @Get()
-  async getConfig() {
-    const config: IBackendConfig = await AppService.getConfig();
+  getConfig() {
+    const config = this.configService.get<IBackendConfig>('');
 
     return config;
   }
@@ -129,7 +133,7 @@ export class SetupController {
     ) {
       throw new HttpException(response, 400);
     } else {
-      AppService.configure(config);
+      updateConfig(config);
       return response;
     }
   }

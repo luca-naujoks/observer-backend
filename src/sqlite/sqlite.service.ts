@@ -1,6 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { AppService } from 'src/app.service';
 import { LocalSeasonDTO } from 'src/dtos/localSeason.dto';
 import { MediaObjectDTO } from 'src/dtos/mediaObject.dto';
 import { TagDto } from 'src/dtos/tag.dto';
@@ -14,6 +13,7 @@ import { Trending } from 'src/enities/trending.entity';
 import { Repository } from 'typeorm';
 import { WatchlistItem } from 'src/enities/watchlist.entity';
 import { WatchListDto } from 'src/dtos/watchlist.dto';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class SqliteService {
@@ -28,6 +28,7 @@ export class SqliteService {
     private logRepository: Repository<Log>,
     @InjectRepository(WatchlistItem)
     private watchListRepository: Repository<WatchlistItem>,
+    private readonly configService: ConfigService,
   ) {}
 
   // Media
@@ -76,16 +77,20 @@ export class SqliteService {
         .andWhere('media.name LIKE :name', {
           name: `%${search ? search : ''}%`,
         })
-        .skip(page ? page * (await AppService.getConfig()).PageSize : 0)
-        .take((await AppService.getConfig()).PageSize)
+        .skip(
+          page ? page * (this.configService.get<number>('PageSize') ?? 10) : 0,
+        )
+        .take(this.configService.get<number>('PageSize'))
         .getMany();
     }
     return this.mediaRepository
       .createQueryBuilder('media')
       .where('media.type = :type', { type })
       .andWhere('media.name LIKE :name', { name: search ? `%${search}%` : '%' })
-      .skip(page ? page * (await AppService.getConfig()).PageSize : 0)
-      .take((await AppService.getConfig()).PageSize)
+      .skip(
+        page ? page * (this.configService.get<number>('PageSize') ?? 10) : 0,
+      )
+      .take(this.configService.get<number>('PageSize'))
       .addSelect(
         selectedFields ? selectedFields.map((field) => `media.${field}`) : [],
       )

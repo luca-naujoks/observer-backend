@@ -11,7 +11,7 @@ const providersDir = path.resolve('storage/providers');
 
 export async function loadProviders(): Promise<void> {
   if (!fs.existsSync(providersDir)) {
-    Logger.warn(`providers directory does not exsist: ${providersDir}`);
+    Logger.log('provider path invalid');
     return;
   }
 

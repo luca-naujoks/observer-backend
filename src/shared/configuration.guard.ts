@@ -1,15 +1,24 @@
-import { CanActivate, Injectable } from '@nestjs/common';
-import { AppService } from 'src/app.service';
+import { CanActivate, Injectable, Logger } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+import { IBackendConfig } from './OutputInterfaces';
 
 @Injectable()
 export class ConfigGuard implements CanActivate {
-  async canActivate(): Promise<boolean> {
-    const configState = await AppService.getConfig();
+  constructor(private readonly configService: ConfigService) {}
+
+  canActivate(): boolean {
+    const configState: IBackendConfig | undefined =
+      this.configService.get<IBackendConfig>('');
+    Logger.log(configState);
+
     const configured: boolean =
-      configState.TmdbApiKey.length > 0 &&
-      configState.AnimeDir.length > 0 &&
-      configState.SeriesDir.length > 0 &&
-      configState.PageSize > 0;
+      configState?.AnimeDir &&
+      configState?.SeriesDir &&
+      configState?.PageSize &&
+      configState?.TmdbApiKey
+        ? true
+        : false;
+
     return configured;
   }
 }

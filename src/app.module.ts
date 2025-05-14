@@ -2,8 +2,6 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 
-import * as fs from 'fs';
-import { IBackendConfig } from './shared/OutputInterfaces';
 import { DetailedMediaModule } from './detailed-media/detailed-media.module';
 import { SetupModule } from './setup/setup.module';
 import { SetupController } from './setup/setup.controller';
@@ -34,38 +32,7 @@ import { TelemetricsController } from './telemetrics/telemetrics.controller';
 import { TelemetricsModule } from './telemetrics/telemetrics.module';
 import { ProviderController } from './provider/provider.controller';
 import { ProviderModule } from './provider/provider.module';
-
-function checkConfig() {
-  if (!fs.existsSync('storage')) {
-    fs.mkdirSync('storage');
-  }
-  if (!fs.existsSync('storage/appConfig.json')) {
-    fs.writeFileSync(
-      'storage/appConfig.json',
-      JSON.stringify(
-        {
-          CONFIGURED: false,
-          TMDB_API_KEY: '',
-          LOCAL_ANIME_PATH: '',
-          LOCAL_SERIES_PATH: '',
-          PAGE_SIZE: 100,
-        },
-        null,
-        2,
-      ),
-    );
-  }
-}
-
-function getConfig(): IBackendConfig {
-  checkConfig();
-
-  const config: IBackendConfig = JSON.parse(
-    fs.readFileSync('storage/appConfig.json', 'utf-8'),
-  ) as IBackendConfig;
-
-  return config;
-}
+import appConfig from './app.config';
 
 @Module({
   imports: [
@@ -85,7 +52,7 @@ function getConfig(): IBackendConfig {
     ]),
     ConfigModule.forRoot({
       isGlobal: true,
-      load: [getConfig],
+      load: [appConfig],
     }),
     ScheduleModule.forRoot(),
     SetupModule,
