@@ -20,7 +20,7 @@ export class WatchlistController {
       user: user,
     });
     for (const media of media_ids) {
-      mediaList.push(await this.sqliteService.getOneById({ id: media }));
+      mediaList.push(await this.sqliteService.media.getOneById({ id: media }));
     }
     return mediaList;
   }

@@ -75,7 +75,7 @@ export class DetailedMediaController {
     @Query('stream_name') stream_name: string,
     @Query('tmdb_id') tmdb_id: number,
   ) {
-    const oldMedia: Media = await this.sqliteService.getOne({
+    const oldMedia: Media = await this.sqliteService.media.getOne({
       stream_name: stream_name,
     });
     if (!oldMedia) {
@@ -95,7 +95,7 @@ export class DetailedMediaController {
       backdrop: 'https://image.tmdb.org/t/p/original' + tmdbData.backdrop_path,
     };
 
-    await this.sqliteService.createLog([
+    await this.sqliteService.audit.createLog([
       {
         type: 'info',
         user: 'system',
@@ -103,7 +103,7 @@ export class DetailedMediaController {
       },
     ]);
 
-    await this.sqliteService.updateMedia(updatedMedia);
+    await this.sqliteService.media.updateMedia(updatedMedia);
 
     return updatedMedia;
   }

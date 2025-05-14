@@ -8,7 +8,7 @@ export class WatchlistService {
 
   // returns media_ids[] from given user
   async getWatchList({ user }: { user: number }) {
-    const watchListItems: number[] = await this.sqliteService.getWatchList({
+    const watchListItems: number[] = await this.sqliteService.watchList.getWatchList({
       user: user,
     });
 
@@ -36,7 +36,7 @@ export class WatchlistService {
     user_id: number;
   }) {
     const watchListItem: WatchListDto = { media_id: media_id, user: user_id };
-    await this.sqliteService.createWatchListItem(watchListItem);
+    await this.sqliteService.watchList.createWatchListItem(watchListItem);
   }
 
   // takes a user_id & media_id to delete a watchList item
@@ -48,6 +48,6 @@ export class WatchlistService {
     user_id: number;
   }) {
     const watchListItem: WatchListDto = { media_id: media_id, user: user_id };
-    await this.sqliteService.deleteWatchListItem(watchListItem);
+    await this.sqliteService.watchList.deleteWatchListItem(watchListItem);
   }
 }

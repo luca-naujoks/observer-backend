@@ -48,7 +48,7 @@ export class DetailedMediaService {
     tmdb_id: number,
     seasonNumber: number,
   ): Promise<ISeason> {
-    const media: Media = await this.sqliteService.getByTmdbID({
+    const media: Media = await this.sqliteService.media.getByTmdbID({
       tmdb_id: tmdb_id,
     });
     const apiRequest = async (): Promise<ISeasonDetails> => {
@@ -72,7 +72,7 @@ export class DetailedMediaService {
       season: number;
       episode: number;
     }): Promise<boolean> => {
-      return await this.sqliteService.checkLocalEpisode({
+      return await this.sqliteService.localSeason.checkLocalEpisode({
         media_id: media.id,
         season_number: season,
         episode_number: episode,
@@ -103,7 +103,7 @@ export class DetailedMediaService {
   async getDetailedMedia(stream_name: string): Promise<IDetailedMedia> {
     let tmdbData: ItmdbData;
 
-    const localData: Media = await this.sqliteService.getOne({
+    const localData: Media = await this.sqliteService.media.getOne({
       stream_name: stream_name,
     });
 
@@ -241,7 +241,7 @@ export class DetailedMediaService {
 
     const data = (await response.json()) as ITvSeriesDetails;
     if (!data) {
-      await this.sqliteService.createLog({
+      await this.sqliteService.audit.createLog({
         type: 'warning',
         user: 'system',
         message:

@@ -8,7 +8,7 @@ export class MediaService {
   constructor(private readonly sqliteService: SqliteService) {}
 
   async getAnimes(page: number, search: string): Promise<Media[]> {
-    const media: Media[] = await this.sqliteService.getMedia({
+    const media: Media[] = await this.sqliteService.media.getMedia({
       type: 'anime',
       page: page,
       local: false,
@@ -18,13 +18,14 @@ export class MediaService {
   }
 
   async getTrendingAnime(limit: number): Promise<Media[]> {
-    const trendingItems: Trending[] = await this.sqliteService.getTrending({
-      mediaType: 'anime',
-    });
+    const trendingItems: Trending[] =
+      await this.sqliteService.trending.getTrending({
+        mediaType: 'anime',
+      });
 
     const mediaList = Promise.all(
       trendingItems.map(async (trendingItem) => {
-        const media: Media = await this.sqliteService.getOneById({
+        const media: Media = await this.sqliteService.media.getOneById({
           id: trendingItem.media_id,
         });
         return media;
@@ -35,16 +36,18 @@ export class MediaService {
   }
 
   async getRandomAnimes(limit: number): Promise<Media[]> {
-    const randomAnimes: Media[] = await this.sqliteService.getRandomMedia({
-      type: 'anime',
-      count: limit,
-    });
+    const randomAnimes: Media[] = await this.sqliteService.media.getRandomMedia(
+      {
+        type: 'anime',
+        count: limit,
+      },
+    );
 
     return randomAnimes;
   }
 
   async getSeries(page: number, search: string): Promise<Media[]> {
-    const media: Media[] = await this.sqliteService.getMedia({
+    const media: Media[] = await this.sqliteService.media.getMedia({
       type: 'series',
       page: page,
       local: false,
@@ -54,13 +57,14 @@ export class MediaService {
   }
 
   async getTrendingSeries(limit: number): Promise<Media[]> {
-    const trendingItems: Trending[] = await this.sqliteService.getTrending({
-      mediaType: 'series',
-    });
+    const trendingItems: Trending[] =
+      await this.sqliteService.trending.getTrending({
+        mediaType: 'series',
+      });
 
     const mediaList = Promise.all(
       trendingItems.map(async (trendingItem) => {
-        const media: Media = await this.sqliteService.getOneById({
+        const media: Media = await this.sqliteService.media.getOneById({
           id: trendingItem.media_id,
         });
         return media;
@@ -71,16 +75,18 @@ export class MediaService {
   }
 
   async getRandomSeries(limit: number): Promise<Media[]> {
-    const randomSeries: Media[] = await this.sqliteService.getRandomMedia({
-      type: 'series',
-      count: limit,
-    });
+    const randomSeries: Media[] = await this.sqliteService.media.getRandomMedia(
+      {
+        type: 'series',
+        count: limit,
+      },
+    );
 
     return randomSeries;
   }
 
   async getLocal(type: string, page: number, search: string): Promise<Media[]> {
-    const media: Media[] = await this.sqliteService.getMedia({
+    const media: Media[] = await this.sqliteService.media.getMedia({
       type: type,
       page: page,
       local: true,
@@ -90,13 +96,12 @@ export class MediaService {
   }
 
   async getRandomLocalContent(type: string, limit: number): Promise<Media[]> {
-    const randomLocalContent: Media[] = await this.sqliteService.getRandomMedia(
-      {
+    const randomLocalContent: Media[] =
+      await this.sqliteService.media.getRandomMedia({
         type: type,
         count: limit,
         local: true,
-      },
-    );
+      });
 
     return randomLocalContent;
   }
