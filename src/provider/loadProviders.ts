@@ -10,7 +10,9 @@ register();
 
 const providersDir = path.resolve('storage/providers');
 
-export async function loadProviders(): Promise<void> {
+export async function loadProviders(
+  providerRegistry: ProviderRegistry,
+): Promise<void> {
   if (!fs.existsSync(providersDir)) {
     Logger.log('provider path invalid');
     return;
@@ -36,8 +38,8 @@ export async function loadProviders(): Promise<void> {
         continue;
       }
 
-      ProviderRegistry.registerProvider(provider);
-      Logger.log(`Loaded provider with name: ${provider.name}`);
+      await providerRegistry.registerProvider(provider);
+      Logger.log(`Registered provider with name: ${provider.name}`);
     } catch (error) {
       Logger.warn(`Failed to load Provider in file ${file}: ${error}`);
     }

@@ -1,5 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { Provider } from './provider.interface';
+import { ExtendedProvider, Provider } from './provider.interface';
 import { SqliteService } from 'src/sqlite/sqlite.service';
 import { ZProvider } from 'src/shared/zod.interfaces';
 
@@ -9,7 +9,7 @@ export class ProviderRegistry {
 
   constructor(private readonly sqliteService: SqliteService) {}
 
-  static registerProvider(provider: Provider): void {
+  async registerProvider(provider: Provider): Promise<void> {
     const providerVadilityCheck = ZProvider.safeParse(provider);
 
     if (!providerVadilityCheck.success) {
@@ -18,22 +18,46 @@ export class ProviderRegistry {
       );
     }
 
-    if (this.providers.has(provider.name)) {
+    if (ProviderRegistry.providers.has(provider.name)) {
       Logger.error(`Provider with id: ${provider.name} is already registered`);
       return;
     }
 
-    this.providers.set(provider.name, provider);
-  }
-  static getProvider(id: string): Provider | undefined {
-    return this.providers.get(id);
+    const providerInDB = await this.sqliteService.provider.get(provider.name);
+    if (providerInDB == null) {
+      await this.sqliteService.provider.create({
+        name: provider.name,
+        enabled: true,
+      });
+    }
+
+    ProviderRegistry.providers.set(provider.name, provider);
   }
 
-  static listProviders(): Provider[] {
-    return Array.from(this.providers.values());
+  getProvider(name: string): Provider | undefined {
+    return ProviderRegistry.providers.get(name);
   }
 
-  static removeProvider(id: string): void {
-    this.providers.delete(id);
+  async listProviders(): Promise<ExtendedProvider[]> {
+    const providers: Provider[] = Array.from(
+      ProviderRegistry.providers.values(),
+    );
+    const extendedProviders: ExtendedProvider[] = [];
+    for (const provider of providers) {
+      const enabledState = (await this.sqliteService.provider.get(
+        provider.name,
+      )) || { id: 0, name: 'error', enabled: false };
+      extendedProviders.push({ ...provider, enabled: enabledState.enabled });
+    }
+
+    return extendedProviders;
+  }
+
+  toggleProvider(name: string) {
+    return this.sqliteService.provider.toggle(name);
+  }
+
+  removeProvider(name: string): void {
+    ProviderRegistry.providers.delete(name);
   }
 }

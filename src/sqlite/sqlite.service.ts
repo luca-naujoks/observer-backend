@@ -10,7 +10,7 @@ import { Log } from 'src/enities/log.entity';
 import { Media } from 'src/enities/media.entity';
 import { Tag } from 'src/enities/tags.entity';
 import { Trending } from 'src/enities/trending.entity';
-import { Repository } from 'typeorm';
+import { DeleteResult, Repository } from 'typeorm';
 import { WatchlistItem } from 'src/enities/watchlist.entity';
 import { WatchListDto } from 'src/dtos/watchlist.dto';
 import { ConfigService } from '@nestjs/config';
@@ -354,12 +354,14 @@ export class SqliteService {
     },
   };
 
+  // Providders
+
   provider = {
-    getOneByName: async (name: string): Promise<Provider | null> => {
+    get: async (name: string): Promise<Provider | null> => {
       return this.providerRepository.findOne({ where: { name } });
     },
 
-    createProvider: async (provider: {
+    create: async (provider: {
       name: string;
       enabled: boolean;
     }): Promise<Provider> => {
@@ -367,6 +369,22 @@ export class SqliteService {
       return this.providerRepository.save(newProvider);
     },
 
-    // Add more provider-related functions here
+    toggle: async (name: string): Promise<void> => {
+      const provider: Provider | null = await this.providerRepository.findOne({
+        where: { name },
+      });
+
+      if (!provider) {
+        return;
+      }
+      await this.providerRepository.update(
+        { name: name },
+        { enabled: !provider.enabled },
+      );
+    },
+
+    delete: async (name: string): Promise<DeleteResult> => {
+      return this.providerRepository.delete({ name: name });
+    },
   };
 }

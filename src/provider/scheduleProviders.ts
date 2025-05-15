@@ -1,5 +1,5 @@
 import { SchedulerRegistry } from '@nestjs/schedule';
-import { Provider } from './provider.interface';
+import { ExtendedProvider, Provider } from './provider.interface';
 import { ProviderRegistry } from './provider.regirsty';
 import { CronJob } from 'cron';
 import { MediaArraySchema } from 'src/shared/zod.interfaces';
@@ -7,20 +7,24 @@ import { Logger } from '@nestjs/common';
 
 import ivm from 'isolated-vm';
 
-export function scheduleProviders(): void {
-  const providers: Provider[] = ProviderRegistry.listProviders();
+export async function scheduleProviders(
+  providerRegistry: ProviderRegistry,
+): Promise<void> {
+  const providers: ExtendedProvider[] = await providerRegistry.listProviders();
   const schedulerRegistry: SchedulerRegistry = new SchedulerRegistry();
 
   providers.forEach((provider) => {
-    if (provider.schedule) {
-      const job = new CronJob(provider.schedule, async () => {
-        await jobExecutionWrapper({
-          provider,
-        });
-      });
-      schedulerRegistry.addCronJob(provider.name, job);
-      job.start();
+    if (!provider.enabled) {
+      return;
     }
+
+    const job = new CronJob(provider.schedule, async () => {
+      await jobExecutionWrapper({
+        provider,
+      });
+    });
+    schedulerRegistry.addCronJob(provider.name, job);
+    job.start();
   });
 }
 

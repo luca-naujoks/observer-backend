@@ -1,28 +1,42 @@
-import { Controller, Delete, Get, Param, Post, Query } from '@nestjs/common';
+import {
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Put,
+  Query,
+} from '@nestjs/common';
 import { ProviderRegistry } from './provider.regirsty';
 import { ApiParam, ApiTags } from '@nestjs/swagger';
 
 @ApiTags('Providers')
 @Controller('provider')
 export class ProviderController {
-  constructor() {}
+  constructor(private readonly providerRegistry: ProviderRegistry) {}
 
   @Get()
   getProviders() {
-    return ProviderRegistry.listProviders();
+    return this.providerRegistry.listProviders();
   }
 
-  @ApiParam({ name: 'id', type: String })
-  @Get(':id')
-  getProvider(@Param() params: { id: string }) {
-    return ProviderRegistry.getProvider(params.id);
+  @ApiParam({ name: 'name', type: String })
+  @Get(':name')
+  getProvider(@Param() params: { name: string }) {
+    return this.providerRegistry.getProvider(params.name);
   }
 
   @Post()
   uploadProvider() {}
 
+  @ApiParam({ name: 'name', type: String })
+  @Put(':name')
+  toggleProvider(@Param() params: { name: string }) {
+    return this.providerRegistry.toggleProvider(params.name);
+  }
+
   @Delete()
   removeProvider(@Query('id') id: string) {
-    return ProviderRegistry.removeProvider(id);
+    return this.providerRegistry.removeProvider(id);
   }
 }
