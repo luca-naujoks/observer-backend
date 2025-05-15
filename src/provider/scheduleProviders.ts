@@ -7,24 +7,24 @@ import { Logger } from '@nestjs/common';
 
 import ivm from 'isolated-vm';
 
-export async function scheduleProviders(
+export function scheduleProviders(
   providerRegistry: ProviderRegistry,
-): Promise<void> {
-  const providers: ExtendedProvider[] = await providerRegistry.listProviders();
-  const schedulerRegistry: SchedulerRegistry = new SchedulerRegistry();
-
+  schedulerRegistry: SchedulerRegistry,
+): void {
+  const providers: ExtendedProvider[] = providerRegistry.listProviders();
   providers.forEach((provider) => {
-    if (!provider.enabled) {
-      return;
-    }
-
     const job = new CronJob(provider.schedule, async () => {
       await jobExecutionWrapper({
         provider,
       });
     });
     schedulerRegistry.addCronJob(provider.name, job);
-    job.start();
+    if (provider.enabled) {
+      job.start();
+      Logger.log(`Scheduled provider with name: ${provider.name}`);
+    } else {
+      job.stop();
+    }
   });
 }
 

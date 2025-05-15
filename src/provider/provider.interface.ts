@@ -13,5 +13,6 @@ export interface ExtendedProvider {
   fetchData(): Promise<Media[]>;
   trending?(): Promise<Media[]>;
   schedule: string;
+  file_path: string;
   enabled: boolean;
 }

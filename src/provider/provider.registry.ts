@@ -2,14 +2,24 @@ import { Injectable, Logger } from '@nestjs/common';
 import { ExtendedProvider, Provider } from './provider.interface';
 import { SqliteService } from 'src/sqlite/sqlite.service';
 import { ZProvider } from 'src/shared/zod.interfaces';
+import { SchedulerRegistry } from '@nestjs/schedule';
 
 @Injectable()
 export class ProviderRegistry {
-  private static providers: Map<string, Provider> = new Map();
+  private static providers: Map<string, ExtendedProvider> = new Map();
 
-  constructor(private readonly sqliteService: SqliteService) {}
+  constructor(
+    private readonly sqliteService: SqliteService,
+    private readonly schedulerRegistry: SchedulerRegistry,
+  ) {}
 
-  async registerProvider(provider: Provider): Promise<void> {
+  async registerProvider({
+    provider,
+    filePath,
+  }: {
+    provider: Provider;
+    filePath: string;
+  }): Promise<void> {
     const providerValidityCheck = ZProvider.safeParse(provider);
 
     if (!providerValidityCheck.success) {
@@ -24,47 +34,53 @@ export class ProviderRegistry {
       return;
     }
 
-    const providerInDB = await this.sqliteService.provider.get(provider.name);
+    let providerInDB = await this.sqliteService.provider.get(provider.name);
     if (providerInDB == null) {
-      await this.sqliteService.provider.create({
+      const newEntry = await this.sqliteService.provider.create({
         name: provider.name,
         enabled: true,
       });
+      providerInDB = newEntry;
     }
 
-    ProviderRegistry.providers.set(provider.name, provider);
+    ProviderRegistry.providers.set(provider.name, {
+      ...provider,
+      file_path: filePath,
+      enabled: providerInDB.enabled,
+    });
   }
 
   getProvider(name: string): Provider | undefined {
     return ProviderRegistry.providers.get(name);
   }
 
-  async listProviders(): Promise<ExtendedProvider[]> {
-    const providers: Provider[] = Array.from(
+  listProviders(): ExtendedProvider[] {
+    const providers: ExtendedProvider[] = Array.from(
       ProviderRegistry.providers.values(),
     );
-    const extendedProviders: ExtendedProvider[] = [];
-    for (const provider of providers) {
-      const enabledState = (await this.sqliteService.provider.get(
-        provider.name,
-      )) || {
-        id: 0,
-        name: `${provider.name} (not registered in DB)`,
-        enabled: false,
-      };
-      extendedProviders.push({ ...provider, enabled: enabledState.enabled });
-    }
 
-    return extendedProviders;
+    return providers;
   }
 
-  async toggleProvider(name: string): Promise<void> {
+  async toggleProvider(name: string): Promise<ExtendedProvider | void> {
     if (!ProviderRegistry.providers.has(name)) {
       Logger.error(`Provider with id: ${name} does not exist`);
       return;
     }
     try {
-      return await this.sqliteService.provider.toggle(name);
+      const provider: ExtendedProvider = ProviderRegistry.providers.get(name)!; // Enforced that there is a return cause we checked earlier that a item with that name exists ;)
+      provider.enabled = !provider.enabled;
+      await this.sqliteService.provider.toggle(name);
+      ProviderRegistry.providers.set(name, provider);
+      switch (true) {
+        case provider.enabled:
+          this.schedulerRegistry.getCronJob(provider.name).start();
+          break;
+        case !provider.enabled:
+          this.schedulerRegistry.getCronJob(provider.name).stop();
+          break;
+      }
+      return provider;
     } catch (error) {
       Logger.error(`Failed to toggle provider ${name}: ${error}`);
       throw error;

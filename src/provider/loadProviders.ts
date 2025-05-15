@@ -38,7 +38,10 @@ export async function loadProviders(
         continue;
       }
 
-      await providerRegistry.registerProvider(provider);
+      await providerRegistry.registerProvider({
+        provider: provider,
+        filePath: providerPath,
+      });
       Logger.log(`Registered provider with name: ${provider.name}`);
     } catch (error) {
       Logger.warn(`Failed to load Provider in file ${file}: ${error}`);
