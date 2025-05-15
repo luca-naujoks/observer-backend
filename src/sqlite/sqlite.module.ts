@@ -8,6 +8,7 @@ import { Tag } from 'src/enities/tags.entity';
 import { Trending } from 'src/enities/trending.entity';
 import { Log } from 'src/enities/log.entity';
 import { WatchlistItem } from 'src/enities/watchlist.entity';
+import { Provider } from 'src/enities/provider.entity';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { WatchlistItem } from 'src/enities/watchlist.entity';
       Trending,
       Log,
       WatchlistItem,
+      Provider,
     ]),
   ],
   providers: [SqliteService],

@@ -18,21 +18,16 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { SqliteModule } from './sqlite/sqlite.module';
 import { SqliteService } from './sqlite/sqlite.service';
 import { SqliteController } from './sqlite/sqlite.controller';
-import { Media } from './enities/media.entity';
-import { Tag } from './enities/tags.entity';
-import { Trending } from './enities/trending.entity';
-import { LocalSeason } from './enities/localSeasons.entity';
 import { MediaModule } from './media/media.module';
-import { Log } from './enities/log.entity';
 import { WatchlistController } from './watchlist/watchlist.controller';
 import { WatchlistModule } from './watchlist/watchlist.module';
-import { WatchlistItem } from './enities/watchlist.entity';
 import { WatchlistService } from './watchlist/watchlist.service';
 import { TelemetricsController } from './telemetrics/telemetrics.controller';
 import { TelemetricsModule } from './telemetrics/telemetrics.module';
 import { ProviderController } from './provider/provider.controller';
 import { ProviderModule } from './provider/provider.module';
 import appConfig from './app.config';
+import { modules } from './shared/typeOrmImports';
 
 @Module({
   imports: [
@@ -42,14 +37,7 @@ import appConfig from './app.config';
       entities: [__dirname + '/**/*.entity{.ts,.js}'],
       synchronize: true,
     }),
-    TypeOrmModule.forFeature([
-      Media,
-      Tag,
-      Trending,
-      LocalSeason,
-      Log,
-      WatchlistItem,
-    ]),
+    TypeOrmModule.forFeature(modules),
     ConfigModule.forRoot({
       isGlobal: true,
       load: [appConfig],
