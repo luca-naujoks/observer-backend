@@ -10,12 +10,13 @@ export class ProviderRegistry {
   constructor(private readonly sqliteService: SqliteService) {}
 
   async registerProvider(provider: Provider): Promise<void> {
-    const providerVadilityCheck = ZProvider.safeParse(provider);
+    const providerValidityCheck = ZProvider.safeParse(provider);
 
-    if (!providerVadilityCheck.success) {
+    if (!providerValidityCheck.success) {
       Logger.error(
         'Provider does not match the expected scheme please validate.',
       );
+      return;
     }
 
     if (ProviderRegistry.providers.has(provider.name)) {
@@ -46,18 +47,40 @@ export class ProviderRegistry {
     for (const provider of providers) {
       const enabledState = (await this.sqliteService.provider.get(
         provider.name,
-      )) || { id: 0, name: 'error', enabled: false };
+      )) || {
+        id: 0,
+        name: `${provider.name} (not registered in DB)`,
+        enabled: false,
+      };
       extendedProviders.push({ ...provider, enabled: enabledState.enabled });
     }
 
     return extendedProviders;
   }
 
-  toggleProvider(name: string) {
-    return this.sqliteService.provider.toggle(name);
+  async toggleProvider(name: string): Promise<void> {
+    if (!ProviderRegistry.providers.has(name)) {
+      Logger.error(`Provider with id: ${name} does not exist`);
+      return;
+    }
+    try {
+      return await this.sqliteService.provider.toggle(name);
+    } catch (error) {
+      Logger.error(`Failed to toggle provider ${name}: ${error}`);
+      throw error;
+    }
   }
 
-  removeProvider(name: string): void {
-    ProviderRegistry.providers.delete(name);
+  async removeProvider(name: string): Promise<void> {
+    const exists = ProviderRegistry.providers.delete(name);
+    if (exists) {
+      try {
+        await this.sqliteService.provider.delete(name);
+      } catch (error) {
+        Logger.error(
+          `Failed to delete provider ${name} from database: ${error}`,
+        );
+      }
+    }
   }
 }

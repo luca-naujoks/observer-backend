@@ -6,12 +6,12 @@ export class TelemetricsController {
   constructor(private readonly sqliteService: SqliteService) {}
 
   @Get('anime')
-  async countAnimeInDB() {
-    return await this.sqliteService.telemetrics.countMedia({ type: 'anime' });
+  async countAnimeInDB(): Promise<number> {
+    return this.sqliteService.telemetrics.countMedia({ type: 'anime' });
   }
 
   @Get('series')
-  async countSeriesInDB() {
-    return await this.sqliteService.telemetrics.countMedia({ type: 'series' });
+  async countSeriesInDB(): Promise<number> {
+    return this.sqliteService.telemetrics.countMedia({ type: 'series' });
   }
 }

@@ -333,8 +333,6 @@ export class SqliteService {
     createWatchListItem: async (
       watchListItem: WatchListDto,
     ): Promise<WatchlistItem> => {
-      console.log('create w list item');
-      console.log(watchListItem);
       const newWatchListItem = this.watchListRepository.create(watchListItem);
       return await this.watchListRepository.save(newWatchListItem);
     },
@@ -354,7 +352,7 @@ export class SqliteService {
     },
   };
 
-  // Providders
+  // Providers
 
   provider = {
     get: async (name: string): Promise<Provider | null> => {

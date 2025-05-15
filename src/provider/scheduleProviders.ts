@@ -1,6 +1,6 @@
 import { SchedulerRegistry } from '@nestjs/schedule';
 import { ExtendedProvider, Provider } from './provider.interface';
-import { ProviderRegistry } from './provider.regirsty';
+import { ProviderRegistry } from './provider.registry';
 import { CronJob } from 'cron';
 import { MediaArraySchema } from 'src/shared/zod.interfaces';
 import { Logger } from '@nestjs/common';

@@ -28,7 +28,7 @@ import { ProviderController } from './provider/provider.controller';
 import { ProviderModule } from './provider/provider.module';
 import appConfig from './app.config';
 import { modules } from './shared/typeOrmImports';
-import { ProviderRegistry } from './provider/provider.regirsty';
+import { ProviderRegistry } from './provider/provider.registry';
 
 @Module({
   imports: [
@@ -47,7 +47,6 @@ import { ProviderRegistry } from './provider/provider.regirsty';
     SetupModule,
     MediaModule,
     DetailedMediaModule,
-    ConfigModule,
     SqliteModule,
     WatchlistModule,
     TelemetricsModule,

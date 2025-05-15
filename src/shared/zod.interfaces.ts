@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-const MediaSchema = z.object({
+export const MediaSchema = z.object({
   id: z.number(),
   type: z.string(),
   tmdb_id: z.string(),

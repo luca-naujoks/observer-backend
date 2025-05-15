@@ -7,7 +7,7 @@ import {
   Put,
   Query,
 } from '@nestjs/common';
-import { ProviderRegistry } from './provider.regirsty';
+import { ProviderRegistry } from './provider.registry';
 import { ApiParam, ApiTags } from '@nestjs/swagger';
 
 @ApiTags('Providers')

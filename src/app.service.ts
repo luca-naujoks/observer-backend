@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { loadProviders } from './provider/loadProviders';
 import { scheduleProviders } from './provider/scheduleProviders';
-import { ProviderRegistry } from './provider/provider.regirsty';
+import { ProviderRegistry } from './provider/provider.registry';
 
 @Injectable()
 export class AppService {
@@ -9,7 +9,7 @@ export class AppService {
   async onApplicationBootstrap(): Promise<void> {
     try {
       await loadProviders(this.providerRegistry);
-      scheduleProviders(this.providerRegistry);
+      await scheduleProviders(this.providerRegistry);
     } catch (error) {
       console.error('Error during provider initialization:', error);
     }

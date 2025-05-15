@@ -2,7 +2,7 @@ import { Logger } from '@nestjs/common';
 import * as fs from 'fs';
 import * as path from 'path';
 import { Provider } from './provider.interface';
-import { ProviderRegistry } from './provider.regirsty';
+import { ProviderRegistry } from './provider.registry';
 import { register } from 'ts-node';
 import { ZProvider } from 'src/shared/zod.interfaces';
 

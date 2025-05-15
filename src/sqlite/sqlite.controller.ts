@@ -216,12 +216,3 @@ export class SqliteController {
     return await this.sqliteService.audit.createLog(logs);
   }
 }
-
-// {
-//   "type": "anime",
-//   "tmdb_id": 76059,
-//   "stream_name": "a-place-further-than-the-universe",
-//   "name": "A Place Further Than the Universe",
-//   "poster": "https: //image.tmdb.org/t/p/original/iERXyBf0K6DfAQ8oKEYrdjf1vIs.jpg",
-//   "backdrop": "https: //image.tmdb.org/t/p/original/bTIbUZVoKnlMt2IrZQv2ODPVs0N.jpg"
-// }
